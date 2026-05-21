@@ -1,0 +1,287 @@
+import { useParams, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { useCourse } from '../hooks/useCourses'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { moduleService } from '../services/moduleService'
+import { lessonService } from '../services/lessonService'
+import { useModules } from '../hooks/useModules'
+import { useLessons } from '../hooks/useLessons'
+import type { ModuleUpdate, LessonUpdate } from '../types'
+import Card from '../components/molecules/Card'
+import Modal from '../components/molecules/Modal'
+import Button from '../components/atoms/Button'
+import Input from '../components/atoms/Input'
+import Skeleton from '../components/atoms/Skeleton'
+import Badge from '../components/atoms/Badge'
+import { ArrowLeft, ChevronDown, ChevronRight, Eye, FileText, Video, Image, File, BookOpen, Plus, Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import type { Module, Lesson, ModuleCreate, LessonCreate } from '../types'
+
+interface ModuleForm { title: string; order_index: number }
+interface LessonForm { title: string; text_content: string; image_content_url: string; video_content_url: string; file_content_url: string; order_index: number }
+
+const emptyModuleForm: ModuleForm = { title: '', order_index: 0 }
+const emptyLessonForm: LessonForm = { title: '', text_content: '', image_content_url: '', video_content_url: '', file_content_url: '', order_index: 0 }
+
+export default function CourseDetailPage() {
+  const { user } = useAuth()
+  const qc = useQueryClient()
+  const { courseId } = useParams<{ courseId: string }>()
+  const id = Number(courseId)
+  const canManage = user && ['superuser', 'admin', 'teacher'].includes(user.role)
+
+  const { data: course, isLoading: loadingCourse } = useCourse(id)
+  const { data: modules, isLoading: loadingModules } = useModules({ course_id: id }, { enabled: !!id })
+
+  const [expandedModule, setExpandedModule] = useState<number | null>(null)
+  const { data: lessons, isLoading: loadingLessons } = useLessons({ module_id: expandedModule ?? 0 }, { enabled: !!expandedModule })
+
+  const createModule = useMutation({
+    mutationFn: (data: ModuleCreate) => moduleService.create(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] }),
+  })
+  const updateModule = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: ModuleUpdate }) => moduleService.update(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] }),
+  })
+  const deleteModule = useMutation({
+    mutationFn: (id: number) => moduleService.remove(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] }),
+  })
+  const createLesson = useMutation({
+    mutationFn: (data: LessonCreate) => lessonService.create(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['lessons'] }),
+  })
+  const updateLesson = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: LessonUpdate }) => lessonService.update(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['lessons'] }),
+  })
+  const deleteLesson = useMutation({
+    mutationFn: (id: number) => lessonService.remove(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['lessons'] }),
+  })
+
+  const [modModal, setModModal] = useState(false)
+  const [editingMod, setEditingMod] = useState<Module | null>(null)
+  const [modForm, setModForm] = useState<ModuleForm>(emptyModuleForm)
+
+  const [lessonModal, setLessonModal] = useState(false)
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
+  const [lessonForm, setLessonForm] = useState<LessonForm>(emptyLessonForm)
+  const [lessonModuleId, setLessonModuleId] = useState(0)
+
+  const [confirmDelete, setConfirmDelete] = useState<{ type: 'module' | 'lesson'; id: number } | null>(null)
+
+  if (loadingCourse) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={3} className="h-8 w-full" /></div>
+  if (!course) return <div className="p-6 lg:p-8"><p className="text-slate-500">Curso no encontrado</p></div>
+
+  const modulesSorted = modules?.slice().sort((a, b) => a.order_index - b.order_index) ?? []
+
+  function contentTypeIcon(l: { video_content_url?: string | null; image_content_url?: string | null; file_content_url?: string | null }) {
+    if (l.video_content_url) return <Video className="h-4 w-4 text-rose-500" />
+    if (l.image_content_url) return <Image className="h-4 w-4 text-amber-500" />
+    if (l.file_content_url) return <File className="h-4 w-4 text-blue-500" />
+    return <FileText className="h-4 w-4 text-slate-400" />
+  }
+
+  function openModModal(mod?: Module) {
+    setEditingMod(mod ?? null)
+    setModForm(mod ? { title: mod.title, order_index: mod.order_index } : emptyModuleForm)
+    setModModal(true)
+  }
+
+  async function handleModSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (editingMod) {
+      updateModule.mutateAsync({ id: editingMod.id, data: { title: modForm.title, order_index: modForm.order_index } })
+    } else {
+      createModule.mutateAsync({ course_id: id, title: modForm.title, order_index: modForm.order_index })
+    }
+    setModModal(false)
+    setEditingMod(null)
+    setModForm(emptyModuleForm)
+  }
+
+  function openLessonModal(modId: number, lesson?: Lesson) {
+    setLessonModuleId(modId)
+    setEditingLesson(lesson ?? null)
+    setLessonForm(lesson ? {
+      title: lesson.title,
+      text_content: lesson.text_content ?? '',
+      image_content_url: lesson.image_content_url ?? '',
+      video_content_url: lesson.video_content_url ?? '',
+      file_content_url: lesson.file_content_url ?? '',
+      order_index: lesson.order_index,
+    } : emptyLessonForm)
+    setLessonModal(true)
+  }
+
+  async function handleLessonSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const payload = {
+      title: lessonForm.title,
+      text_content: lessonForm.text_content || null,
+      image_content_url: lessonForm.image_content_url || null,
+      video_content_url: lessonForm.video_content_url || null,
+      file_content_url: lessonForm.file_content_url || null,
+      order_index: lessonForm.order_index,
+    }
+    if (editingLesson) {
+      updateLesson.mutateAsync({ id: editingLesson.id, data: payload })
+    } else {
+      createLesson.mutateAsync({ module_id: lessonModuleId, ...payload })
+    }
+    setLessonModal(false)
+    setEditingLesson(null)
+    setLessonForm(emptyLessonForm)
+  }
+
+  async function handleConfirmDelete() {
+    if (!confirmDelete) return
+    if (confirmDelete.type === 'module') await deleteModule.mutateAsync(confirmDelete.id)
+    else await deleteLesson.mutateAsync(confirmDelete.id)
+    setConfirmDelete(null)
+  }
+
+  return (
+    <div className="p-6 lg:p-8">
+      <Link to="/courses" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+        <ArrowLeft className="h-4 w-4" />
+        Volver a cursos
+      </Link>
+
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">{course.title}</h1>
+          {course.description && <p className="mt-2 text-slate-600">{course.description}</p>}
+          <div className="mt-2"><Badge variant={course.status === 'published' ? 'success' : 'warning'}>{course.status}</Badge></div>
+        </div>
+      </div>
+
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-slate-900">Módulos</h2>
+        {canManage && (
+          <Button onClick={() => openModModal()}><Plus className="h-4 w-4" />Añadir módulo</Button>
+        )}
+      </div>
+
+      {loadingModules ? (
+        <div className="space-y-3"><Skeleton count={4} className="h-16 w-full" /></div>
+      ) : modulesSorted.length === 0 ? (
+        <Card><p className="py-8 text-center text-sm text-slate-500">Este curso no tiene módulos aún.</p></Card>
+      ) : (
+        <div className="space-y-3">
+          {modulesSorted.map((mod) => {
+            const expanded = expandedModule === mod.id
+            return (
+              <Card key={mod.id} padding={false}>
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => setExpandedModule(expanded ? null : mod.id)}
+                    className="flex flex-1 items-center justify-between px-5 py-4 text-left transition-colors hover:bg-slate-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <BookOpen className="h-5 w-5 text-indigo-500" />
+                      <div>
+                        <p className="font-medium text-slate-900">{mod.title}</p>
+                        <p className="text-xs text-slate-500">Módulo {mod.order_index}</p>
+                      </div>
+                    </div>
+                    {expanded ? <ChevronDown className="h-5 w-5 text-slate-400" /> : <ChevronRight className="h-5 w-5 text-slate-400" />}
+                  </button>
+                  {canManage && (
+                    <div className="flex gap-1 pr-3">
+                      <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Añadir lección">
+                        <Plus className="h-4 w-4" />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); openModModal(mod) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar módulo">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); setConfirmDelete({ type: 'module', id: mod.id }) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar módulo">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {expanded && (
+                  <div className="border-t border-slate-100">
+                    {loadingLessons ? (
+                      <div className="space-y-2 p-4"><Skeleton count={3} className="h-12 w-full" /></div>
+                    ) : lessons && lessons.length > 0 ? (
+                      lessons.map((lesson) => (
+                        <div key={lesson.id} className="group flex items-center justify-between border-b border-slate-50 last:border-0 transition-colors hover:bg-slate-50">
+                          <Link
+                            to={`/courses/${id}/lessons/${lesson.id}`}
+                            className="flex flex-1 items-center gap-3 px-5 py-3"
+                          >
+                            {contentTypeIcon(lesson)}
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-slate-800">{lesson.title}</p>
+                              {lesson.text_content && (
+                                <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">{lesson.text_content}</p>
+                              )}
+                            </div>
+                            <Eye className="h-4 w-4 text-slate-400 shrink-0" />
+                          </Link>
+                          {canManage && (
+                            <div className="flex gap-1 pr-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id, lesson) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar lección">
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button onClick={(e) => { e.stopPropagation(); setConfirmDelete({ type: 'lesson', id: lesson.id }) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar lección">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p className="px-5 py-4 text-sm text-slate-500">Sin lecciones</p>
+                    )}
+                  </div>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+      )}
+
+      <Modal open={modModal} onClose={() => setModModal(false)} title={editingMod ? 'Editar módulo' : 'Nuevo módulo'}>
+        <form onSubmit={handleModSubmit} className="space-y-4">
+          <Input label="Título" value={modForm.title} onChange={(e) => setModForm({ ...modForm, title: e.target.value })} required />
+          <Input label="Orden" type="number" min={0} value={modForm.order_index} onChange={(e) => setModForm({ ...modForm, order_index: Number(e.target.value) })} required />
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="secondary" type="button" onClick={() => setModModal(false)}>Cancelar</Button>
+            <Button type="submit" loading={createModule.isPending || updateModule.isPending}>{editingMod ? 'Guardar' : 'Crear módulo'}</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal open={lessonModal} onClose={() => setLessonModal(false)} title={editingLesson ? 'Editar lección' : 'Nueva lección'}>
+        <form onSubmit={handleLessonSubmit} className="space-y-4">
+          <Input label="Título" value={lessonForm.title} onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })} required />
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Contenido de texto</label>
+            <textarea value={lessonForm.text_content} onChange={(e) => setLessonForm({ ...lessonForm, text_content: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <Input label="URL de imagen (opcional)" value={lessonForm.image_content_url} onChange={(e) => setLessonForm({ ...lessonForm, image_content_url: e.target.value })} />
+          <Input label="URL de video (opcional)" value={lessonForm.video_content_url} onChange={(e) => setLessonForm({ ...lessonForm, video_content_url: e.target.value })} />
+          <Input label="URL de archivo (opcional)" value={lessonForm.file_content_url} onChange={(e) => setLessonForm({ ...lessonForm, file_content_url: e.target.value })} />
+          <Input label="Orden" type="number" min={0} value={lessonForm.order_index} onChange={(e) => setLessonForm({ ...lessonForm, order_index: Number(e.target.value) })} required />
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="secondary" type="button" onClick={() => setLessonModal(false)}>Cancelar</Button>
+            <Button type="submit" loading={createLesson.isPending || updateLesson.isPending}>{editingLesson ? 'Guardar' : 'Crear lección'}</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal open={!!confirmDelete} onClose={() => setConfirmDelete(null)} title="Confirmar eliminación">
+        <p className="text-sm text-slate-600">¿Estás seguro de eliminar este {confirmDelete?.type === 'module' ? 'módulo' : 'lección'}? Esta acción no se puede deshacer.</p>
+        <div className="flex justify-end gap-3 pt-4">
+          <Button variant="secondary" onClick={() => setConfirmDelete(null)}>Cancelar</Button>
+          <Button onClick={handleConfirmDelete} loading={deleteModule.isPending || deleteLesson.isPending}>Eliminar</Button>
+        </div>
+      </Modal>
+    </div>
+  )
+}
