@@ -123,32 +123,38 @@ export default function CertificatesPage() {
 
   const baseColumns = [
     ...(isAdmin ? [
-      { key: 'student', header: 'Estudiante', render: (r: CertRow) => (
+      { key: 'student', header: 'Estudiante', sortValue: (r: CertRow) => r.userName ?? '', render: (r: CertRow) => (
         <div>
           <p className="font-medium text-slate-900">{r.userName || `Usuario #${r.cert.user_id}`}</p>
           {r.userEmail && <p className="text-xs text-slate-500">{r.userEmail}</p>}
           {r.userDoc && <p className="text-xs text-slate-400">{r.userDoc}</p>}
         </div>
       )},
-      { key: 'cert_type', header: 'Tipo', render: (r: CertRow) => {
+      { key: 'cert_type', header: 'Tipo', sortValue: (r: CertRow) => r.cert.certificate_type_id ?? '', render: (r: CertRow) => {
         const name = r.cert.certificate_type_id != null ? typeMap[r.cert.certificate_type_id] : '—'
         return <span className="text-sm">{name || `ID: ${r.cert.certificate_type_id}`}</span>
       }},
     ] : []),
-    { key: 'status', header: 'Estado', render: (r: CertRow) => (
+    { key: 'status', header: 'Estado', sortValue: (r: CertRow) => r.cert.status, render: (r: CertRow) => (
       <Badge variant={statusVariant(r.cert.status)}>{r.cert.status}</Badge>
     )},
-    { key: 'issued_at', header: 'Emitido', render: (r: CertRow) => {
+    { key: 'issued_at', header: 'Emitido', sortValue: (r: CertRow) => r.cert.issued_at ?? '', render: (r: CertRow) => {
       const d = new Date(r.cert.issued_at)
       return isNaN(d.getTime()) ? r.cert.issued_at?.slice(0, 10) ?? '—' : d.toLocaleDateString('es-CO')
     }},
-    { key: 'expires_at', header: 'Expira', render: (r: CertRow) => {
+    { key: 'expires_at', header: 'Expira', sortValue: (r: CertRow) => r.cert.expires_at ?? '', render: (r: CertRow) => {
       if (!r.cert.expires_at) return '—'
       const d = new Date(r.cert.expires_at)
       return isNaN(d.getTime()) ? r.cert.expires_at?.slice(0, 10) ?? '—' : d.toLocaleDateString('es-CO')
     }},
-    { key: 'unique_id', header: 'UUID', render: (r: CertRow) => (
-      <span className="font-mono text-xs text-slate-500">{r.cert.unique_id.slice(0, 8)}...</span>
+    { key: 'unique_id', header: 'UUID', sortValue: (r: CertRow) => r.cert.unique_id, render: (r: CertRow) => (
+      <span
+        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors"
+        title={r.cert.unique_id}
+        onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(r.cert.unique_id) }}
+      >
+        {r.cert.unique_id.slice(0, 8)}
+      </span>
     )},
   ]
 

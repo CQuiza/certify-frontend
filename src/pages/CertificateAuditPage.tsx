@@ -43,8 +43,14 @@ export default function CertificateAuditPage() {
   const columns = [
     { key: 'id', header: 'ID' },
     { key: 'certificate_id', header: 'Certificado ID', render: (a: CertificateAudit) => a.certificate_id ?? '—' },
-    { key: 'certificate_unique_id', header: 'UUID', render: (a: CertificateAudit) => (
-      <span className="font-mono text-xs text-slate-600">{a.certificate_unique_id?.slice(0, 12) || '—'}...</span>
+    { key: 'certificate_unique_id', header: 'UUID', sortValue: (a: CertificateAudit) => a.certificate_unique_id ?? '', render: (a: CertificateAudit) => (
+      <span
+        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors"
+        title={a.certificate_unique_id ?? ''}
+        onClick={(e) => { e.stopPropagation(); if (a.certificate_unique_id) navigator.clipboard.writeText(a.certificate_unique_id) }}
+      >
+        {a.certificate_unique_id?.slice(0, 8) || '—'}
+      </span>
     )},
     { key: 'action', header: 'Acción', render: (a: CertificateAudit) => (
       <Badge variant={actionVariant(a.action || '')}>{a.action || '—'}</Badge>
