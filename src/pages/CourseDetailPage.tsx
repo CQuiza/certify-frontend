@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCourse } from '../hooks/useCourses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { moduleService } from '../services/moduleService'
 import { lessonService } from '../services/lessonService'
 import { useModules } from '../hooks/useModules'
@@ -14,6 +15,7 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import Badge from '../components/atoms/Badge'
 import { ArrowLeft, ChevronDown, ChevronRight, Eye, FileText, Video, Image, File, BookOpen, Plus, Pencil, Trash2 } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 import { useState } from 'react'
 import type { Module, Lesson, ModuleCreate, LessonCreate } from '../types'
 
@@ -92,14 +94,20 @@ export default function CourseDetailPage() {
 
   async function handleModSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (editingMod) {
-      updateModule.mutateAsync({ id: editingMod.id, data: { title: modForm.title, order_index: modForm.order_index } })
-    } else {
-      createModule.mutateAsync({ course_id: id, title: modForm.title, order_index: modForm.order_index })
+    try {
+      if (editingMod) {
+        await updateModule.mutateAsync({ id: editingMod.id, data: { title: modForm.title, order_index: modForm.order_index } })
+        toast.success('Módulo actualizado correctamente')
+      } else {
+        await createModule.mutateAsync({ course_id: id, title: modForm.title, order_index: modForm.order_index })
+        toast.success('Módulo creado correctamente')
+      }
+      setModModal(false)
+      setEditingMod(null)
+      setModForm(emptyModuleForm)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
-    setModModal(false)
-    setEditingMod(null)
-    setModForm(emptyModuleForm)
   }
 
   function openLessonModal(modId: number, lesson?: Lesson) {
@@ -126,21 +134,36 @@ export default function CourseDetailPage() {
       file_content_url: lessonForm.file_content_url || null,
       order_index: lessonForm.order_index,
     }
-    if (editingLesson) {
-      updateLesson.mutateAsync({ id: editingLesson.id, data: payload })
-    } else {
-      createLesson.mutateAsync({ module_id: lessonModuleId, ...payload })
+    try {
+      if (editingLesson) {
+        await updateLesson.mutateAsync({ id: editingLesson.id, data: payload })
+        toast.success('Lección actualizada correctamente')
+      } else {
+        await createLesson.mutateAsync({ module_id: lessonModuleId, ...payload })
+        toast.success('Lección creada correctamente')
+      }
+      setLessonModal(false)
+      setEditingLesson(null)
+      setLessonForm(emptyLessonForm)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
-    setLessonModal(false)
-    setEditingLesson(null)
-    setLessonForm(emptyLessonForm)
   }
 
   async function handleConfirmDelete() {
     if (!confirmDelete) return
-    if (confirmDelete.type === 'module') await deleteModule.mutateAsync(confirmDelete.id)
-    else await deleteLesson.mutateAsync(confirmDelete.id)
-    setConfirmDelete(null)
+    try {
+      if (confirmDelete.type === 'module') {
+        await deleteModule.mutateAsync(confirmDelete.id)
+        toast.success('Módulo eliminado correctamente')
+      } else {
+        await deleteLesson.mutateAsync(confirmDelete.id)
+        toast.success('Lección eliminada correctamente')
+      }
+      setConfirmDelete(null)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
   }
 
   return (

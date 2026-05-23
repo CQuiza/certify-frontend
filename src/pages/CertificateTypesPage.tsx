@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useCertificateTypes, useCreateCertificateType, useUpdateCertificateType, useDeleteCertificateType } from '../hooks/useCertificateTypes'
+import { toast } from 'sonner'
 import Card from '../components/molecules/Card'
 import DataTable from '../components/molecules/DataTable'
 import SearchBar from '../components/molecules/SearchBar'
@@ -10,6 +11,7 @@ import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 import type { CertificateType } from '../types'
 import { CertificateTypeKind, ValidityUnit } from '../types'
 
@@ -68,28 +70,34 @@ export default function CertificateTypesPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (editing) {
-      await updateMutation.mutateAsync({
-        name: form.name,
-        reference: form.reference || null,
-        type: form.type as CertificateType['type'],
-        hours: form.hours,
-        validity_type: form.validity_type as CertificateType['validity_type'],
-        validity_value: form.validity_value,
-      })
-    } else {
-      await createMutation.mutateAsync({
-        name: form.name,
-        reference: form.reference || null,
-        type: form.type as CertificateType['type'],
-        hours: form.hours,
-        validity_type: form.validity_type as CertificateType['validity_type'],
-        validity_value: form.validity_value,
-      })
+    try {
+      if (editing) {
+        await updateMutation.mutateAsync({
+          name: form.name,
+          reference: form.reference || null,
+          type: form.type as CertificateType['type'],
+          hours: form.hours,
+          validity_type: form.validity_type as CertificateType['validity_type'],
+          validity_value: form.validity_value,
+        })
+        toast.success('Tipo actualizado correctamente')
+      } else {
+        await createMutation.mutateAsync({
+          name: form.name,
+          reference: form.reference || null,
+          type: form.type as CertificateType['type'],
+          hours: form.hours,
+          validity_type: form.validity_type as CertificateType['validity_type'],
+          validity_value: form.validity_value,
+        })
+        toast.success('Tipo creado correctamente')
+      }
+      setModalOpen(false)
+      setEditing(null)
+      setForm(emptyForm)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
-    setModalOpen(false)
-    setEditing(null)
-    setForm(emptyForm)
   }
 
   const columns = [
@@ -103,7 +111,7 @@ export default function CertificateTypesPage() {
         <button onClick={(e) => { e.stopPropagation(); openEdit(t) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
           <Pencil className="h-4 w-4" />
         </button>
-        <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este tipo de certificado?')) deleteMutation.mutate(t.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+        <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este tipo de certificado?')) deleteMutation.mutateAsync(t.id).then(() => toast.success('Tipo de certificado eliminado correctamente')).catch((err) => toast.error(getErrorMessage(err))) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
           <Trash2 className="h-4 w-4" />
         </button>
       </div>

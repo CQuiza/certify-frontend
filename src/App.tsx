@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { AuthProvider } from './context/AuthContext'
 import AppRouter from './AppRouter'
 
@@ -19,6 +20,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <AppRouter />
+          <Toaster richColors closeButton position="top-right" />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

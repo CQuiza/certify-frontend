@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCourses, useCourse, useCreateCourse, useUpdateCourse, useDeleteCourse } from '../hooks/useCourses'
 import { useUsers } from '../hooks/useUsers'
@@ -12,6 +13,7 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import { Link } from 'react-router-dom'
 import { Plus, Pencil, Trash2, Eye } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 import type { Course } from '../types'
 import { CourseStatus } from '../types'
 
@@ -86,14 +88,20 @@ export default function CoursesPage() {
       teacher_id: form.teacher_id || null,
       certificate_type_id: form.certificate_type_id || null,
     }
-    if (editing) {
-      await updateCourse.mutateAsync(payload)
-    } else {
-      await createCourse.mutateAsync(payload)
+    try {
+      if (editing) {
+        await updateCourse.mutateAsync(payload)
+        toast.success('Curso actualizado correctamente')
+      } else {
+        await createCourse.mutateAsync(payload)
+        toast.success('Curso creado correctamente')
+      }
+      setModalOpen(false)
+      setEditing(null)
+      setForm(emptyForm)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
-    setModalOpen(false)
-    setEditing(null)
-    setForm(emptyForm)
   }
 
   const columns = [

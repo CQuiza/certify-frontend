@@ -11,7 +11,9 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
+import { toast } from 'sonner'
 import { Plus, Pencil, Trash2, GraduationCap, X } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 import type { User, CourseEnrollment } from '../types'
 import { IdentityType } from '../types'
 
@@ -99,37 +101,43 @@ export default function UsersPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (editing) {
-      const payload: Record<string, unknown> = {
-        email: form.email,
-        name: form.name || null,
-        first_last_name: form.first_last_name || null,
-        second_last_name: form.second_last_name || null,
-        role: form.role,
-        identity_type: form.identity_type,
-        identity_number: form.identity_number,
-        phone_number: form.phone_number,
-        is_active: form.is_active,
+    try {
+      if (editing) {
+        const payload: Record<string, unknown> = {
+          email: form.email,
+          name: form.name || null,
+          first_last_name: form.first_last_name || null,
+          second_last_name: form.second_last_name || null,
+          role: form.role,
+          identity_type: form.identity_type,
+          identity_number: form.identity_number,
+          phone_number: form.phone_number,
+          is_active: form.is_active,
+        }
+        if (form.password) payload.password = form.password
+        await updateUser.mutateAsync(payload as Parameters<typeof updateUser.mutateAsync>[0])
+        toast.success('Usuario actualizado correctamente')
+      } else {
+        await createUser.mutateAsync({
+          email: form.email,
+          password: form.password,
+          name: form.name || null,
+          first_last_name: form.first_last_name || null,
+          second_last_name: form.second_last_name || null,
+          role: form.role as User['role'],
+          identity_type: form.identity_type as User['identity_type'],
+          identity_number: form.identity_number,
+          phone_number: form.phone_number,
+          is_active: form.is_active,
+        })
+        toast.success('Usuario creado correctamente')
       }
-      if (form.password) payload.password = form.password
-      await updateUser.mutateAsync(payload as Parameters<typeof updateUser.mutateAsync>[0])
-    } else {
-      await createUser.mutateAsync({
-        email: form.email,
-        password: form.password,
-        name: form.name || null,
-        first_last_name: form.first_last_name || null,
-        second_last_name: form.second_last_name || null,
-        role: form.role as User['role'],
-        identity_type: form.identity_type as User['identity_type'],
-        identity_number: form.identity_number,
-        phone_number: form.phone_number,
-        is_active: form.is_active,
-      })
+      setModalOpen(false)
+      setEditing(null)
+      setForm(emptyForm)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
-    setModalOpen(false)
-    setEditing(null)
-    setForm(emptyForm)
   }
 
   const columns = [
@@ -245,7 +253,7 @@ export default function UsersPage() {
                       <p className="text-sm font-medium text-slate-900">{courseMap[enr.course_id] || `Curso #${enr.course_id}`}</p>
                       <p className="text-xs text-slate-500">Inscrito el {(() => { const d = new Date(enr.enrolled_at); return isNaN(d.getTime()) ? enr.enrolled_at?.slice(0, 10) ?? '' : d.toLocaleDateString('es-CO') })()}</p>
                     </div>
-                    <button onClick={() => deleteEnrollment.mutate(enr.id)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                    <button onClick={() => deleteEnrollment.mutateAsync(enr.id).catch((err) => toast.error(getErrorMessage(err)))} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
                       <X className="h-4 w-4" />
                     </button>
                   </div>
@@ -266,8 +274,9 @@ export default function UsersPage() {
                 <Button
                   onClick={() => {
                     if (!enrollUserId || !selectedCourseId) return
-                    createEnrollment.mutate({ user_id: enrollUserId, course_id: Number(selectedCourseId) })
-                    setSelectedCourseId('')
+                    createEnrollment.mutateAsync({ user_id: enrollUserId, course_id: Number(selectedCourseId) })
+                      .then(() => { setSelectedCourseId(''); toast.success('Curso asignado correctamente') })
+                      .catch((err) => toast.error(getErrorMessage(err)))
                   }}
                   disabled={!selectedCourseId}
                   loading={createEnrollment.isPending}

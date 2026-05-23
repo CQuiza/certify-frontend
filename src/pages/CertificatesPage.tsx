@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
+import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
-import { useCertifiedUsers } from '../hooks/useUsers'
+import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
 import { useCertificates, useUpdateCertificate, useDeleteCertificate, useIssueCertificate } from '../hooks/useCertificates'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import Card from '../components/molecules/Card'
@@ -13,6 +14,7 @@ import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import { Plus, Pencil, Trash2, FileText, QrCode } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 import type { Certificate } from '../types'
 
 const PAGE_SIZE = 10
@@ -42,6 +44,7 @@ export default function CertificatesPage() {
   const [editStatus, setEditStatus] = useState('')
 
   const { data: certifiedUsers, isLoading: loadingCertified } = useCertifiedUsers({ enabled: isAdmin })
+  const { data: students } = useUsers({ role: 'student' }, { enabled: isAdmin })
   const { data: plainCerts, isLoading: loadingPlain } = useCertificates({ enabled: !isAdmin })
   const { data: certTypes } = useCertificateTypes(undefined, { enabled: isAdmin })
   const issueCert = useIssueCertificate()
@@ -96,23 +99,33 @@ export default function CertificatesPage() {
   async function handleEditSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!editingCert) return
-    await updateCert.mutateAsync({ status: editStatus as Certificate['status'] })
-    setEditModalOpen(false)
-    setEditingCert(null)
+    try {
+      await updateCert.mutateAsync({ status: editStatus as Certificate['status'] })
+      toast.success('Certificado actualizado correctamente')
+      setEditModalOpen(false)
+      setEditingCert(null)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
   }
 
   async function handleIssueSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!selectedUserId || !selectedTypeId) return
-    await issueCert.mutateAsync({
-      user_id: Number(selectedUserId),
-      certificate_type_id: Number(selectedTypeId),
-      issued_at: issuedAt || undefined,
-    })
-    setIssueModalOpen(false)
-    setSelectedUserId('')
-    setSelectedTypeId('')
-    setIssuedAt('')
+    try {
+      await issueCert.mutateAsync({
+        user_id: Number(selectedUserId),
+        certificate_type_id: Number(selectedTypeId),
+        issued_at: issuedAt || undefined,
+      })
+      toast.success('Certificado emitido correctamente')
+      setIssueModalOpen(false)
+      setSelectedUserId('')
+      setSelectedTypeId('')
+      setIssuedAt('')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
   }
 
   const statusVariant = (s: string) => {
@@ -172,7 +185,7 @@ export default function CertificatesPage() {
             <button onClick={(e) => { e.stopPropagation(); openEdit(r.cert) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar">
               <Pencil className="h-4 w-4" />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este certificado?')) deleteCert.mutate(r.cert.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar">
+            <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este certificado?')) deleteCert.mutateAsync(r.cert.id).then(() => toast.success('Certificado eliminado correctamente')).catch((err) => toast.error(getErrorMessage(err))) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar">
               <Trash2 className="h-4 w-4" />
             </button>
           </>
@@ -219,7 +232,7 @@ export default function CertificatesPage() {
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Usuario</label>
               <select value={selectedUserId} onChange={(e) => setSelectedUserId(e.target.value)} required className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="">Seleccionar usuario...</option>
-                {certifiedUsers?.map((u) => <option key={u.id} value={u.id}>{u.name} ({u.email})</option>)}
+                {students?.map((u) => <option key={u.id} value={u.id}>{u.name} ({u.email})</option>)}
               </select>
             </div>
             <div>

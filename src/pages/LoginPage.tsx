@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { Award } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
+import { getErrorMessage } from '../lib/error'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -18,11 +19,7 @@ export default function LoginPage() {
     try {
       await login(email, password)
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message :
-        typeof err === 'string' ? err :
-        'Credenciales inválidas. Intenta de nuevo.'
-      setError(msg)
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
