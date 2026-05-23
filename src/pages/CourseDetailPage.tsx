@@ -77,7 +77,7 @@ export default function CourseDetailPage() {
   if (loadingCourse) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={3} className="h-8 w-full" /></div>
   if (!course) return <div className="p-6 lg:p-8"><p className="text-slate-500">Curso no encontrado</p></div>
 
-  const modulesSorted = modules?.slice().sort((a, b) => a.order_index - b.order_index) ?? []
+  const modulesSorted = Array.isArray(modules) ? [...modules].sort((a, b) => a.order_index - b.order_index) : []
 
   function contentTypeIcon(l: { video_content_url?: string | null; image_content_url?: string | null; file_content_url?: string | null }) {
     if (l.video_content_url) return <Video className="h-4 w-4 text-rose-500" />
