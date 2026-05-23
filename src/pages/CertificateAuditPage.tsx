@@ -21,13 +21,15 @@ export default function CertificateAuditPage() {
   const filtered = useMemo(() => {
     if (!audits) return []
     const q = search.toLowerCase()
-    return audits.filter(
-      (a) =>
-        a.action?.toLowerCase().includes(q) ||
-        String(a.certificate_id ?? '').includes(q) ||
-        String(a.performed_by ?? '').includes(q) ||
-        a.certificate_unique_id?.toLowerCase().includes(q),
-    )
+    return audits
+      .filter(
+        (a) =>
+          a.action?.toLowerCase().includes(q) ||
+          String(a.certificate_id ?? '').includes(q) ||
+          String(a.performed_by ?? '').includes(q) ||
+          a.certificate_unique_id?.toLowerCase().includes(q),
+      )
+      .sort((a, b) => b.id - a.id)
   }, [audits, search])
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
