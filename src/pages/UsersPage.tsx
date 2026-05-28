@@ -85,10 +85,10 @@ export default function UsersPage() {
   async function handleFormSubmit(data: Record<string, unknown>, mode: 'create' | 'edit') {
     try {
       if (mode === 'edit') {
-        await updateUser.mutateAsync(data as Parameters<typeof updateUser.mutateAsync>[0])
+        await updateUser.mutateAsync(data as unknown as Parameters<typeof updateUser.mutateAsync>[0])
         toast.success('Usuario actualizado correctamente')
       } else {
-        await createUser.mutateAsync(data as Parameters<typeof createUser.mutateAsync>[0])
+        await createUser.mutateAsync(data as unknown as Parameters<typeof createUser.mutateAsync>[0])
         toast.success('Usuario creado correctamente')
       }
       setFormUser(undefined)

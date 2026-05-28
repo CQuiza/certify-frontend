@@ -57,7 +57,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
     onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] }),
   })
   const createLesson = useMutation({
-    mutationFn: (data: Record<string, unknown>) => lessonService.create(data as Lesson),
+    mutationFn: (data: Record<string, unknown>) => lessonService.create(data as unknown as Lesson),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['lessons'] }),
   })
   const updateLesson = useMutation({

@@ -38,10 +38,10 @@ export function createCrudHooks<T, TCreate, TUpdate>(config: {
     })
   }
 
-  function useUpdate() {
+  function useUpdate(id: number) {
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: ({ id, data }: { id: number; data: TUpdate }) => config.service.update(id, data),
+      mutationFn: (data: TUpdate) => config.service.update(id, data),
       onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
     })
   }

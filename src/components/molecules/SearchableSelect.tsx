@@ -22,7 +22,6 @@ export default function SearchableSelect({
   onChange,
   placeholder = 'Seleccionar...',
   label,
-  required,
   disabled,
 }: SearchableSelectProps) {
   const [open, setOpen] = useState(false)

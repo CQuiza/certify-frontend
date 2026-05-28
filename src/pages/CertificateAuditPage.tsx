@@ -211,10 +211,10 @@ export default function CertificateAuditPage() {
           <p className="px-6 py-8 text-center text-sm text-slate-400">No se encontraron registros.</p>
         ) : (
           <>
-            {tab === 'certificate' && <DataTable columns={certColumns} data={pageData} />}
-            {tab === 'worker' && <DataTable columns={workerColumns} data={pageData} />}
-            {tab === 'user' && <DataTable columns={userColumns} data={pageData} />}
-            {tab === 'email' && <DataTable columns={emailColumns} data={pageData} />}
+            {tab === 'certificate' && <DataTable columns={certColumns} data={pageData as CertificateAudit[]} />}
+            {tab === 'worker' && <DataTable columns={workerColumns} data={pageData as WorkerAudit[]} />}
+            {tab === 'user' && <DataTable columns={userColumns} data={pageData as UserAudit[]} />}
+            {tab === 'email' && <DataTable columns={emailColumns} data={pageData as EmailAudit[]} />}
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
           </>
         )}

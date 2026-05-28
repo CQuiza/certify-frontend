@@ -237,7 +237,7 @@ export default function ManualPage() {
       <div className="space-y-3">
         {current.items.map((item, i) => {
           const open = openItems.has(i)
-          const Icon = item.icon || (i === 0 ? BookOpen : current.icon)
+          const Icon = (item as { icon?: typeof BookOpen }).icon || (i === 0 ? BookOpen : current.icon)
           return (
             <div key={i} className="rounded-xl border border-slate-200 bg-white overflow-hidden">
               <button
