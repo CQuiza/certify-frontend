@@ -1,5 +1,6 @@
 import { Award, GraduationCap, Users, FileCheck, Shield, Phone, Mail, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { config } from '../config'
 
 export default function HomePage() {
   return (
@@ -11,8 +12,8 @@ export default function HomePage() {
               <Award className="h-6 w-6 text-white" />
             </div>
             <div>
-              <p className="text-lg font-bold text-slate-900">Certify</p>
-              <p className="text-xs text-slate-500">Plataforma de Certificación</p>
+              <p className="text-lg font-bold text-slate-900">{config.appName}</p>
+              <p className="text-xs text-slate-500">{config.appDescription}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -25,7 +26,7 @@ export default function HomePage() {
       </header>
 
       <section className="mx-auto max-w-6xl px-6 py-20 text-center">
-        <h1 className="text-4xl font-bold text-slate-900 lg:text-5xl">Plataforma de Certificación Profesional</h1>
+        <h1 className="text-4xl font-bold text-slate-900 lg:text-5xl">{config.appDescription} Profesional</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
           Gestiona, emite y verifica certificados académicos y profesionales de forma segura, rápida y centralizada.
         </p>
@@ -69,9 +70,9 @@ export default function HomePage() {
           <p className="mx-auto mt-2 max-w-xl text-center text-slate-500">Estamos aquí para ayudarte</p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             {[
-              { icon: Phone, label: '+57 312 537 0218' },
-              { icon: Mail, label: 'contacto@certify.com' },
-              { icon: MapPin, label: 'Bogotá, Colombia' },
+              { icon: Phone, label: config.contactPhone },
+              { icon: Mail, label: config.contactEmail },
+              { icon: MapPin, label: config.cityCountry },
             ].map((c) => {
               const Icon = c.icon
               return (
@@ -93,7 +94,7 @@ export default function HomePage() {
           <span className="mx-3 text-slate-300">·</span>
           <Link to="/faq" className="text-indigo-600 hover:text-indigo-700 transition-colors">Preguntas frecuentes</Link>
           <span className="mx-3 text-slate-300">·</span>
-          &copy; {new Date().getFullYear()} Certify. Todos los derechos reservados.
+          &copy; {new Date().getFullYear()} {config.appName}. Todos los derechos reservados.
         </div>
       </footer>
     </div>

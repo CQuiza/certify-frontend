@@ -228,6 +228,7 @@ export default function CertificatesPage() {
                     </button>
                     {expanded && (
                       <div className="border-t border-slate-100">
+                        <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b border-slate-100 bg-slate-50/50">
@@ -302,6 +303,7 @@ export default function CertificatesPage() {
                             ))}
                           </tbody>
                         </table>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -311,6 +313,7 @@ export default function CertificatesPage() {
           </div>
         ) : (
           <>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/50">
@@ -376,6 +379,7 @@ export default function CertificatesPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             {flatRows.length === 0 && (
               <p className="px-6 py-8 text-center text-sm text-slate-400">No se encontraron certificados.</p>
             )}
@@ -418,7 +422,6 @@ export default function CertificatesPage() {
             <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
               <option value="active">Activo</option>
               <option value="revoked">Revocado</option>
-              <option value="expired">Expirado</option>
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
