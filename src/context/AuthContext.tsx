@@ -42,11 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       let user: User | null = null
       try {
         user = await authService.getMe<User>()
-        localStorage.setItem('user', JSON.stringify(user))
       } catch {
+        localStorage.removeItem('token')
         localStorage.removeItem('user')
+        throw new Error('No se pudo obtener la información del usuario')
       }
 
+      localStorage.setItem('user', JSON.stringify(user))
       setState({ user, token: token.access_token, isAuthenticated: true })
 
       if (!user) {

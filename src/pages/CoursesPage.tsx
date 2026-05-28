@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
-import { useCourses, useCourse, useCreateCourse, useUpdateCourse, useDeleteCourse } from '../hooks/useCourses'
+import { useCourses, useCourse, useCreateCourse, useUpdateCourse } from '../hooks/useCourses'
 import { useUsers } from '../hooks/useUsers'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import Card from '../components/molecules/Card'
@@ -12,8 +12,10 @@ import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import { Link } from 'react-router-dom'
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react'
+import { Plus, Pencil, Eye } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
+import { formatDate } from '../lib/dates'
+import { courseStatusVariant } from '../lib/statusVariant'
 import type { Course } from '../types'
 import { CourseStatus } from '../types'
 
@@ -26,12 +28,6 @@ interface FormData {
 }
 
 const emptyForm: FormData = { title: '', description: '', status: 'draft', teacher_id: 0, certificate_type_id: 0 }
-
-const statusVariant = (s: string) => {
-  if (s === 'published') return 'success' as const
-  if (s === 'draft') return 'warning' as const
-  return 'default' as const
-}
 
 export default function CoursesPage() {
   const { user } = useAuth()
@@ -47,7 +43,6 @@ export default function CoursesPage() {
   const { data: certTypes } = useCertificateTypes(undefined, { enabled: !!canManage })
   const createCourse = useCreateCourse()
   const updateCourse = useUpdateCourse(editing?.id ?? 0)
-  const deleteCourse = useDeleteCourse()
 
   useEffect(() => {
     if (fullCourse) {
@@ -110,7 +105,7 @@ export default function CoursesPage() {
       <span className="text-sm text-slate-600 line-clamp-1">{c.description || '—'}</span>
     )},
     { key: 'status', header: 'Estado', render: (c: Course) => (
-      <Badge variant={statusVariant(c.status)}>{c.status}</Badge>
+      <Badge variant={courseStatusVariant(c.status)}>{c.status}</Badge>
     )},
     {
       key: 'actions' as string, header: 'Acciones', render: (c: Course) => (
@@ -123,21 +118,12 @@ export default function CoursesPage() {
               <button onClick={(e) => { e.stopPropagation(); openEdit(c) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
                 <Pencil className="h-4 w-4" />
               </button>
-              <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este curso?')) deleteCourse.mutate(c.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-                <Trash2 className="h-4 w-4" />
-              </button>
             </>
           )}
         </div>
       ),
     },
   ]
-
-  function fmtDate(d: string | undefined | null) {
-    if (!d) return '—'
-    const date = new Date(d)
-    return isNaN(date.getTime()) ? d.slice(0, 10) : date.toLocaleDateString('es-CO')
-  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -171,8 +157,8 @@ export default function CoursesPage() {
           </div>
           {editing && fullCourse && (
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Creado" value={fmtDate(fullCourse.created_at)} disabled />
-              <Input label="Actualizado" value={fmtDate(fullCourse.updated_at)} disabled />
+              <Input label="Creado" value={formatDate(fullCourse.created_at)} disabled />
+              <Input label="Actualizado" value={formatDate(fullCourse.updated_at)} disabled />
             </div>
           )}
           <div>

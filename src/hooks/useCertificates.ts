@@ -16,7 +16,7 @@ export function useCertificate(id: number) {
   return useQuery({
     queryKey: [...QUERY_KEY, id],
     queryFn: () => certificateService.getById(id),
-    enabled: !!id,
+    enabled: id > 0,
   })
 }
 

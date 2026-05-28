@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useCertificateTypes, useCreateCertificateType, useUpdateCertificateType, useDeleteCertificateType } from '../hooks/useCertificateTypes'
+import { useCertificateTypes, useCreateCertificateType, useUpdateCertificateType } from '../hooks/useCertificateTypes'
 import { toast } from 'sonner'
 import Card from '../components/molecules/Card'
 import DataTable from '../components/molecules/DataTable'
@@ -10,7 +10,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
-import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Pencil } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import type { CertificateType } from '../types'
 import { CertificateTypeKind, ValidityUnit } from '../types'
@@ -38,7 +38,6 @@ export default function CertificateTypesPage() {
   const { data: types, isLoading } = useCertificateTypes()
   const createMutation = useCreateCertificateType()
   const updateMutation = useUpdateCertificateType(editing?.id ?? 0)
-  const deleteMutation = useDeleteCertificateType()
 
   const filtered = useMemo(() => {
     if (!types) return []
@@ -110,9 +109,6 @@ export default function CertificateTypesPage() {
       <div className="flex gap-2">
         <button onClick={(e) => { e.stopPropagation(); openEdit(t) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
           <Pencil className="h-4 w-4" />
-        </button>
-        <button onClick={(e) => { e.stopPropagation(); if (confirm('¿Eliminar este tipo de certificado?')) deleteMutation.mutateAsync(t.id).then(() => toast.success('Tipo de certificado eliminado correctamente')).catch((err) => toast.error(getErrorMessage(err))) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-          <Trash2 className="h-4 w-4" />
         </button>
       </div>
     )},

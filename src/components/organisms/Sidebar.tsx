@@ -1,6 +1,7 @@
-import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, LogOut, X, HelpCircle } from 'lucide-react'
+import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { config } from '../../config'
 import type { UserRole } from '../../types'
 
 interface NavItem {
@@ -18,6 +19,7 @@ const navItems: NavItem[] = [
   { label: 'Certificados', path: '/certificates', icon: Award, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'Tipos de Certificado', path: '/certificate-types', icon: FileCheck, roles: ['superuser', 'admin'] },
   { label: 'Auditoría', path: '/audit', icon: ClipboardList, roles: ['superuser', 'admin'] },
+  { label: 'Manual', path: '/manual', icon: BookOpen, roles: ['superuser', 'admin'] },
   { label: 'FAQ', path: '/faq', icon: HelpCircle, roles: ['superuser', 'admin', 'teacher', 'student'] },
 ]
 
@@ -31,7 +33,12 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  const filtered = navItems.filter((item) => user && item.roles.includes(user.role))
+  const filtered = navItems.filter((item) => {
+    if (!user) return false
+    if (!item.roles.includes(user.role)) return false
+    if (config.hideCoursesForAdmin && user.role === 'admin' && item.path === '/courses') return false
+    return true
+  })
 
   const sidebarContent = (
     <>

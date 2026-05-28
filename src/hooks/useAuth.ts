@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { authService } from '../services/authService'
 import type { LoginRequest } from '../types'
 
@@ -9,7 +9,9 @@ export function useLogin() {
 }
 
 export function useGetMe() {
-  return useMutation({
-    mutationFn: () => authService.getMe(),
+  return useQuery({
+    queryKey: ['auth', 'me'],
+    queryFn: () => authService.getMe(),
+    retry: false,
   })
 }

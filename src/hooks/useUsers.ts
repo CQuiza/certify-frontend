@@ -16,7 +16,7 @@ export function useUser(id: number) {
   return useQuery({
     queryKey: [...QUERY_KEY, id],
     queryFn: () => userService.getById(id),
-    enabled: !!id,
+    enabled: id > 0,
   })
 }
 

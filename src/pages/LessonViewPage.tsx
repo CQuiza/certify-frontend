@@ -2,9 +2,11 @@ import { useParams, Link } from 'react-router-dom'
 import { useLesson } from '../hooks/useLessons'
 import { useModule } from '../hooks/useModules'
 import { useCourse } from '../hooks/useCourses'
+import { useTasksByLesson } from '../hooks/useTasks'
+import { downloadTaskFile } from '../lib/download'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
-import { ArrowLeft, ArrowUp, FileText, Video, Image, File } from 'lucide-react'
+import { ArrowLeft, ArrowUp, FileText, Video, Image, File, ClipboardList, ExternalLink } from 'lucide-react'
 
 function getYoutubeEmbedUrl(url: string): string | null {
   try {
@@ -44,6 +46,7 @@ export default function LessonViewPage() {
   const { data: lesson, isLoading: loadingLesson } = useLesson(lessonIdNum)
   const { data: mod } = useModule(lesson?.module_id ?? 0)
   const { data: course } = useCourse(courseIdNum)
+  const { data: tasks } = useTasksByLesson(lessonIdNum)
 
   if (loadingLesson) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={4} className="h-8 w-full" /></div>
   if (!lesson) return <div className="p-6 lg:p-8"><p className="text-slate-500">Lección no encontrada</p></div>
@@ -139,6 +142,51 @@ export default function LessonViewPage() {
             </div>
           )
         })()}
+
+        {tasks && tasks.length > 0 && (
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <div className="flex items-center gap-2 mb-4">
+              <ClipboardList className="h-5 w-5 text-indigo-500" />
+              <h2 className="text-lg font-semibold text-slate-900">Tareas</h2>
+            </div>
+            <div className="space-y-3">
+              {tasks.map((task) => (
+                <Card key={task.id}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-slate-900">{task.title}</p>
+                      {task.description && (
+                        <p className="mt-1 text-sm text-slate-600 whitespace-pre-wrap">{task.description}</p>
+                      )}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {task.file_type === 'google_drive' && task.google_drive_link && (
+                          <a
+                            href={task.google_drive_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            Ver en Google Drive
+                          </a>
+                        )}
+                        {task.file_type === 'upload' && task.file_url && (
+                          <button
+                            onClick={() => downloadTaskFile(task.id)}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                          >
+                            <ArrowUp className="h-3.5 w-3.5" />
+                            Descargar archivo
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
 
       <div className="mt-6">

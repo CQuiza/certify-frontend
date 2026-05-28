@@ -16,6 +16,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <Link to="/search" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Verificar certificado</Link>
+            <Link to="/catalog" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Catálogo</Link>
             <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Iniciar sesión</Link>
             <Link to="/login" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">Registrarse</Link>
           </div>
@@ -28,8 +30,8 @@ export default function HomePage() {
           Gestiona, emite y verifica certificados académicos y profesionales de forma segura, rápida y centralizada.
         </p>
         <div className="mt-8 flex justify-center gap-4">
-          <Link to="/login" className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">Comenzar ahora</Link>
-          <a href="#services" className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Ver servicios</a>
+          <Link to="/search" className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">Verificar certificado</Link>
+          <Link to="/catalog" className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Ver cursos</Link>
         </div>
       </section>
 
@@ -85,6 +87,10 @@ export default function HomePage() {
 
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto max-w-6xl px-6 text-center text-sm text-slate-500">
+          <Link to="/search" className="text-indigo-600 hover:text-indigo-700 transition-colors">Verificar certificado</Link>
+          <span className="mx-3 text-slate-300">·</span>
+          <Link to="/catalog" className="text-indigo-600 hover:text-indigo-700 transition-colors">Catálogo</Link>
+          <span className="mx-3 text-slate-300">·</span>
           <Link to="/faq" className="text-indigo-600 hover:text-indigo-700 transition-colors">Preguntas frecuentes</Link>
           <span className="mx-3 text-slate-300">·</span>
           &copy; {new Date().getFullYear()} Certify. Todos los derechos reservados.
