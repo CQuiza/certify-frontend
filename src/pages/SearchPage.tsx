@@ -135,12 +135,12 @@ export default function SearchPage() {
 
             {result.certificates.map((cert) => (
               <Card key={cert.id}>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-2 min-w-0">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Badge variant={certificateStatusVariant(cert.status)}>{cert.status}</Badge>
                       {cert.certificate_type_id != null && typeMap[cert.certificate_type_id] && (
-                        <span className="text-xs text-slate-500">{typeMap[cert.certificate_type_id]}</span>
+                        <span className="text-base font-bold text-slate-900 break-words">{typeMap[cert.certificate_type_id]}</span>
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
