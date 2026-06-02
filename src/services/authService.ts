@@ -1,5 +1,5 @@
 import api from './api'
-import type { Token, LoginRequest, RefreshRequest } from '../types'
+import type { Token, LoginRequest } from '../types'
 
 let _refreshToken: string | null = null
 

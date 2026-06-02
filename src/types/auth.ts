@@ -4,10 +4,6 @@ export interface Token {
   token_type: string
 }
 
-export interface RefreshRequest {
-  refresh_token: string
-}
-
 export interface TokenPayload {
   sub: string
   exp?: number
