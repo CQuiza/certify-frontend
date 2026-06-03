@@ -2,9 +2,8 @@ import { config } from '../config'
 
 export async function downloadTaskFile(taskId: number): Promise<void> {
   try {
-    const token = localStorage.getItem('token')
     const res = await fetch(`${config.apiUrl}/tasks/${taskId}/file`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      credentials: 'include',
     })
     if (!res.ok) throw new Error()
     const blob = await res.blob()
