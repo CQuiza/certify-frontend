@@ -4,7 +4,7 @@ import { useBatchIssueCertificates } from '../../hooks/useCertificates'
 import Modal from '../molecules/Modal'
 import Button from '../atoms/Button'
 import Input from '../atoms/Input'
-import { Search, CheckSquare, Square, AlertCircle, CheckCircle } from 'lucide-react'
+import { Search, CheckSquare, Square } from 'lucide-react'
 import { getErrorMessage } from '../../lib/error'
 import type { CertificateType } from '../../types'
 

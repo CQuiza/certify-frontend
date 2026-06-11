@@ -10,7 +10,7 @@ import type { User } from '../types'
 
 export default function ProgressPage() {
   const { user } = useAuth()
-  const canSearch = user && ['superuser', 'admin', 'teacher'].includes(user.role)
+  const canSearch = !!(user && ['superuser', 'admin', 'teacher'].includes(user.role))
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)

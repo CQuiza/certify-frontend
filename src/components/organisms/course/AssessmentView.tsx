@@ -37,11 +37,13 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
     )
   }
 
+  const currentAssessment = assessment
+
   if (result) {
     return (
       <AssessmentResult
         result={result}
-        passingScore={assessment.passing_score}
+        passingScore={currentAssessment.passing_score}
         moduleTitle={moduleTitle}
         onRetry={() => {
           setResult(null)
@@ -62,7 +64,7 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
     )
     try {
       const res = await submitAssessment.mutateAsync({
-        assessmentId: assessment.id,
+        assessmentId: currentAssessment.id,
         data: { answers: submissions },
       })
       setResult(res)
@@ -72,20 +74,20 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
     }
   }
 
-  const allAnswered = assessment.questions.every((q) => answers[q.id] !== undefined)
-  const unanswered = assessment.questions.filter((q) => answers[q.id] === undefined)
+  const allAnswered = currentAssessment.questions.every((q) => answers[q.id] !== undefined)
+  const unanswered = currentAssessment.questions.filter((q) => answers[q.id] === undefined)
 
   return (
     <div className="space-y-6 p-6">
       <div>
         <h2 className="text-xl font-semibold text-slate-900">{moduleTitle}</h2>
         <p className="text-sm text-slate-500">
-          {assessment.questions.length} preguntas · {assessment.passing_score}% para aprobar
+          {currentAssessment.questions.length} preguntas · {currentAssessment.passing_score}% para aprobar
         </p>
       </div>
 
       <div className="space-y-6">
-        {assessment.questions.map((q, idx) => (
+        {currentAssessment.questions.map((q, idx) => (
           <div key={q.id} className="rounded-lg border border-slate-200 p-5">
             <p className="font-medium text-slate-900 mb-3">
               {idx + 1}. {q.question_text}

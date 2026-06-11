@@ -15,7 +15,7 @@ import { ArrowLeft, Plus, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
-import type { Certificate, CertificateType, Course } from '../types'
+import type { Certificate, Course } from '../types'
 
 const statusVariant = { active: 'success', expired: 'warning', revoked: 'danger' } as const
 
@@ -94,7 +94,6 @@ export default function UserCertificatesPanel() {
     { key: 'course', header: 'Curso asociado', render: (cert: Certificate) => {
       const course = cert.certificate_type_id != null ? courseByTypeId[cert.certificate_type_id] : undefined
       if (!course) return <span className="text-sm text-slate-400">Sin curso</span>
-      const isEnrolled = enrolledCourseIds.has(course.id)
       return (
         <div className="flex items-center gap-2">
           <Link to={`/courses/${course.id}`} className="text-sm text-indigo-600 hover:underline truncate max-w-[180px]">{course.title}</Link>

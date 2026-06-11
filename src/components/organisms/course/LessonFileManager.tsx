@@ -7,9 +7,7 @@ import {
   useUploadLessonFile,
   useDeleteLessonFile,
 } from '../../../hooks/useLessonFiles'
-import { downloadLessonFile } from '../../../lib/download'
 import Modal from '../../molecules/Modal'
-import Button from '../../atoms/Button'
 import { Trash2, FileText, Upload } from 'lucide-react'
 
 interface LessonFileManagerProps {
