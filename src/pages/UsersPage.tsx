@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from '../hooks/useUsers'
 import { useEnrollments, useCreateEnrollment, useDeleteEnrollment } from '../hooks/useEnrollments'
 import { useCourses } from '../hooks/useCourses'
@@ -12,7 +13,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import { toast } from 'sonner'
-import { Plus, Pencil, Trash2, GraduationCap, X } from 'lucide-react'
+import { Plus, Pencil, Trash2, GraduationCap, X, Award } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { useAuth } from '../context/AuthContext'
@@ -110,7 +111,9 @@ export default function UsersPage() {
   const columns = [
     { key: 'name', header: 'Nombre', render: (u: User) => (
       <div>
-        <p className="font-medium text-slate-900">{u.name} {u.first_last_name}</p>
+        <Link to={`/users/${u.id}/certificates`} className="font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
+          {u.name} {u.first_last_name}
+        </Link>
         <p className="text-xs text-slate-500">{u.email}</p>
       </div>
     )},
@@ -124,6 +127,9 @@ export default function UsersPage() {
     )},
     { key: 'actions' as string, header: 'Acciones', render: (u: User) => (
       <div className="flex gap-2">
+        <Link to={`/users/${u.id}/certificates`} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-amber-600 transition-colors" title="Certificados">
+          <Award className="h-4 w-4" />
+        </Link>
         <button onClick={(e) => { e.stopPropagation(); openEdit(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
           <Pencil className="h-4 w-4" />
         </button>

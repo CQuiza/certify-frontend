@@ -33,3 +33,14 @@ export interface Certificate {
   created_at: string
   updated_at: string
 }
+
+export interface CertificateBatchIssueRequest {
+  user_id: number
+  certificate_type_ids: number[]
+  issued_at?: string | null
+}
+
+export interface CertificateBatchIssueResponse {
+  issued: Certificate[]
+  errors: Array<{ certificate_type_id: number; error: string }>
+}

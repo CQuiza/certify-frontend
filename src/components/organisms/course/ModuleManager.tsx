@@ -14,9 +14,11 @@ import Skeleton from '../../atoms/Skeleton'
 import { getErrorMessage } from '../../../lib/error'
 import {
   ChevronDown, ChevronRight, Eye, FileText, Video, Image, File,
-  BookOpen, Plus, Pencil, Trash2, ClipboardList,
+  BookOpen, Plus, Pencil, Trash2, ClipboardList, Paperclip, FileQuestion,
 } from 'lucide-react'
 import TaskManager from './TaskManager'
+import LessonFileManager from './LessonFileManager'
+import AssessmentManager from './AssessmentManager'
 import type { Module, Lesson, ModuleUpdate, LessonUpdate } from '../../../types'
 
 interface ModuleManagerProps {
@@ -81,6 +83,8 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
   const [confirmDelete, setConfirmDelete] = useState<{ type: 'module' | 'lesson'; id: number } | null>(null)
 
   const [taskModalLessonId, setTaskModalLessonId] = useState<number | null>(null)
+  const [fileModalLessonId, setFileModalLessonId] = useState<number | null>(null)
+  const [assessmentModalModuleId, setAssessmentModalModuleId] = useState<number | null>(null)
 
   const modulesSorted = Array.isArray(modules) ? [...modules].sort((a, b) => a.order_index - b.order_index) : []
 
@@ -199,6 +203,9 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                   </button>
                   {canManage && (
                     <div className="flex gap-1 pr-3">
+                      <button onClick={(e) => { e.stopPropagation(); setAssessmentModalModuleId(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Evaluación">
+                        <FileQuestion className="h-4 w-4" />
+                      </button>
                       <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Añadir lección">
                         <Plus className="h-4 w-4" />
                       </button>
@@ -233,6 +240,9 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                           </Link>
                           {canManage && (
                             <div className="flex gap-1 pr-3">
+                              <button onClick={(e) => { e.stopPropagation(); setFileModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Archivos">
+                                <Paperclip className="h-4 w-4" />
+                              </button>
                               <button onClick={(e) => { e.stopPropagation(); setTaskModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Tareas">
                                 <ClipboardList className="h-4 w-4" />
                               </button>
@@ -295,6 +305,14 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
       </Modal>
 
       <TaskManager lessonId={taskModalLessonId} onClose={() => setTaskModalLessonId(null)} />
+      <LessonFileManager lessonId={fileModalLessonId} onClose={() => setFileModalLessonId(null)} />
+      {assessmentModalModuleId !== null && (
+        <AssessmentManager
+          key={assessmentModalModuleId}
+          moduleId={assessmentModalModuleId}
+          onClose={() => setAssessmentModalModuleId(null)}
+        />
+      )}
     </>
   )
 }

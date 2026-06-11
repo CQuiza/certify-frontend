@@ -22,3 +22,23 @@ export async function downloadTaskFile(taskId: number): Promise<void> {
     // silent
   }
 }
+
+export async function downloadLessonFile(lessonId: number, fileId: number, filename: string): Promise<void> {
+  try {
+    const res = await fetch(`${config.apiUrl}/lessons/${lessonId}/files/${fileId}/file?download=true`, {
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error()
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch {
+    // silent
+  }
+}
