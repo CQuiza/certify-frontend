@@ -2,7 +2,6 @@ import { useCourses } from '../hooks/useCourses'
 import { GraduationCap, Clock, BookOpen } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Skeleton from '../components/atoms/Skeleton'
-import { config } from '../config'
 
 export default function CatalogPage() {
   const { data: courses, isLoading } = useCourses({ limit: 50 })

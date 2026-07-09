@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useAllProgressSummaries } from '../hooks/useModuleAssessments'
-import { useUsers, useUser } from '../hooks/useUsers'
+import { useUsers } from '../hooks/useUsers'
 import { taskSubmissionService } from '../services/taskSubmissionService'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
-import { Search, ChevronDown, ChevronRight, CheckCircle, Clock, AlertCircle, X, FileText, Loader2 } from 'lucide-react'
+import { Search, ChevronDown, ChevronRight, CheckCircle, Clock, X, FileText, Loader2 } from 'lucide-react'
 import type { User } from '../types'
 
 export default function ProgressPage() {
@@ -19,7 +19,7 @@ export default function ProgressPage() {
   const [showResults, setShowResults] = useState(false)
   const [expandedCourse, setExpandedCourse] = useState<number | null>(null)
   const [downloading, setDownloading] = useState<number | null>(null)
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     clearTimeout(searchTimer.current)
@@ -33,8 +33,6 @@ export default function ProgressPage() {
     hasActiveSearch ? { search: debouncedSearch, limit: 500 } : undefined,
     { enabled: canSearch && hasActiveSearch },
   )
-
-  const { data: selectedUserData } = useUser(selectedUser?.id ?? 0)
 
   const { data: progress, isLoading } = useAllProgressSummaries(
     canSearch ? selectedUser?.id : undefined,

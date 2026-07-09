@@ -46,7 +46,7 @@ export default function CertificatesPage() {
   const [page, setPage] = useState(1)
   const [certPage, setCertPage] = useState(1)
   const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set())
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     clearTimeout(searchTimer.current)
