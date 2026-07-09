@@ -211,8 +211,13 @@ export default function LessonViewPage() {
   }, [selectedBlob])
 
   async function handleView(fileId: number, name: string, mime: string | null) {
+    const fileUrl = lessonFileService.getFileUrl(lessonIdNum, fileId)
+    if (window.innerWidth < 1024) {
+      window.open(fileUrl, '_blank')
+      return
+    }
     try {
-      const res = await fetch(lessonFileService.getFileUrl(lessonIdNum, fileId), { credentials: 'include' })
+      const res = await fetch(fileUrl, { credentials: 'include' })
       if (!res.ok) throw new Error()
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
