@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3 } from 'lucide-react'
+import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3, User } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { config } from '../../config'
@@ -13,14 +13,15 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Inicio', path: '/', icon: Home, roles: ['superuser', 'admin', 'teacher', 'student'] },
+  { label: 'Perfil', path: '/profile', icon: User, roles: ['student'] },
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['superuser', 'admin', 'teacher'] },
   { label: 'Usuarios', path: '/users', icon: Users, roles: ['superuser', 'admin'] },
   { label: 'Cursos', path: '/courses', icon: GraduationCap, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'Certificados', path: '/certificates', icon: Award, roles: ['superuser', 'admin', 'teacher', 'student'] },
+  { label: 'Progreso', path: '/progress', icon: BarChart3, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'Tipos de Certificado', path: '/certificate-types', icon: FileCheck, roles: ['superuser', 'admin'] },
   { label: 'Auditoría', path: '/audit', icon: ClipboardList, roles: ['superuser', 'admin'] },
   { label: 'Manual', path: '/manual', icon: BookOpen, roles: ['superuser', 'admin'] },
-  { label: 'Progreso', path: '/progress', icon: BarChart3, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'FAQ', path: '/faq', icon: HelpCircle, roles: ['superuser', 'admin', 'teacher', 'student'] },
 ]
 
@@ -44,15 +45,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
-            <Award className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-900">Certify</p>
-            <p className="text-xs text-slate-500">Plataforma</p>
-          </div>
-        </div>
+        <img src="/certify_logo.png" alt="Certify" className="h-20 w-auto" />
         <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 lg:hidden">
           <X className="h-5 w-5" />
         </button>
@@ -81,15 +74,15 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
       </nav>
 
       <div className="border-t border-slate-200 px-4 py-4">
-        <div className="mb-3 flex items-center gap-3 px-2">
+        <Link to="/profile" className="mb-3 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-50">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600">
             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">{user?.name || 'Usuario'}</p>
+            <p className="truncate text-sm font-medium text-slate-900 hover:text-indigo-600">{user?.name || 'Usuario'}</p>
             <p className="truncate text-xs text-slate-500 capitalize">{user?.role}</p>
           </div>
-        </div>
+        </Link>
         <button
           onClick={() => { logout(); navigate('/login') }}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"

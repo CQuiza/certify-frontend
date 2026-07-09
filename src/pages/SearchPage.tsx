@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Award, FileText, QrCode, Search, User, IdCard, Calendar, Clock, AlertCircle } from 'lucide-react'
+import { FileText, QrCode, Search, User, IdCard, Calendar, Clock, AlertCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Card from '../components/molecules/Card'
 import Badge from '../components/atoms/Badge'
@@ -61,14 +61,8 @@ export default function SearchPage() {
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600">
-              <Award className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <p className="text-lg font-bold text-slate-900">Certify</p>
-              <p className="text-xs text-slate-500">Verificación de Certificados</p>
-            </div>
+          <Link to="/">
+            <img src="/certify_logo.png" alt="Certify" className="h-20 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Inicio</Link>

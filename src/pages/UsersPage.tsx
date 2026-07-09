@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from '../hooks/useUsers'
 import { useEnrollments, useCreateEnrollment, useDeleteEnrollment } from '../hooks/useEnrollments'
@@ -13,7 +13,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import { toast } from 'sonner'
-import { Plus, Pencil, Trash2, GraduationCap, X, Award } from 'lucide-react'
+import { Plus, Pencil, Trash2, GraduationCap, X, FileText } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { useAuth } from '../context/AuthContext'
@@ -28,16 +28,24 @@ export default function UsersPage() {
   const isSuperuser = user?.role === 'superuser'
 
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
   const [formUser, setFormUser] = useState<User | null | undefined>(undefined)
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
 
-  const { data: users, isLoading } = useUsers()
+  useEffect(() => {
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(searchTimer.current)
+  }, [search])
+
+  const { data: users, isLoading } = useUsers({ skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined })
   const createUser = useCreateUser()
   const deleteUser = useDeleteUser()
   const updateUser = useUpdateUser(formUser?.id ?? 0)
 
   const [enrollUserId, setEnrollUserId] = useState<number | null>(null)
-  const enrollUser = users?.find((u) => u.id === enrollUserId)
+  const enrollUser = users?.items?.find((u) => u.id === enrollUserId)
   const { data: enrollments, isLoading: loadingEnroll } = useEnrollments(
     { user_id: enrollUserId ?? 0 },
     { enabled: enrollUserId !== null },
@@ -64,16 +72,8 @@ export default function UsersPage() {
     [courses, enrolledCourseIds],
   )
 
-  const filtered = useMemo(() => {
-    if (!users) return []
-    const q = search.toLowerCase()
-    return users.filter(
-      (u) => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.identity_number?.includes(q),
-    )
-  }, [users, search])
-
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
-  const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const totalPages = users ? Math.ceil(users.total / PAGE_SIZE) : 1
+  const pageData = users?.items ?? []
 
   function openCreate() {
     setFormUser(null)
@@ -128,7 +128,7 @@ export default function UsersPage() {
     { key: 'actions' as string, header: 'Acciones', render: (u: User) => (
       <div className="flex gap-2">
         <Link to={`/users/${u.id}/certificates`} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-amber-600 transition-colors" title="Certificados">
-          <Award className="h-4 w-4" />
+          <FileText className="h-4 w-4" />
         </Link>
         <button onClick={(e) => { e.stopPropagation(); openEdit(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
           <Pencil className="h-4 w-4" />

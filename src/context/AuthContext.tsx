@@ -15,26 +15,33 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-function getInitialUser(): User | null {
-  const raw = localStorage.getItem('user')
-  if (!raw) return null
-  try {
-    return JSON.parse(raw) as User
-  } catch {
-    localStorage.removeItem('user')
-    return null
-  }
+function getMinimalUser(): User | null {
+  const uid = localStorage.getItem('_uid')
+  const role = localStorage.getItem('_role')
+  if (!uid || !role) return null
+  return { id: Number(uid), role } as User
+}
+
+function storeMinimalUser(u: User): void {
+  localStorage.setItem('_uid', String(u.id))
+  localStorage.setItem('_role', u.role)
+}
+
+function clearStoredUser(): void {
+  localStorage.removeItem('_uid')
+  localStorage.removeItem('_role')
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(getInitialUser)
+  const [user, setUser] = useState<User | null>(getMinimalUser)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (user) {
+    const uid = localStorage.getItem('_uid')
+    if (uid) {
       authService.getMe<User>()
-        .then((u) => { setUser(u); localStorage.setItem('user', JSON.stringify(u)) })
-        .catch(() => { setUser(null); localStorage.removeItem('user'); setRefreshToken(null) })
+        .then((u) => { setUser(u); storeMinimalUser(u) })
+        .catch(() => { setUser(null); clearStoredUser(); setRefreshToken(null) })
     }
   }, [])
 
@@ -52,12 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (u) {
-        localStorage.setItem('user', JSON.stringify(u))
+        storeMinimalUser(u)
       }
       setUser(u)
 
       if (!u) {
-        navigate('/dashboard')
+        navigate('/login')
         return
       }
 
@@ -80,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // ignora errores de logout, igual limpiamos sesión local
     }
     setRefreshToken(null)
-    localStorage.removeItem('user')
+    clearStoredUser()
     setUser(null)
     navigate('/login')
   }, [navigate])

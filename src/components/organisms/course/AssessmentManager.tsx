@@ -11,7 +11,7 @@ import Input from '../../atoms/Input'
 import Skeleton from '../../atoms/Skeleton'
 import { getErrorMessage } from '../../../lib/error'
 import { Plus, Trash2, GripVertical } from 'lucide-react'
-import type { ModuleAssessmentCreate } from '../../../types/moduleAssessment'
+import type { AssessmentOptionWithCorrect, ModuleAssessmentCreate } from '../../../types/moduleAssessment'
 
 interface AssessmentManagerProps {
   moduleId: number
@@ -59,7 +59,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
           order_index: q.order_index,
           options: q.options.map((o) => ({
             option_text: o.option_text,
-            is_correct: 'is_correct' in o ? (o as { is_correct: boolean }).is_correct : false,
+            is_correct: 'is_correct' in o ? (o as AssessmentOptionWithCorrect).is_correct : false,
           })),
         })),
       )

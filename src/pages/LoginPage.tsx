@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { Award } from 'lucide-react'
+import { config } from '../config'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import { getErrorMessage } from '../lib/error'
@@ -30,10 +30,8 @@ export default function LoginPage() {
       <div className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600">
-              <Award className="h-7 w-7 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900">Certify</h1>
+            <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-4 h-20 w-auto" />
+            <h1 className="text-2xl font-bold text-slate-900">{config.appName}</h1>
             <p className="mt-1 text-sm text-slate-500">Inicia sesión en tu cuenta</p>
           </div>
 
@@ -69,7 +67,7 @@ export default function LoginPage() {
       </div>
       <div className="hidden flex-1 bg-indigo-600 lg:flex items-center justify-center">
         <div className="max-w-md text-center text-white">
-          <Award className="mx-auto mb-6 h-16 w-16 opacity-80" />
+          <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-6 h-20 w-auto opacity-90" />
           <h2 className="text-3xl font-bold">Plataforma de Certificación</h2>
           <p className="mt-3 text-lg text-indigo-200">
             Gestiona cursos, usuarios y certificados de forma centralizada.

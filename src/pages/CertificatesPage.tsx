@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
@@ -12,12 +12,15 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
+import Pagination from '../components/molecules/Pagination'
 import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { certificateStatusVariant } from '../lib/statusVariant'
 import { config } from '../config'
 import type { Certificate } from '../types'
+
+const PAGE_SIZE = 15
 
 interface CertRow {
   cert: Certificate
@@ -39,21 +42,47 @@ export default function CertificatesPage() {
   const isAdmin = user?.role === 'superuser' || user?.role === 'admin'
 
   const [search, setSearch] = useState('')
-  const [, setPage] = useState(1)
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [certPage, setCertPage] = useState(1)
   const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set())
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
+
+  useEffect(() => {
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => {
+      setDebouncedSearch(search)
+      setPage(1)
+      setCertPage(1)
+    }, 300)
+    return () => clearTimeout(searchTimer.current)
+  }, [search])
 
   const [issueModalOpen, setIssueModalOpen] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState<string | number>('')
   const [selectedTypeId, setSelectedTypeId] = useState<string | number>('')
   const [issuedAt, setIssuedAt] = useState('')
+  const [validityExtension, setValidityExtension] = useState<number | null>(null)
 
-  const [editModalOpen, setEditModalOpen] = useState(false)
+  function resetIssueForm() {
+    setSelectedUserId('')
+    setSelectedTypeId('')
+    setIssuedAt('')
+    setValidityExtension(null)
+  }
   const [editingCert, setEditingCert] = useState<Certificate | null>(null)
   const [editStatus, setEditStatus] = useState('')
+  const [editModalOpen, setEditModalOpen] = useState(false)
 
-  const { data: certifiedUsers, isLoading: loadingCertified } = useCertifiedUsers({ enabled: isAdmin })
-  const { data: students } = useUsers({ role: 'student' }, { enabled: isAdmin })
-  const { data: plainCerts, isLoading: loadingPlain } = useCertificates({ enabled: !isAdmin })
+  const { data: certifiedUsers, isLoading: loadingCertified } = useCertifiedUsers(
+    { skip: (certPage - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
+    { enabled: isAdmin },
+  )
+  const { data: students } = useUsers({ role: 'student', limit: 500 }, { enabled: isAdmin })
+  const { data: plainCerts, isLoading: loadingPlain } = useCertificates(
+    { skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
+    { enabled: !isAdmin },
+  )
   const { data: certTypes } = useCertificateTypes()
   const issueCert = useIssueCertificate()
   const updateCert = useUpdateCertificate(editingCert?.id ?? 0)
@@ -71,8 +100,8 @@ export default function CertificatesPage() {
   }, [certTypes])
 
   const userGroups: UserGroup[] = useMemo(() => {
-    if (!isAdmin || !certifiedUsers) return []
-    return certifiedUsers
+    if (!isAdmin || !certifiedUsers?.items) return []
+    return certifiedUsers.items
       .filter((cu) => cu.certificates && cu.certificates.length > 0)
       .map((cu) => ({
         userId: cu.id,
@@ -86,19 +115,7 @@ export default function CertificatesPage() {
       .sort((a, b) => a.userName.localeCompare(b.userName))
   }, [isAdmin, certifiedUsers])
 
-  const filteredGroups = useMemo(() => {
-    const q = search.toLowerCase()
-    if (!q) return userGroups
-    return userGroups.filter(
-      (g) =>
-        g.userName.toLowerCase().includes(q) ||
-        g.userEmail.toLowerCase().includes(q) ||
-        g.userDoc.includes(q) ||
-        g.certificates.some(
-          (c) => c.unique_id.toLowerCase().includes(q) || typeMap[c.certificate_type_id ?? -1]?.toLowerCase().includes(q),
-        ),
-    )
-  }, [userGroups, search, typeMap])
+
 
   function toggleUser(userId: number) {
     setExpandedUsers((prev) => {
@@ -136,12 +153,14 @@ export default function CertificatesPage() {
         user_id: Number(selectedUserId),
         certificate_type_id: Number(selectedTypeId),
         issued_at: issuedAt || undefined,
+        validity_extension: validityExtension ?? undefined,
       })
       toast.success('Certificado emitido correctamente')
       setIssueModalOpen(false)
       setSelectedUserId('')
       setSelectedTypeId('')
       setIssuedAt('')
+      setValidityExtension(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -149,15 +168,15 @@ export default function CertificatesPage() {
 
   // Non-admin: flat view
   const flatRows: CertRow[] = useMemo(() => {
-    if (!isAdmin && plainCerts) {
-      return plainCerts.map((c) => ({ cert: c }))
+    if (!isAdmin && plainCerts?.items) {
+      return plainCerts.items.map((c) => ({ cert: c }))
     }
     return []
-  }, [isAdmin, plainCerts])
+  }, [isAdmin, plainCerts?.items])
 
   const studentOptions = useMemo(
     () =>
-      (students || []).map((s) => ({
+      (students?.items || []).map((s) => ({
         value: s.id,
         label: `${s.name || ''} ${s.first_last_name || ''}`.trim() || s.email,
         sublabel: `${s.identity_type} ${s.identity_number} — ${s.email}`,
@@ -170,7 +189,7 @@ export default function CertificatesPage() {
       (certTypes || []).map((t) => ({
         value: t.id,
         label: t.name,
-        sublabel: `${t.type} — ${t.hours} horas`,
+        sublabel: `${t.type} — ${t.hours} horas${t.reference ? ` · ${t.reference}` : ''}`,
       })),
     [certTypes],
   )
@@ -202,10 +221,10 @@ export default function CertificatesPage() {
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : isAdmin ? (
           <div className="divide-y divide-slate-100">
-            {filteredGroups.length === 0 ? (
+              {userGroups.length === 0 ? (
               <p className="px-6 py-8 text-center text-sm text-slate-400">No se encontraron certificados.</p>
             ) : (
-              filteredGroups.map((group) => {
+                userGroups.map((group) => {
                 const expanded = expandedUsers.has(group.userId)
                 return (
                   <div key={group.userId}>
@@ -310,6 +329,9 @@ export default function CertificatesPage() {
                 )
               })
             )}
+            {isAdmin && certifiedUsers && (
+              <Pagination page={certPage} totalPages={Math.ceil(certifiedUsers.total / PAGE_SIZE)} onPageChange={setCertPage} />
+            )}
           </div>
         ) : (
           <>
@@ -383,12 +405,15 @@ export default function CertificatesPage() {
             {flatRows.length === 0 && (
               <p className="px-6 py-8 text-center text-sm text-slate-400">No se encontraron certificados.</p>
             )}
+            {!isAdmin && plainCerts && (
+              <Pagination page={page} totalPages={Math.ceil(plainCerts.total / PAGE_SIZE)} onPageChange={setPage} />
+            )}
           </>
         )}
       </Card>
 
       {isAdmin && (
-        <Modal open={issueModalOpen} onClose={() => setIssueModalOpen(false)} title="Adicionar Nuevo Certificado">
+        <Modal open={issueModalOpen} onClose={() => { setIssueModalOpen(false); resetIssueForm() }} title="Adicionar Nuevo Certificado">
           <form onSubmit={handleIssueSubmit} className="space-y-4">
             <SearchableSelect
               label="Usuario"
@@ -407,6 +432,7 @@ export default function CertificatesPage() {
               required
             />
             <Input label="Fecha de emisión (opcional)" type="date" value={issuedAt} onChange={(e) => setIssuedAt(e.target.value)} />
+            <Input label="Extensión de vigencia (años, opcional)" type="number" min={1} value={validityExtension ?? ''} onChange={(e) => setValidityExtension(e.target.value ? Number(e.target.value) : null)} />
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={() => setIssueModalOpen(false)}>Cancelar</Button>
               <Button type="submit" loading={issueCert.isPending}>Emitir certificado</Button>

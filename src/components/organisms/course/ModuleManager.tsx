@@ -19,6 +19,7 @@ import {
 import TaskManager from './TaskManager'
 import LessonFileManager from './LessonFileManager'
 import AssessmentManager from './AssessmentManager'
+import AssessmentView from './AssessmentView'
 import type { Module, Lesson, ModuleUpdate, LessonUpdate } from '../../../types'
 
 interface ModuleManagerProps {
@@ -85,6 +86,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
   const [taskModalLessonId, setTaskModalLessonId] = useState<number | null>(null)
   const [fileModalLessonId, setFileModalLessonId] = useState<number | null>(null)
   const [assessmentModalModuleId, setAssessmentModalModuleId] = useState<number | null>(null)
+  const [assessmentViewModuleId, setAssessmentViewModuleId] = useState<number | null>(null)
 
   const modulesSorted = Array.isArray(modules) ? [...modules].sort((a, b) => a.order_index - b.order_index) : []
 
@@ -259,6 +261,17 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                     ) : (
                       <p className="px-5 py-4 text-sm text-slate-500">Sin lecciones</p>
                     )}
+                    {!canManage && (
+                      <div className="border-t border-slate-100 px-5 py-3">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setAssessmentViewModuleId(mod.id) }}
+                          className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                        >
+                          <FileQuestion className="h-4 w-4" />
+                          Tomar evaluación
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </Card>
@@ -312,6 +325,15 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
           moduleId={assessmentModalModuleId}
           onClose={() => setAssessmentModalModuleId(null)}
         />
+      )}
+      {assessmentViewModuleId !== null && (
+        <Modal open={true} onClose={() => setAssessmentViewModuleId(null)} title="" size="lg">
+          <AssessmentView
+            moduleId={assessmentViewModuleId}
+            moduleTitle={modulesSorted.find((m) => m.id === assessmentViewModuleId)?.title ?? ''}
+            onBack={() => setAssessmentViewModuleId(null)}
+          />
+        </Modal>
       )}
     </>
   )

@@ -13,7 +13,7 @@ export interface UserBase {
 }
 
 export interface UserCreate extends UserBase {
-  password: string
+  password?: string
 }
 
 export interface UserUpdate {

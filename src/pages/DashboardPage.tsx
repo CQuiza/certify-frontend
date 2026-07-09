@@ -1,60 +1,50 @@
 import { useAuth } from '../context/AuthContext'
-import { useUsers } from '../hooks/useUsers'
-import { useCertificates } from '../hooks/useCertificates'
-import { useCourses } from '../hooks/useCourses'
-import { useCertificateTypes } from '../hooks/useCertificateTypes'
+import { useDashboardStats } from '../hooks/useDashboard'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import { Users, Award, GraduationCap, FileCheck, CheckCircle, XCircle, Clock } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user } = useAuth()
-  const isAdmin = user?.role === 'superuser' || user?.role === 'admin'
+  const isStaff = !!user && ['superuser', 'admin', 'teacher'].includes(user.role)
 
-  const { data: users } = useUsers(undefined, { enabled: isAdmin })
-  const { data: certificates } = useCertificates()
-  const { data: courses } = useCourses()
-  const { data: certTypes } = useCertificateTypes(undefined, { enabled: isAdmin })
-
-  const activeCerts = certificates?.filter((c) => c.status === 'active').length ?? 0
-  const expiredCerts = certificates?.filter((c) => c.status === 'expired').length ?? 0
-  const revokedCerts = certificates?.filter((c) => c.status === 'revoked').length ?? 0
+  const { data: statsData, isLoading } = useDashboardStats({ enabled: isStaff })
 
   const stats = [
     {
       label: 'Usuarios activos',
-      value: isAdmin ? (users?.length ?? '—') : '—',
+      value: isStaff ? (statsData?.total_users ?? '—') : '—',
       icon: Users,
       color: 'text-indigo-600 bg-indigo-50',
-      loading: false,
+      loading: isLoading,
     },
     {
       label: 'Total certificados',
-      value: certificates?.length ?? '—',
+      value: statsData?.total_certificates ?? '—',
       icon: Award,
       color: 'text-emerald-600 bg-emerald-50',
-      loading: false,
+      loading: isLoading,
     },
     {
       label: 'Cursos publicados',
-      value: courses?.length ?? '—',
+      value: statsData?.published_courses ?? '—',
       icon: GraduationCap,
       color: 'text-amber-600 bg-amber-50',
-      loading: false,
+      loading: isLoading,
     },
     {
       label: 'Tipos de certificado',
-      value: isAdmin ? (certTypes?.length ?? '—') : '—',
+      value: isStaff ? (statsData?.certificate_types ?? '—') : '—',
       icon: FileCheck,
       color: 'text-blue-600 bg-blue-50',
-      loading: false,
+      loading: isLoading,
     },
   ]
 
   const certStatusCards = [
-    { label: 'Activos', value: activeCerts, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-50' },
-    { label: 'Expirados', value: expiredCerts, icon: Clock, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Revocados', value: revokedCerts, icon: XCircle, color: 'text-red-600 bg-red-50' },
+    { label: 'Activos', value: statsData?.active_certificates ?? '—', icon: CheckCircle, color: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Expirados', value: statsData?.expired_certificates ?? '—', icon: Clock, color: 'text-amber-600 bg-amber-50' },
+    { label: 'Revocados', value: statsData?.revoked_certificates ?? '—', icon: XCircle, color: 'text-red-600 bg-red-50' },
   ]
 
   return (

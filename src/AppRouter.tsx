@@ -17,6 +17,7 @@ import ManualPage from './pages/ManualPage'
 import CourseDetailPage from './pages/CourseDetailPage'
 import LessonViewPage from './pages/LessonViewPage'
 import ProgressPage from './pages/ProgressPage'
+import ProfilePage from './pages/ProfilePage'
 import DashboardLayout from './components/organisms/DashboardLayout'
 import type { ReactNode } from 'react'
 import type { UserRole } from './types'
@@ -69,6 +70,7 @@ export default function AppRouter() {
         <Route path="/audit" element={<RoleGuard roles={['superuser', 'admin']}><CertificateAuditPage /></RoleGuard>} />
         <Route path="/manual" element={<RoleGuard roles={['superuser', 'admin']}><ManualPage /></RoleGuard>} />
         <Route path="/progress" element={<RoleGuard roles={['superuser', 'admin', 'teacher', 'student']}><ProgressPage /></RoleGuard>} />
+        <Route path="/profile" element={<RoleGuard roles={['student']}><ProfilePage /></RoleGuard>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

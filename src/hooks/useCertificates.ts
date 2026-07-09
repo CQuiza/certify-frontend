@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { certificateService } from '../services/certificateService'
-import type { CertificateBatchIssueRequest, CertificateCreate, CertificateIssueRequest, CertificateUpdate } from '../types'
+import type { CertificateBatchIssueRequest, CertificateIssueRequest, CertificateUpdate } from '../types'
 
 const QUERY_KEY = ['certificates']
 
@@ -17,14 +17,6 @@ export function useCertificate(id: number) {
     queryKey: [...QUERY_KEY, id],
     queryFn: () => certificateService.getById(id),
     enabled: id > 0,
-  })
-}
-
-export function useCreateCertificate() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (data: CertificateCreate) => certificateService.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
   })
 }
 

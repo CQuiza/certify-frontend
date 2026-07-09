@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import Modal from '../molecules/Modal'
 import Button from '../atoms/Button'
 import Input from '../atoms/Input'
 import type { User } from '../../types'
 import { IdentityType } from '../../types'
+import { PASSWORD_RULES, validatePassword, generateSecurePassword } from '../../hooks/usePasswordValidation'
+import { CheckCircle, XCircle, Sparkles, Eye, EyeOff } from 'lucide-react'
 
 interface FormData {
   email: string
@@ -34,6 +37,7 @@ interface UserFormModalProps {
 
 export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSaving, onSubmit }: UserFormModalProps) {
   const [form, setForm] = useState<FormData>(emptyForm)
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     if (!isOpen) return
@@ -55,9 +59,21 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
     }
   }, [isOpen, user])
 
+  function getPasswordErrors(): string[] {
+    if (!form.password) return []
+    return validatePassword(form.password)
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const mode = user ? 'edit' : 'create'
+    if (form.password) {
+      const errors = getPasswordErrors()
+      if (errors.length > 0) {
+        toast.error('La contraseña no cumple los requisitos:\n' + errors.join('\n'))
+        return
+      }
+    }
     const payload: Record<string, unknown> = {
       email: form.email,
       name: form.name || null,
@@ -72,7 +88,7 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
     if (mode === 'edit') {
       if (form.password) payload.password = form.password
     } else {
-      payload.password = form.password
+      payload.password = form.password || undefined
     }
     await onSubmit(payload, mode)
   }
@@ -81,13 +97,52 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
     <Modal open={isOpen} onClose={onClose} title={user ? 'Editar usuario' : 'Nuevo usuario'}>
       <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto">
         <Input label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-        <Input
-          label={user ? 'Contraseña (dejar vacío para mantener)' : 'Contraseña'}
-          type="password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required={!user}
-        />
+        <div>
+          <div className="flex items-end gap-2">
+            <div className="relative flex-1">
+              <Input
+                label={user ? 'Contraseña (dejar vacío para mantener)' : 'Contraseña'}
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                required={!user && false}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-9 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setForm({ ...form, password: generateSecurePassword() })}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Generar
+            </Button>
+          </div>
+          <div className="mt-2 space-y-1">
+            {form.password ? (
+              PASSWORD_RULES.map((rule) => {
+                const ok = rule.validate(form.password)
+                return (
+                  <div key={rule.key} className={`flex items-center gap-1.5 text-xs ${ok ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    {ok ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                    {rule.label}
+                  </div>
+                )
+              })
+            ) : user ? (
+              <p className="text-xs text-slate-400">Si deja vacío, la contraseña no se modificará.</p>
+            ) : (
+              <p className="text-xs text-slate-400">Si deja vacío, el sistema generará una contraseña segura automáticamente.</p>
+            )}
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <Input label="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <Input label="Primer apellido" value={form.first_last_name} onChange={(e) => setForm({ ...form, first_last_name: e.target.value })} />

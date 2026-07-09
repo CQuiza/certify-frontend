@@ -20,10 +20,10 @@ export function useUser(id: number) {
   })
 }
 
-export function useCertifiedUsers(options?: { enabled?: boolean }) {
+export function useCertifiedUsers(params?: Record<string, unknown>, options?: { enabled?: boolean }) {
   return useQuery({
-    queryKey: [...QUERY_KEY, 'certified'],
-    queryFn: () => userService.getCertified(),
+    queryKey: [...QUERY_KEY, 'certified', params],
+    queryFn: () => userService.getCertified(params),
     ...options,
   })
 }
@@ -41,6 +41,13 @@ export function useUpdateUser(id: number) {
   return useMutation({
     mutationFn: (data: UserUpdate) => userService.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+  })
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (data: { current_password: string; new_password: string }) =>
+      userService.changePassword(data),
   })
 }
 

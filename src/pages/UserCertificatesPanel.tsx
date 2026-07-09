@@ -11,8 +11,9 @@ import DataTable from '../components/molecules/DataTable'
 import SearchBar from '../components/molecules/SearchBar'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
-import { ArrowLeft, Plus, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Plus, FileText, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
+import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import type { Certificate, Course } from '../types'
@@ -48,10 +49,10 @@ export default function UserCertificatesPanel() {
   const enrolledCourseIds = useMemo(() => new Set(enrollments?.map((e) => e.course_id) ?? []), [enrollments])
 
   const filteredCertificates = useMemo(() => {
-    if (!certificates) return []
-    if (!searchQuery.trim()) return certificates
+    if (!certificates?.items) return []
+    if (!searchQuery.trim()) return certificates.items
     const q = searchQuery.toLowerCase()
-    return certificates.filter((cert) => {
+    return certificates.items.filter((cert) => {
       const info = cert.certificate_type_id != null ? typeInfoMap[cert.certificate_type_id] : undefined
       if (!info) return false
       return info.name.toLowerCase().includes(q) || (info.reference && info.reference.toLowerCase().includes(q))
@@ -120,8 +121,15 @@ export default function UserCertificatesPanel() {
     { key: 'actions', header: 'Acciones', render: (cert: Certificate) => (
       <div className="flex gap-2">
         <a href={cert.pdf_url ?? '#'} target="_blank" rel="noopener noreferrer" className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Ver PDF">
-          <ExternalLink className="h-4 w-4" />
+          <FileText className="h-4 w-4" />
         </a>
+        <button
+          onClick={() => window.open(`${config.apiUrl}/certificates/view/${cert.unique_id}/qr`, '_blank')}
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+          title="Ver QR"
+        >
+          <QrCode className="h-4 w-4" />
+        </button>
       </div>
     )},
   ]
@@ -138,7 +146,10 @@ export default function UserCertificatesPanel() {
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">{user.name} {user.first_last_name}</h1>
+            <div className="flex items-center gap-3">
+              <FileText className="h-6 w-6 text-indigo-600" />
+              <h1 className="text-2xl font-bold text-slate-900">{user.name} {user.first_last_name}</h1>
+            </div>
             <p className="text-sm text-slate-500">{user.email} · {user.identity_number}</p>
           </div>
           <button onClick={() => setBatchModalOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">

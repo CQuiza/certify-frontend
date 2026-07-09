@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useAllProgressSummaries } from '../hooks/useModuleAssessments'
-import { useUsers } from '../hooks/useUsers'
+import { useUsers, useUser } from '../hooks/useUsers'
+import { taskSubmissionService } from '../services/taskSubmissionService'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
-import { Search, ChevronDown, ChevronRight, CheckCircle, Clock, AlertCircle, X } from 'lucide-react'
+import { Search, ChevronDown, ChevronRight, CheckCircle, Clock, AlertCircle, X, FileText, Loader2 } from 'lucide-react'
 import type { User } from '../types'
 
 export default function ProgressPage() {
@@ -13,30 +14,48 @@ export default function ProgressPage() {
   const canSearch = !!(user && ['superuser', 'admin', 'teacher'].includes(user.role))
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showResults, setShowResults] = useState(false)
   const [expandedCourse, setExpandedCourse] = useState<number | null>(null)
+  const [downloading, setDownloading] = useState<number | null>(null)
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
 
-  const { data: allUsers } = useUsers(
-    { role: 'student', limit: 500 },
-    { enabled: canSearch },
+  useEffect(() => {
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setDebouncedSearch(searchQuery), 300)
+    return () => clearTimeout(searchTimer.current)
+  }, [searchQuery])
+
+  const hasActiveSearch = debouncedSearch.length >= 2
+
+  const { data: searchResults } = useUsers(
+    hasActiveSearch ? { search: debouncedSearch, limit: 500 } : undefined,
+    { enabled: canSearch && hasActiveSearch },
   )
 
-  const filteredUsers = useMemo(() => {
-    if (!canSearch || !allUsers) return []
-    const q = searchQuery.toLowerCase()
-    return (allUsers as User[]).filter(
-      (u) =>
-        u.role === 'student' &&
-        (u.name?.toLowerCase().includes(q) ||
-          u.first_last_name?.toLowerCase().includes(q) ||
-          u.email?.toLowerCase().includes(q)),
-    )
-  }, [allUsers, searchQuery, canSearch])
+  const { data: selectedUserData } = useUser(selectedUser?.id ?? 0)
 
   const { data: progress, isLoading } = useAllProgressSummaries(
     canSearch ? selectedUser?.id : undefined,
   )
+
+  function isModuleComplete(mod: { passed: boolean; total_assessment_questions: number; total_tasks: number; submitted_tasks: number }): boolean {
+    const assessmentOk = mod.total_assessment_questions === 0 || mod.passed
+    const tasksOk = mod.total_tasks === 0 || mod.submitted_tasks === mod.total_tasks
+    return assessmentOk && tasksOk
+  }
+
+  async function handleDownload(submissionId: number, preferredName?: string) {
+    setDownloading(submissionId)
+    try {
+      await taskSubmissionService.downloadFile(submissionId, preferredName)
+    } catch {
+      // silent
+    } finally {
+      setDownloading(null)
+    }
+  }
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
@@ -60,10 +79,10 @@ export default function ProgressPage() {
           />
           {searchQuery.length >= 2 && showResults && (
             <div className="absolute z-10 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
-              {filteredUsers.length === 0 ? (
+              {!searchResults?.items?.length ? (
                 <p className="px-4 py-3 text-sm text-slate-500">Sin resultados</p>
               ) : (
-                filteredUsers.map((u) => (
+                searchResults?.items?.map((u) => (
                   <button
                     key={u.id}
                     onClick={() => {
@@ -111,19 +130,24 @@ export default function ProgressPage() {
         </Card>
       ) : (
         <>
-          <div className="rounded-lg bg-indigo-50 border border-indigo-200 p-4">
+          <div className={`rounded-lg border p-4 ${progress.overall_percent === 100 ? 'bg-emerald-50 border-emerald-200' : 'bg-indigo-50 border-indigo-200'}`}>
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-indigo-800">Progreso global</span>
-                  <span className="text-sm font-bold text-indigo-800">{progress.overall_percent}%</span>
+                  <span className="text-sm font-medium text-slate-800">Progreso global</span>
+                  <span className="text-sm font-bold text-slate-800">{progress.overall_percent}%</span>
                 </div>
-                <div className="h-2.5 w-full rounded-full bg-indigo-200">
+                <div className={`h-2.5 w-full rounded-full ${progress.overall_percent === 100 ? 'bg-emerald-200' : 'bg-indigo-200'}`}>
                   <div
-                    className="h-2.5 rounded-full bg-indigo-600 transition-all duration-500"
+                    className={`h-2.5 rounded-full transition-all duration-500 ${progress.overall_percent === 100 ? 'bg-emerald-600' : 'bg-indigo-600'}`}
                     style={{ width: `${progress.overall_percent}%` }}
                   />
                 </div>
+                {progress.overall_percent === 100 && (
+                  <p className="mt-1 text-xs font-medium text-emerald-700">
+                    Completaste todos los requisitos del curso
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -163,40 +187,83 @@ export default function ProgressPage() {
 
                   {expanded && (
                     <div className="border-t border-slate-100 divide-y divide-slate-100">
-                      {course.modules.map((mod) => (
-                        <div key={mod.module_id} className="flex items-center justify-between px-5 py-3">
-                          <div className="flex items-center gap-3 min-w-0 flex-1">
-                            {mod.passed ? (
-                              <CheckCircle className="h-5 w-5 shrink-0 text-emerald-500" />
-                            ) : mod.total_assessment_questions > 0 ? (
-                              <Clock className="h-5 w-5 shrink-0 text-amber-500" />
-                            ) : (
-                              <AlertCircle className="h-5 w-5 shrink-0 text-slate-300" />
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium text-slate-800 truncate">{mod.module_title}</p>
-                              <p className="text-xs text-slate-500">
-                                {mod.total_assessment_questions === 0
-                                  ? 'Sin evaluar'
-                                  : mod.passed
-                                    ? `Aprobado · ${mod.last_score ?? '-'}% · ${mod.attempts_count} intento${mod.attempts_count !== 1 ? 's' : ''}`
-                                    : `${mod.last_score != null ? `${mod.last_score}% · ` : ''}${mod.attempts_count} intento${mod.attempts_count !== 1 ? 's' : ''}`}
-                              </p>
+                      {course.modules.map((mod) => {
+                        const modComplete = isModuleComplete(mod)
+                        return (
+                          <div key={mod.module_id}>
+                            <div className="flex items-center justify-between px-5 py-3">
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                {modComplete ? (
+                                  <CheckCircle className="h-5 w-5 shrink-0 text-emerald-500" />
+                                ) : (
+                                  <Clock className="h-5 w-5 shrink-0 text-amber-500" />
+                                )}
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-slate-800 truncate">{mod.module_title}</p>
+                                  <div className="text-xs text-slate-500 space-y-0.5">
+                                    {mod.total_assessment_questions > 0 && (
+                                      <p>
+                                        Evaluación: {mod.passed ? `Aprobado · ${mod.last_score ?? '-'}% · ${mod.attempts_count} intento${mod.attempts_count !== 1 ? 's' : ''}` : `${mod.last_score != null ? `${mod.last_score}% · ` : ''}${mod.attempts_count} intento${mod.attempts_count !== 1 ? 's' : ''}`}
+                                      </p>
+                                    )}
+                                    {mod.total_tasks > 0 && (
+                                      <p className={mod.submitted_tasks === mod.total_tasks ? 'text-emerald-600' : 'text-amber-600'}>
+                                        Tareas: {mod.submitted_tasks}/{mod.total_tasks} entregadas
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              {modComplete ? (
+                                <span className="text-xs font-medium text-emerald-600 shrink-0">Completado</span>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  onClick={() => window.location.href = `/courses/${course.course_id}`}
+                                >
+                                  Ir al curso
+                                </Button>
+                              )}
                             </div>
+                            {mod.tasks && mod.tasks.length > 0 && (
+                              <div className="border-t border-slate-50 bg-slate-50/50 px-5 py-2 space-y-1.5">
+                                {mod.tasks.map((t) => (
+                                  <div key={t.task_id} className="flex items-center justify-between text-xs">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                                      <span className="text-slate-700 truncate">{t.task_title}</span>
+                                      {t.submitted ? (
+                                        <span className="text-emerald-600 font-medium shrink-0">Entregado</span>
+                                      ) : (
+                                        <span className="text-amber-600 font-medium shrink-0">No entregado</span>
+                                      )}
+                                    </div>
+                                    {t.submitted && t.submission_id && (
+                                      <button
+                                        onClick={() => handleDownload(t.submission_id!, t.original_filename || undefined)}
+                                        disabled={downloading === t.submission_id}
+                                        className="flex items-center gap-1 shrink-0 rounded bg-white border border-slate-200 px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                                      >
+                                        {downloading === t.submission_id ? (
+                                          <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                          <FileText className="h-3 w-3" />
+                                        )}
+                                        {downloading === t.submission_id ? 'Descargando...' : 'Descargar'}
+                                      </button>
+                                    )}
+                                  </div>
+                                ))}
+                                {mod.submitted_tasks < mod.total_tasks && (
+                                  <p className="text-xs text-amber-600 pt-1">
+                                    Debes completar todas las tareas para finalizar el curso.
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
-                          {!mod.passed && mod.total_assessment_questions > 0 && (
-                            <Button
-                              size="sm"
-                              onClick={() => window.location.href = `/courses/${course.course_id}`}
-                            >
-                              Tomar evaluación
-                            </Button>
-                          )}
-                          {mod.passed && (
-                            <span className="text-xs font-medium text-emerald-600 shrink-0">Aprobado</span>
-                          )}
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
                 </Card>
