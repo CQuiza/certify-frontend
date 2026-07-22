@@ -9,6 +9,9 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 export const IdentityType = {
   CC: "CC",
   TI: "TI",
+  CE: "CE",
+  PPT: "PPT",
+  PASSPORT: "PASSPORT",
   OTHER: "OTHER",
 } as const
 export type IdentityType = (typeof IdentityType)[keyof typeof IdentityType]
