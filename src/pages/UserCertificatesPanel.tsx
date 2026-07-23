@@ -26,7 +26,7 @@ export default function UserCertificatesPanel() {
 
   const { data: user, isLoading: loadingUser } = useUser(userIdNum)
   const { data: certificates, isLoading: loadingCerts } = useCertificates({ user_id: userIdNum }, { enabled: userIdNum > 0 })
-  const { data: certTypes } = useCertificateTypes()
+  const { data: certTypes } = useCertificateTypes({ limit: 2000 })
   const { data: courses } = useCourses()
   const { data: enrollments } = useEnrollments({ user_id: userIdNum }, { enabled: userIdNum > 0 })
 
