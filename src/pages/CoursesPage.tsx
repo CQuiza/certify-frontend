@@ -37,9 +37,9 @@ export default function CoursesPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
 
-  const { data: courses, isLoading } = useCourses()
+  const { data: courses, isLoading } = useCourses({ limit: 2000 })
   const { data: fullCourse } = useCourse(editing?.id ?? 0)
-  const { data: teachers } = useUsers({ role: 'teacher', limit: 500 }, { enabled: !!canManage })
+  const { data: teachers } = useUsers({ role: 'teacher', limit: 2000 }, { enabled: !!canManage })
   const { data: certTypes } = useCertificateTypes(undefined, { enabled: !!canManage })
   const createCourse = useCreateCourse()
   const updateCourse = useUpdateCourse(editing?.id ?? 0)

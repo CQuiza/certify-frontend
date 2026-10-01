@@ -10,20 +10,12 @@ import { useMyTaskSubmission, useSubmitTask } from '../hooks/useTaskSubmissions'
 import { taskSubmissionService } from '../services/taskSubmissionService'
 import { lessonFileService } from '../services/lessonFileService'
 import { downloadTaskFile, downloadLessonFile } from '../lib/download'
+import { sanitizeUrl } from '../lib/sanitize'
+import { formatFileSize } from '../lib/lessonFiles'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
 import { ArrowLeft, ArrowUp, FileText, Video, Image, File, ClipboardList, ExternalLink, X, Eye, CheckCircle, Loader2 } from 'lucide-react'
-
-function sanitizeUrl(url: string): string {
-  try {
-    const u = new URL(url)
-    if (u.protocol === 'http:' || u.protocol === 'https:') return url
-  } catch {
-    // invalid URL
-  }
-  return ''
-}
 
 function getYoutubeEmbedUrl(url: string): string | null {
   try {
@@ -155,7 +147,7 @@ function TaskSubmissionUpload({ taskId, taskTitle: _t }: { taskId: number; taskT
               </div>
               <div className="w-full rounded-lg bg-slate-50 px-4 py-3 text-left text-sm">
                 <p className="font-medium text-slate-700 truncate">{file.name}</p>
-                <p className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p className="text-xs text-slate-500">{formatFileSize(file.size)}</p>
               </div>
               <div className="flex gap-3 w-full">
                 <Button
@@ -412,7 +404,7 @@ export default function LessonViewPage() {
                         <div className="mt-2 flex flex-wrap gap-2">
                           {task.file_type === 'google_drive' && task.google_drive_link && (
                             <a
-                              href={task.google_drive_link}
+                              href={sanitizeUrl(task.google_drive_link)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"

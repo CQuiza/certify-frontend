@@ -1,5 +1,5 @@
 import api from './api'
-import type { User, UserCreate, UserUpdate, UserWithCertificates } from '../types'
+import type { User, UserCreate, UserUpdate, UserUpdateResponse, UserWithCertificates } from '../types'
 
 export const userService = {
   list: async (params?: Record<string, unknown>): Promise<{ items: User[]; total: number }> => {
@@ -22,8 +22,8 @@ export const userService = {
     return data
   },
 
-  update: async (id: number, payload: UserUpdate): Promise<User> => {
-    const { data } = await api.patch<User>(`/users/${id}`, payload)
+  update: async (id: number, payload: UserUpdate): Promise<UserUpdateResponse> => {
+    const { data } = await api.patch<UserUpdateResponse>(`/users/${id}`, payload)
     return data
   },
 

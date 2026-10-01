@@ -50,7 +50,7 @@ export default function UsersPage() {
     { user_id: enrollUserId ?? 0 },
     { enabled: enrollUserId !== null },
   )
-  const { data: courses } = useCourses()
+  const { data: courses } = useCourses({ limit: 2000 })
   const [selectedCourseId, setSelectedCourseId] = useState<string | number>('')
   const createEnrollment = useCreateEnrollment()
   const deleteEnrollment = useDeleteEnrollment()
@@ -86,8 +86,13 @@ export default function UsersPage() {
   async function handleFormSubmit(data: Record<string, unknown>, mode: 'create' | 'edit') {
     try {
       if (mode === 'edit') {
-        await updateUser.mutateAsync(data as unknown as Parameters<typeof updateUser.mutateAsync>[0])
-        toast.success('Usuario actualizado correctamente')
+        const res = await updateUser.mutateAsync(data as unknown as Parameters<typeof updateUser.mutateAsync>[0])
+        const n = res?.certificates_regenerated ?? 0
+        toast.success(
+          n > 0
+            ? `Usuario actualizado correctamente · ${n} certificado${n !== 1 ? 's' : ''} actualizado${n !== 1 ? 's' : ''}`
+            : 'Usuario actualizado correctamente',
+        )
       } else {
         await createUser.mutateAsync(data as unknown as Parameters<typeof createUser.mutateAsync>[0])
         toast.success('Usuario creado correctamente')

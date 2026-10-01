@@ -44,6 +44,10 @@ export interface User {
   is_active: boolean
 }
 
+export interface UserUpdateResponse extends User {
+  certificates_regenerated: number
+}
+
 import type { Certificate } from './certificate'
 
 export interface UserWithCertificates extends User {

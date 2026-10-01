@@ -6,12 +6,13 @@ import { useCourses } from '../hooks/useCourses'
 import { useEnrollments, useCreateEnrollment, useDeleteEnrollment } from '../hooks/useEnrollments'
 import { useUser } from '../hooks/useUsers'
 import BatchCertificateModal from '../components/organisms/BatchCertificateModal'
+import RenewCertificateModal from '../components/organisms/RenewCertificateModal'
 import Card from '../components/molecules/Card'
 import DataTable from '../components/molecules/DataTable'
 import SearchBar from '../components/molecules/SearchBar'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
-import { ArrowLeft, Plus, FileText, QrCode } from 'lucide-react'
+import { ArrowLeft, Plus, FileText, QrCode, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
@@ -25,9 +26,9 @@ export default function UserCertificatesPanel() {
   const userIdNum = Number(userId)
 
   const { data: user, isLoading: loadingUser } = useUser(userIdNum)
-  const { data: certificates, isLoading: loadingCerts } = useCertificates({ user_id: userIdNum }, { enabled: userIdNum > 0 })
+  const { data: certificates, isLoading: loadingCerts } = useCertificates({ user_id: userIdNum, limit: 500 }, { enabled: userIdNum > 0 })
   const { data: certTypes } = useCertificateTypes({ limit: 2000 })
-  const { data: courses } = useCourses()
+  const { data: courses } = useCourses({ limit: 2000 })
   const { data: enrollments } = useEnrollments({ user_id: userIdNum }, { enabled: userIdNum > 0 })
 
   const createEnrollment = useCreateEnrollment()
@@ -35,6 +36,7 @@ export default function UserCertificatesPanel() {
 
   const [searchQuery, setSearchQuery] = useState('')
   const [batchModalOpen, setBatchModalOpen] = useState(false)
+  const [renewCert, setRenewCert] = useState<Certificate | null>(null)
 
   const typeInfoMap = useMemo(() => {
     if (!certTypes) return {} as Record<number, { name: string; reference: string | null }>
@@ -130,6 +132,14 @@ export default function UserCertificatesPanel() {
         >
           <QrCode className="h-4 w-4" />
         </button>
+        <button
+          onClick={() => setRenewCert(cert)}
+          disabled={cert.status === 'revoked'}
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+          title="Renovar"
+        >
+          <RotateCcw className="h-4 w-4" />
+        </button>
       </div>
     )},
   ]
@@ -177,6 +187,14 @@ export default function UserCertificatesPanel() {
         certTypes={certTypes ?? []}
         typeInfoMap={typeInfoMap}
       />
+
+      {renewCert && (
+        <RenewCertificateModal
+          open={!!renewCert}
+          onClose={() => setRenewCert(null)}
+          certificate={renewCert}
+        />
+      )}
     </div>
   )
 }

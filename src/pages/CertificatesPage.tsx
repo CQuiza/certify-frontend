@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
 import { useCertificates, useUpdateCertificate, useIssueCertificate } from '../hooks/useCertificates'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
+import RenewCertificateModal from '../components/organisms/RenewCertificateModal'
 import Card from '../components/molecules/Card'
 import SearchBar from '../components/molecules/SearchBar'
 import SearchableSelect from '../components/molecules/SearchableSelect'
@@ -13,7 +14,7 @@ import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import Pagination from '../components/molecules/Pagination'
-import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { certificateStatusVariant } from '../lib/statusVariant'
@@ -73,12 +74,13 @@ export default function CertificatesPage() {
   const [editingCert, setEditingCert] = useState<Certificate | null>(null)
   const [editStatus, setEditStatus] = useState('')
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [renewCert, setRenewCert] = useState<Certificate | null>(null)
 
   const { data: certifiedUsers, isLoading: loadingCertified } = useCertifiedUsers(
     { skip: (certPage - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
     { enabled: isAdmin },
   )
-  const { data: students } = useUsers({ role: 'student', limit: 500 }, { enabled: isAdmin })
+  const { data: students } = useUsers({ role: 'student', limit: 2000 }, { enabled: isAdmin })
   const { data: plainCerts, isLoading: loadingPlain } = useCertificates(
     { skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
     { enabled: !isAdmin },
@@ -316,6 +318,14 @@ export default function CertificatesPage() {
                                     >
                                       <Pencil className="h-4 w-4" />
                                     </button>
+                                    <button
+                                      onClick={() => setRenewCert(cert)}
+                                      disabled={cert.status === 'revoked'}
+                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                                      title="Renovar"
+                                    >
+                                      <RotateCcw className="h-4 w-4" />
+                                    </button>
                                   </div>
                                 </td>
                               </tr>
@@ -456,6 +466,14 @@ export default function CertificatesPage() {
           </div>
         </form>
       </Modal>
+
+      {renewCert && (
+        <RenewCertificateModal
+          open={!!renewCert}
+          onClose={() => setRenewCert(null)}
+          certificate={renewCert}
+        />
+      )}
     </div>
   )
 }
