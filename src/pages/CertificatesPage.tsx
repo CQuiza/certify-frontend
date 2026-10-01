@@ -65,12 +65,14 @@ export default function CertificatesPage() {
   const [selectedTypeId, setSelectedTypeId] = useState<string | number>('')
   const [issuedAt, setIssuedAt] = useState('')
   const [validityExtension, setValidityExtension] = useState<number | null>(null)
+  const [hours, setHours] = useState<number | null>(null)
 
   function resetIssueForm() {
     setSelectedUserId('')
     setSelectedTypeId('')
     setIssuedAt('')
     setValidityExtension(null)
+    setHours(null)
   }
   const [editingCert, setEditingCert] = useState<Certificate | null>(null)
   const [editStatus, setEditStatus] = useState('')
@@ -158,6 +160,7 @@ export default function CertificatesPage() {
         certificate_type_id: Number(selectedTypeId),
         issued_at: issuedAt || undefined,
         validity_extension: validityExtension ?? undefined,
+        hours: hours ?? undefined,
       })
       toast.success('Certificado emitido correctamente')
       setIssueModalOpen(false)
@@ -165,6 +168,7 @@ export default function CertificatesPage() {
       setSelectedTypeId('')
       setIssuedAt('')
       setValidityExtension(null)
+      setHours(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -447,6 +451,7 @@ export default function CertificatesPage() {
             />
             <Input label="Fecha de emisión (opcional)" type="date" value={issuedAt} onChange={(e) => setIssuedAt(e.target.value)} />
             <Input label="Extensión de vigencia (años, opcional)" type="number" min={1} value={validityExtension ?? ''} onChange={(e) => setValidityExtension(e.target.value ? Number(e.target.value) : null)} />
+            <Input label="Número de horas (opcional)" type="number" min={1} value={hours ?? ''} onChange={(e) => setHours(e.target.value ? Number(e.target.value) : null)} />
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={() => setIssueModalOpen(false)}>Cancelar</Button>
               <Button type="submit" loading={issueCert.isPending}>Emitir certificado</Button>

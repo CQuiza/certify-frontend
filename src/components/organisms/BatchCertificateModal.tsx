@@ -21,6 +21,8 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
   const [search, setSearch] = useState('')
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [issuedAt, setIssuedAt] = useState('')
+  const [validityExtension, setValidityExtension] = useState<number | null>(null)
+  const [hours, setHours] = useState<number | null>(null)
 
   const filteredTypes = useMemo(() => {
     if (!search.trim()) return certTypes
@@ -58,6 +60,8 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
         user_id: userId,
         certificate_type_ids: Array.from(selectedIds),
         issued_at: issuedAt || null,
+        validity_extension: selectedIds.size === 1 ? (validityExtension ?? undefined) : undefined,
+        hours: selectedIds.size === 1 ? (hours ?? undefined) : undefined,
       })
       const issuedCount = result.issued.length
       const errorCount = result.errors.length
@@ -83,6 +87,34 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
           value={issuedAt}
           onChange={(e) => setIssuedAt(e.target.value)}
         />
+
+        <div className="space-y-1.5">
+          <Input
+            label="Extensión de vigencia (años, opcional)"
+            type="number"
+            min={1}
+            value={validityExtension ?? ''}
+            onChange={(e) => setValidityExtension(e.target.value ? Number(e.target.value) : null)}
+            disabled={selectedIds.size !== 1}
+          />
+          {selectedIds.size !== 1 && (
+            <p className="text-xs text-slate-500">Solo disponible al seleccionar un único tipo de certificado.</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Input
+            label="Número de horas (opcional)"
+            type="number"
+            min={1}
+            value={hours ?? ''}
+            onChange={(e) => setHours(e.target.value ? Number(e.target.value) : null)}
+            disabled={selectedIds.size !== 1}
+          />
+          {selectedIds.size !== 1 && (
+            <p className="text-xs text-slate-500">Solo disponible al seleccionar un único tipo de certificado.</p>
+          )}
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1.5">Tipos de certificado</label>
