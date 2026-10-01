@@ -13,6 +13,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import Pagination from '../components/molecules/Pagination'
 import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
@@ -76,12 +77,12 @@ export default function CertificatesPage() {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [renewCert, setRenewCert] = useState<Certificate | null>(null)
 
-  const { data: certifiedUsers, isLoading: loadingCertified } = useCertifiedUsers(
+  const { data: certifiedUsers, isLoading: loadingCertified, isError: certifiedError } = useCertifiedUsers(
     { skip: (certPage - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
     { enabled: isAdmin },
   )
   const { data: students } = useUsers({ role: 'student', limit: 2000 }, { enabled: isAdmin })
-  const { data: plainCerts, isLoading: loadingPlain } = useCertificates(
+  const { data: plainCerts, isLoading: loadingPlain, isError: plainError } = useCertificates(
     { skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
     { enabled: !isAdmin },
   )
@@ -90,6 +91,7 @@ export default function CertificatesPage() {
   const updateCert = useUpdateCertificate(editingCert?.id ?? 0)
 
   const isLoading = isAdmin ? loadingCertified : loadingPlain
+  const isError = isAdmin ? certifiedError : plainError
 
   const typeMap = useMemo(() => {
     if (!certTypes) return {} as Record<number, string>
@@ -219,7 +221,9 @@ export default function CertificatesPage() {
             placeholder="Buscar por estudiante, documento o UUID..."
           />
         </div>
-        {isLoading ? (
+        {isError ? (
+          <ErrorState className="m-4" />
+        ) : isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : isAdmin ? (
           <div className="divide-y divide-slate-100">

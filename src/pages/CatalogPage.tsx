@@ -2,9 +2,10 @@ import { useCourses } from '../hooks/useCourses'
 import { GraduationCap, Clock, BookOpen } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 
 export default function CatalogPage() {
-  const { data: courses, isLoading } = useCourses({ limit: 50 })
+  const { data: courses, isLoading, isError } = useCourses({ limit: 50 })
 
   const published = (courses || []).filter((c) => c.status === 'published')
 
@@ -28,7 +29,9 @@ export default function CatalogPage() {
           <p className="mt-2 text-slate-500">Explora los cursos disponibles y encuentra el que mejor se ajuste a tus necesidades</p>
         </div>
 
-        {isLoading ? (
+        {isError ? (
+          <ErrorState className="mx-auto max-w-lg" />
+        ) : isLoading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="rounded-xl border border-slate-200 bg-white p-6">

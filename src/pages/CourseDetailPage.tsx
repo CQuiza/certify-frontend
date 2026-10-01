@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useCourse } from '../hooks/useCourses'
 import Skeleton from '../components/atoms/Skeleton'
 import Badge from '../components/atoms/Badge'
+import ErrorState from '../components/atoms/ErrorState'
 import ModuleManager from '../components/organisms/course/ModuleManager'
 import { ArrowLeft } from 'lucide-react'
 
@@ -12,9 +13,10 @@ export default function CourseDetailPage() {
   const id = Number(courseId)
   const canManage = user && ['superuser', 'admin', 'teacher'].includes(user.role)
 
-  const { data: course, isLoading: loadingCourse } = useCourse(id)
+  const { data: course, isLoading: loadingCourse, isError } = useCourse(id)
 
   if (loadingCourse) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={3} className="h-8 w-full" /></div>
+  if (isError) return <div className="p-6 lg:p-8"><ErrorState message="No se pudo cargar el curso. Inténtalo de nuevo." /></div>
   if (!course) return <div className="p-6 lg:p-8"><p className="text-slate-500">Curso no encontrado</p></div>
 
   return (

@@ -2,13 +2,14 @@ import { useAuth } from '../context/AuthContext'
 import { useDashboardStats } from '../hooks/useDashboard'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { Users, Award, GraduationCap, FileCheck, CheckCircle, XCircle, Clock } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const isStaff = !!user && ['superuser', 'admin', 'teacher'].includes(user.role)
 
-  const { data: statsData, isLoading } = useDashboardStats({ enabled: isStaff })
+  const { data: statsData, isLoading, isError } = useDashboardStats({ enabled: isStaff })
 
   const stats = [
     {
@@ -57,6 +58,8 @@ export default function DashboardPage() {
           Panel principal de la plataforma Certify
         </p>
       </div>
+
+      {isError && <ErrorState className="mb-6" />}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {

@@ -1,4 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { toast } from 'sonner'
 import { config } from '../config'
 import { authService, getRefreshToken, setRefreshToken } from './authService'
 
@@ -21,6 +22,16 @@ function processQueue(token: string | null, err: unknown = null) {
   pendingQueue = []
 }
 
+function redirectToLogin(message: string): void {
+  toast.error(message, { id: 'session-expired' })
+  window.location.href = '/login'
+}
+
+function isAuthEndpoint(url: string | undefined): boolean {
+  if (!url) return false
+  return url.includes('/auth/token') || url.includes('/auth/login')
+}
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -30,9 +41,13 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
+    if (isAuthEndpoint(originalRequest.url)) {
+      return Promise.reject(error)
+    }
+
     if (!getRefreshToken()) {
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      redirectToLogin('Tu sesión ha expirado. Inicia sesión de nuevo.')
       return Promise.reject(error)
     }
 
@@ -56,7 +71,7 @@ api.interceptors.response.use(
       processQueue(null, refreshError)
       setRefreshToken(null)
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      redirectToLogin('Tu sesión ha expirado. Inicia sesión de nuevo.')
       return Promise.reject(refreshError)
     } finally {
       isRefreshing = false

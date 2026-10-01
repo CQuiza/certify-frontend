@@ -6,7 +6,10 @@ import { taskSubmissionService } from '../services/taskSubmissionService'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
+import ErrorState from '../components/atoms/ErrorState'
 import { Search, ChevronDown, ChevronRight, CheckCircle, Clock, X, FileText, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { getErrorMessage } from '../lib/error'
 import type { User } from '../types'
 
 export default function ProgressPage() {
@@ -34,7 +37,7 @@ export default function ProgressPage() {
     { enabled: canSearch && hasActiveSearch },
   )
 
-  const { data: progress, isLoading } = useAllProgressSummaries(
+  const { data: progress, isLoading, isError } = useAllProgressSummaries(
     canSearch ? selectedUser?.id : undefined,
   )
 
@@ -48,8 +51,8 @@ export default function ProgressPage() {
     setDownloading(submissionId)
     try {
       await taskSubmissionService.downloadFile(submissionId, preferredName)
-    } catch {
-      // silent
+    } catch (err) {
+      toast.error(getErrorMessage(err) || 'No se pudo descargar el archivo. Inténtalo de nuevo.')
     } finally {
       setDownloading(null)
     }
@@ -117,6 +120,8 @@ export default function ProgressPage() {
           )}
         </div>
       )}
+
+      {isError && <ErrorState />}
 
       {isLoading ? (
         <div className="space-y-4"><Skeleton count={3} className="h-24 w-full" /></div>

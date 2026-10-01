@@ -4,6 +4,7 @@ import { useModuleAssessment, useSubmitAssessment } from '../../../hooks/useModu
 import Button from '../../atoms/Button'
 import Skeleton from '../../atoms/Skeleton'
 import Spinner from '../../atoms/Spinner'
+import ErrorState from '../../atoms/ErrorState'
 import { getErrorMessage } from '../../../lib/error'
 import AssessmentResult from './AssessmentResult'
 import type { AnswerSubmission, AttemptResult } from '../../../types/moduleAssessment'
@@ -15,7 +16,7 @@ interface AssessmentViewProps {
 }
 
 export default function AssessmentView({ moduleId, moduleTitle, onBack }: AssessmentViewProps) {
-  const { data: assessment, isLoading } = useModuleAssessment(moduleId)
+  const { data: assessment, isLoading, isError } = useModuleAssessment(moduleId)
   const submitAssessment = useSubmitAssessment()
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [result, setResult] = useState<AttemptResult | null>(null)
@@ -25,6 +26,14 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
     return (
       <div className="space-y-4 p-6">
         <Skeleton count={6} className="h-20 w-full" />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="p-6">
+        <ErrorState message="No se pudo cargar la evaluación. Inténtalo de nuevo." />
       </div>
     )
   }

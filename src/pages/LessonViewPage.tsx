@@ -15,6 +15,7 @@ import { formatFileSize } from '../lib/lessonFiles'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
+import ErrorState from '../components/atoms/ErrorState'
 import { ArrowLeft, ArrowUp, FileText, Video, Image, File, ClipboardList, ExternalLink, X, Eye, CheckCircle, Loader2 } from 'lucide-react'
 
 function getYoutubeEmbedUrl(url: string): string | null {
@@ -188,7 +189,7 @@ export default function LessonViewPage() {
   const lessonIdNum = Number(lessonId)
   const courseIdNum = Number(courseId)
 
-  const { data: lesson, isLoading: loadingLesson } = useLesson(lessonIdNum)
+  const { data: lesson, isLoading: loadingLesson, isError: lessonError } = useLesson(lessonIdNum)
   const { data: mod } = useModule(lesson?.module_id ?? 0)
   const { data: course } = useCourse(courseIdNum)
   const { data: tasks } = useTasksByLesson(lessonIdNum)
@@ -215,11 +216,12 @@ export default function LessonViewPage() {
       const url = URL.createObjectURL(blob)
       setSelectedBlob({ url, id: fileId, name, mime })
     } catch {
-      // silent
+      toast.error('No se pudo cargar el archivo. Inténtalo de nuevo.')
     }
   }
 
   if (loadingLesson) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={4} className="h-8 w-full" /></div>
+  if (lessonError) return <div className="p-6 lg:p-8"><ErrorState message="No se pudo cargar la lección. Inténtalo de nuevo." /></div>
   if (!lesson) return <div className="p-6 lg:p-8"><p className="text-slate-500">Lección no encontrada</p></div>
 
   return (

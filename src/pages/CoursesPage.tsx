@@ -10,6 +10,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { Link } from 'react-router-dom'
 import { Plus, Pencil, Eye, ChevronDown } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
@@ -37,7 +38,7 @@ export default function CoursesPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
 
-  const { data: courses, isLoading } = useCourses({ limit: 2000 })
+  const { data: courses, isLoading, isError } = useCourses({ limit: 2000 })
   const { data: fullCourse } = useCourse(editing?.id ?? 0)
   const { data: teachers } = useUsers({ role: 'teacher', limit: 2000 }, { enabled: !!canManage })
   const { data: certTypes } = useCertificateTypes(undefined, { enabled: !!canManage })
@@ -117,6 +118,8 @@ export default function CoursesPage() {
           </Button>
         )}
       </div>
+
+      {isError && <ErrorState className="mb-6" />}
 
       {isLoading ? (
         <div className="space-y-4"><Skeleton count={5} className="h-16 w-full rounded-lg" /></div>

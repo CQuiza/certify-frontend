@@ -12,6 +12,7 @@ import Modal from '../components/molecules/Modal'
 import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { toast } from 'sonner'
 import { Plus, Pencil, Trash2, GraduationCap, X, FileText } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
@@ -39,7 +40,7 @@ export default function UsersPage() {
     return () => clearTimeout(searchTimer.current)
   }, [search])
 
-  const { data: users, isLoading } = useUsers({ skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined })
+  const { data: users, isLoading, isError } = useUsers({ skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined })
   const createUser = useCreateUser()
   const deleteUser = useDeleteUser()
   const updateUser = useUpdateUser(formUser?.id ?? 0)
@@ -179,7 +180,9 @@ export default function UsersPage() {
         <div className="border-b border-slate-200 px-4 py-3">
           <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1) }} placeholder="Buscar por nombre, email o identificación..." />
         </div>
-        {isLoading ? (
+        {isError ? (
+          <ErrorState className="m-4" />
+        ) : isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : (
           <>

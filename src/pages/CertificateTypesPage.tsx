@@ -10,6 +10,7 @@ import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { Plus, Pencil } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import type { CertificateType } from '../types'
@@ -35,7 +36,7 @@ export default function CertificateTypesPage() {
   const [editing, setEditing] = useState<CertificateType | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
 
-  const { data: types, isLoading } = useCertificateTypes({ limit: 2000 })
+  const { data: types, isLoading, isError } = useCertificateTypes({ limit: 2000 })
   const createMutation = useCreateCertificateType()
   const updateMutation = useUpdateCertificateType(editing?.id ?? 0)
 
@@ -131,7 +132,9 @@ export default function CertificateTypesPage() {
         <div className="border-b border-slate-200 px-4 py-3">
           <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1) }} placeholder="Buscar tipo..." />
         </div>
-        {isLoading ? (
+        {isError ? (
+          <ErrorState className="m-4" />
+        ) : isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : (
           <>

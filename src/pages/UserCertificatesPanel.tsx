@@ -12,6 +12,7 @@ import DataTable from '../components/molecules/DataTable'
 import SearchBar from '../components/molecules/SearchBar'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { ArrowLeft, Plus, FileText, QrCode, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { config } from '../config'
@@ -26,7 +27,7 @@ export default function UserCertificatesPanel() {
   const userIdNum = Number(userId)
 
   const { data: user, isLoading: loadingUser } = useUser(userIdNum)
-  const { data: certificates, isLoading: loadingCerts } = useCertificates({ user_id: userIdNum, limit: 500 }, { enabled: userIdNum > 0 })
+  const { data: certificates, isLoading: loadingCerts, isError: certsError } = useCertificates({ user_id: userIdNum, limit: 500 }, { enabled: userIdNum > 0 })
   const { data: certTypes } = useCertificateTypes({ limit: 2000 })
   const { data: courses } = useCourses({ limit: 2000 })
   const { data: enrollments } = useEnrollments({ user_id: userIdNum }, { enabled: userIdNum > 0 })
@@ -173,7 +174,9 @@ export default function UserCertificatesPanel() {
         <div className="border-b border-slate-200 px-4 py-3">
           <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Buscar por tipo o referencia..." />
         </div>
-        {loadingCerts ? (
+        {certsError ? (
+          <ErrorState className="m-4" />
+        ) : loadingCerts ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : (
           <DataTable columns={columns} data={filteredCertificates} />

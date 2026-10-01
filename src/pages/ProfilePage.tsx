@@ -7,6 +7,7 @@ import Badge from '../components/atoms/Badge'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import { CheckCircle, XCircle, Sparkles, Eye, EyeOff, User } from 'lucide-react'
+import { getErrorMessage } from '../lib/error'
 
 const roleLabels: Record<string, string> = {
   superuser: 'Superusuario',
@@ -63,8 +64,8 @@ export default function ProfilePage() {
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
-    } catch {
-      toast.error('Error al actualizar la contraseña')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
   }
 

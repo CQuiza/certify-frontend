@@ -9,6 +9,7 @@ import SearchBar from '../components/molecules/SearchBar'
 import Pagination from '../components/molecules/Pagination'
 import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
+import ErrorState from '../components/atoms/ErrorState'
 import { ClipboardList, Server, UserX, Mail } from 'lucide-react'
 import { formatDate } from '../lib/dates'
 import { auditStatusVariant } from '../lib/statusVariant'
@@ -30,12 +31,13 @@ export default function CertificateAuditPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
 
-  const { data: certAudits, isLoading: loadingCert } = useCertificateAudits()
-  const { data: workerAudits, isLoading: loadingWorker } = useWorkerAudits()
-  const { data: userAudits, isLoading: loadingUser } = useUserAudits()
-  const { data: emailAudits, isLoading: loadingEmail } = useEmailAudits()
+  const { data: certAudits, isLoading: loadingCert, isError: errorCert } = useCertificateAudits()
+  const { data: workerAudits, isLoading: loadingWorker, isError: errorWorker } = useWorkerAudits()
+  const { data: userAudits, isLoading: loadingUser, isError: errorUser } = useUserAudits()
+  const { data: emailAudits, isLoading: loadingEmail, isError: errorEmail } = useEmailAudits()
 
   const isLoading = tab === 'certificate' ? loadingCert : tab === 'worker' ? loadingWorker : tab === 'user' ? loadingUser : loadingEmail
+  const isError = tab === 'certificate' ? errorCert : tab === 'worker' ? errorWorker : tab === 'user' ? errorUser : errorEmail
 
   const actionVariant = (action: string) => {
     if (action === 'issued') return 'info' as const
@@ -205,7 +207,9 @@ export default function CertificateAuditPage() {
         <div className="border-b border-slate-200 px-4 py-3">
           <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1) }} placeholder="Buscar..." />
         </div>
-        {isLoading ? (
+        {isError ? (
+          <ErrorState className="m-4" />
+        ) : isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-10 w-full" /></div>
         ) : filtered.length === 0 ? (
           <p className="px-6 py-8 text-center text-sm text-slate-400">No se encontraron registros.</p>
