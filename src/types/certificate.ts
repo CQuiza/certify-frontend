@@ -46,3 +46,26 @@ export interface CertificateBatchIssueResponse {
   issued: Certificate[]
   errors: Array<{ certificate_type_id: number; error: string }>
 }
+
+export interface PendingCertificate {
+  id: number
+  user_id: number
+  course_id: number
+  certificate_type_id: number | null
+  status: 'in_progress' | 'issued'
+  created_by: number | null
+  issued_at_override: string | null
+  validity_extension: number | null
+  hours: number | null
+  issued_certificate_id: number | null
+  created_at: string
+  issued_at: string | null
+}
+
+export interface PendingCertificateCreate {
+  user_id: number
+  course_id: number
+  issued_at?: string | null
+  validity_extension?: number | null
+  hours?: number | null
+}

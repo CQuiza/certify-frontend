@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useCertificates } from '../hooks/useCertificates'
+import { useCertificates, usePendingCertificates, useForceIssuePendingCertificate, useDeletePendingCertificate } from '../hooks/useCertificates'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import { useCourses } from '../hooks/useCourses'
 import { useEnrollments, useCreateEnrollment, useDeleteEnrollment } from '../hooks/useEnrollments'
@@ -28,6 +28,9 @@ export default function UserCertificatesPanel() {
 
   const { data: user, isLoading: loadingUser } = useUser(userIdNum)
   const { data: certificates, isLoading: loadingCerts, isError: certsError } = useCertificates({ user_id: userIdNum, limit: 500 }, { enabled: userIdNum > 0 })
+  const { data: pendingCerts, isError: pendingError } = usePendingCertificates({ user_id: userIdNum }, { enabled: userIdNum > 0 })
+  const forceIssue = useForceIssuePendingCertificate()
+  const deletePending = useDeletePendingCertificate()
   const { data: certTypes } = useCertificateTypes({ limit: 2000 })
   const { data: courses } = useCourses({ limit: 2000 })
   const { data: enrollments } = useEnrollments({ user_id: userIdNum }, { enabled: userIdNum > 0 })
@@ -47,6 +50,11 @@ export default function UserCertificatesPanel() {
   const courseByTypeId = useMemo(() => {
     if (!courses) return {} as Record<number, Course>
     return Object.fromEntries(courses.filter((c) => c.certificate_type_id != null).map((c) => [c.certificate_type_id!, c]))
+  }, [courses])
+
+  const courseTitles = useMemo(() => {
+    if (!courses) return {} as Record<number, string>
+    return Object.fromEntries(courses.map((c) => [c.id, c.title]))
   }, [courses])
 
   const enrolledCourseIds = useMemo(() => new Set(enrollments?.map((e) => e.course_id) ?? []), [enrollments])
@@ -183,12 +191,71 @@ export default function UserCertificatesPanel() {
         )}
       </Card>
 
+      {pendingError ? (
+        <Card className="mt-6"><ErrorState message="No se pudieron cargar los certificados en proceso." /></Card>
+      ) : pendingCerts && pendingCerts.length > 0 ? (
+        <Card className="mt-6" padding={false}>
+          <div className="border-b border-slate-200 px-4 py-3">
+            <h3 className="text-sm font-semibold text-slate-900">Certificados en proceso</h3>
+            <p className="text-xs text-slate-500">Se emiten automáticamente al completar el 100% del curso.</p>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {pendingCerts.map((p) => (
+              <div key={p.id} className="flex items-center justify-between px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-slate-900">
+                    {courseTitles[p.course_id] || `Curso #${p.course_id}`}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {p.status === 'issued' ? 'Emitido' : 'En proceso'}
+                    {p.status === 'in_progress' && ' — se emitirá al completar el curso'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant={p.status === 'issued' ? 'success' : 'warning'}>
+                    {p.status === 'issued' ? 'Emitido' : 'En proceso'}
+                  </Badge>
+                  {p.status === 'in_progress' && (
+                    <>
+                      <button
+                        onClick={async () => {
+                          try {
+                            await forceIssue.mutateAsync(p.id)
+                            toast.success('Certificado emitido manualmente')
+                          } catch (err) { toast.error(getErrorMessage(err)) }
+                        }}
+                        className="rounded-lg border border-indigo-200 px-2.5 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 transition-colors"
+                      >
+                        Emitir ahora
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!confirm('¿Cancelar esta solicitud en proceso?')) return
+                          try {
+                            await deletePending.mutateAsync(p.id)
+                            toast.success('Solicitud cancelada')
+                          } catch (err) { toast.error(getErrorMessage(err)) }
+                        }}
+                        className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      ) : null}
+
       <BatchCertificateModal
         open={batchModalOpen}
         onClose={() => setBatchModalOpen(false)}
         userId={userIdNum}
         certTypes={certTypes ?? []}
         typeInfoMap={typeInfoMap}
+        courses={courses ?? []}
       />
 
       {renewCert && (

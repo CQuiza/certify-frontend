@@ -2,7 +2,9 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
-import { useCertificates, useUpdateCertificate, useIssueCertificate } from '../hooks/useCertificates'
+import { useCertificates, useUpdateCertificate, useIssueCertificate, useCreatePendingCertificate, usePendingCertificates } from '../hooks/useCertificates'
+import { useEnrollments } from '../hooks/useEnrollments'
+import { useCourses } from '../hooks/useCourses'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import RenewCertificateModal from '../components/organisms/RenewCertificateModal'
 import Card from '../components/molecules/Card'
@@ -63,6 +65,8 @@ export default function CertificatesPage() {
   const [issueModalOpen, setIssueModalOpen] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState<string | number>('')
   const [selectedTypeId, setSelectedTypeId] = useState<string | number>('')
+  const [selectedCourseId, setSelectedCourseId] = useState<string | number>('')
+  const [issueMode, setIssueMode] = useState<'available' | 'in_progress'>('available')
   const [issuedAt, setIssuedAt] = useState('')
   const [validityExtension, setValidityExtension] = useState<number | null>(null)
   const [hours, setHours] = useState<number | null>(null)
@@ -70,6 +74,8 @@ export default function CertificatesPage() {
   function resetIssueForm() {
     setSelectedUserId('')
     setSelectedTypeId('')
+    setSelectedCourseId('')
+    setIssueMode('available')
     setIssuedAt('')
     setValidityExtension(null)
     setHours(null)
@@ -88,9 +94,25 @@ export default function CertificatesPage() {
     { skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
     { enabled: !isAdmin },
   )
+  const { data: pendingCerts, isError: pendingError } = usePendingCertificates(
+    undefined,
+    { enabled: !isAdmin },
+  )
+  const { data: studentCourses } = useCourses({ limit: 2000 }, { enabled: !isAdmin && !!pendingCerts && pendingCerts.length > 0 })
+  const courseTitleMap = useMemo(() => {
+    if (!studentCourses) return {} as Record<number, string>
+    return Object.fromEntries(studentCourses.map((c) => [c.id, c.title]))
+  }, [studentCourses])
   const { data: certTypes } = useCertificateTypes({ limit: 2000 })
   const issueCert = useIssueCertificate()
+  const createPendingCert = useCreatePendingCertificate()
   const updateCert = useUpdateCertificate(editingCert?.id ?? 0)
+  const selectedUserIdNum = Number(selectedUserId)
+  const { data: enrollments } = useEnrollments(
+    { user_id: selectedUserIdNum },
+    { enabled: isAdmin && issueMode === 'in_progress' && selectedUserIdNum > 0 },
+  )
+  const { data: allCourses } = useCourses({ limit: 2000 }, { enabled: isAdmin && issueMode === 'in_progress' })
 
   const isLoading = isAdmin ? loadingCertified : loadingPlain
   const isError = isAdmin ? certifiedError : plainError
@@ -99,6 +121,18 @@ export default function CertificatesPage() {
     if (!certTypes) return {} as Record<number, string>
     return Object.fromEntries(certTypes.map((t) => [t.id, t.name]))
   }, [certTypes])
+
+  const enrolledCourses = useMemo(() => {
+    if (!enrollments || !allCourses) return []
+    const enrolledIds = new Set(enrollments.map((e) => e.course_id))
+    return allCourses
+      .filter((c) => enrolledIds.has(c.id) && c.certificate_type_id != null)
+      .map((c) => ({
+        value: c.id,
+        label: c.title,
+        sublabel: c.certificate_type_id != null ? typeMap[c.certificate_type_id] || 'Tipo' : 'Sin tipo',
+      }))
+  }, [enrollments, allCourses, typeMap])
 
   const referenceMap = useMemo(() => {
     if (!certTypes) return {} as Record<number, string | null>
@@ -153,8 +187,23 @@ export default function CertificatesPage() {
 
   async function handleIssueSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedUserId || !selectedTypeId) return
+    if (!selectedUserId) return
     try {
+      if (issueMode === 'in_progress') {
+        if (!selectedCourseId) return
+        await createPendingCert.mutateAsync({
+          user_id: Number(selectedUserId),
+          course_id: Number(selectedCourseId),
+          issued_at: issuedAt || undefined,
+          validity_extension: validityExtension ?? undefined,
+          hours: hours ?? undefined,
+        })
+        toast.success('Certificado en proceso registrado. Se emitirá al completar el curso.')
+        setIssueModalOpen(false)
+        resetIssueForm()
+        return
+      }
+      if (!selectedTypeId) return
       await issueCert.mutateAsync({
         user_id: Number(selectedUserId),
         certificate_type_id: Number(selectedTypeId),
@@ -164,11 +213,7 @@ export default function CertificatesPage() {
       })
       toast.success('Certificado emitido correctamente')
       setIssueModalOpen(false)
-      setSelectedUserId('')
-      setSelectedTypeId('')
-      setIssuedAt('')
-      setValidityExtension(null)
-      setHours(null)
+      resetIssueForm()
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -353,6 +398,33 @@ export default function CertificatesPage() {
           </div>
         ) : (
           <>
+            {pendingError ? (
+              <ErrorState className="m-4" message="No se pudieron cargar los certificados en proceso." />
+            ) : pendingCerts && pendingCerts.filter((p) => p.status === 'in_progress').length > 0 ? (
+              <div className="border-b border-slate-100">
+                <div className="px-6 py-4">
+                  <h3 className="mb-2 text-sm font-semibold text-slate-900">Certificados en proceso</h3>
+                  <p className="mb-3 text-xs text-slate-500">
+                    Se emitirán automáticamente al completar el 100% del curso.
+                  </p>
+                  <div className="space-y-2">
+                    {pendingCerts.filter((p) => p.status === 'in_progress').map((p) => (
+                      <div key={p.id} className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+                        <div>
+                          <p className="text-sm font-medium text-slate-800">
+                            {courseTitleMap[p.course_id] || `Curso #${p.course_id}`}
+                          </p>
+                          <p className="text-xs text-slate-500">En proceso — se emitirá al completar el curso</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                          En proceso
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
             <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -433,6 +505,34 @@ export default function CertificatesPage() {
       {isAdmin && (
         <Modal open={issueModalOpen} onClose={() => { setIssueModalOpen(false); resetIssueForm() }} title="Adicionar Nuevo Certificado">
           <form onSubmit={handleIssueSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Modo de emisión</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIssueMode('available')}
+                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                    issueMode === 'available' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  Disponible
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIssueMode('in_progress')}
+                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                    issueMode === 'in_progress' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  En proceso
+                </button>
+              </div>
+              {issueMode === 'in_progress' && (
+                <p className="mt-1 text-xs text-slate-500">
+                  El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%.
+                </p>
+              )}
+            </div>
             <SearchableSelect
               label="Usuario"
               options={studentOptions}
@@ -441,20 +541,33 @@ export default function CertificatesPage() {
               placeholder="Buscar estudiante por nombre o identidad..."
               required
             />
-            <SearchableSelect
-              label="Tipo de certificado"
-              options={certTypeOptions}
-              value={selectedTypeId}
-              onChange={setSelectedTypeId}
-              placeholder="Buscar tipo o referencia..."
-              required
-            />
+            {issueMode === 'in_progress' ? (
+              <SearchableSelect
+                label="Curso"
+                options={enrolledCourses}
+                value={selectedCourseId}
+                onChange={setSelectedCourseId}
+                placeholder="Buscar curso con tipo de certificado..."
+                required
+              />
+            ) : (
+              <SearchableSelect
+                label="Tipo de certificado"
+                options={certTypeOptions}
+                value={selectedTypeId}
+                onChange={setSelectedTypeId}
+                placeholder="Buscar tipo o referencia..."
+                required
+              />
+            )}
             <Input label="Fecha de emisión (opcional)" type="date" value={issuedAt} onChange={(e) => setIssuedAt(e.target.value)} />
             <Input label="Extensión de vigencia (años, opcional)" type="number" min={1} value={validityExtension ?? ''} onChange={(e) => setValidityExtension(e.target.value ? Number(e.target.value) : null)} />
             <Input label="Número de horas (opcional)" type="number" min={1} value={hours ?? ''} onChange={(e) => setHours(e.target.value ? Number(e.target.value) : null)} />
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={() => setIssueModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" loading={issueCert.isPending}>Emitir certificado</Button>
+              <Button type="submit" loading={issueCert.isPending || createPendingCert.isPending}>
+                {issueMode === 'in_progress' ? 'Registrar en proceso' : 'Emitir certificado'}
+              </Button>
             </div>
           </form>
         </Modal>

@@ -1,5 +1,5 @@
 import api from './api'
-import type { Certificate, CertificateBatchIssueRequest, CertificateBatchIssueResponse, CertificateIssueRequest, CertificateRenewRequest, CertificateUpdate } from '../types'
+import type { Certificate, CertificateBatchIssueRequest, CertificateBatchIssueResponse, CertificateIssueRequest, CertificateRenewRequest, CertificateUpdate, PendingCertificate, PendingCertificateCreate } from '../types'
 
 export const certificateService = {
   list: async (params?: Record<string, unknown>): Promise<{ items: Certificate[]; total: number }> => {
@@ -45,6 +45,25 @@ export const certificateService = {
     const { data } = await api.get<Blob>(`/certificates/view/${uuid}/qr`, {
       responseType: 'blob',
     })
+    return data
+  },
+
+  listPending: async (params?: Record<string, unknown>): Promise<PendingCertificate[]> => {
+    const { data } = await api.get<PendingCertificate[]>('/certificates/pending', { params })
+    return data
+  },
+
+  createPending: async (payload: PendingCertificateCreate): Promise<PendingCertificate> => {
+    const { data } = await api.post<PendingCertificate>('/certificates/pending', payload)
+    return data
+  },
+
+  deletePending: async (id: number): Promise<void> => {
+    await api.delete(`/certificates/pending/${id}`)
+  },
+
+  forceIssuePending: async (id: number): Promise<Certificate> => {
+    const { data } = await api.post<Certificate>(`/certificates/pending/${id}/force-issue`)
     return data
   },
 }
