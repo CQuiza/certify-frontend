@@ -3,7 +3,6 @@ import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
 import { useCertificates, useUpdateCertificate, useIssueCertificate, useCreatePendingCertificate, usePendingCertificates } from '../hooks/useCertificates'
-import { useEnrollments } from '../hooks/useEnrollments'
 import { useCourses } from '../hooks/useCourses'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import RenewCertificateModal from '../components/organisms/RenewCertificateModal'
@@ -107,11 +106,6 @@ export default function CertificatesPage() {
   const issueCert = useIssueCertificate()
   const createPendingCert = useCreatePendingCertificate()
   const updateCert = useUpdateCertificate(editingCert?.id ?? 0)
-  const selectedUserIdNum = Number(selectedUserId)
-  const { data: enrollments } = useEnrollments(
-    { user_id: selectedUserIdNum },
-    { enabled: isAdmin && issueMode === 'in_progress' && selectedUserIdNum > 0 },
-  )
   const { data: allCourses } = useCourses({ limit: 2000 }, { enabled: isAdmin && issueMode === 'in_progress' })
 
   const isLoading = isAdmin ? loadingCertified : loadingPlain
@@ -122,17 +116,16 @@ export default function CertificatesPage() {
     return Object.fromEntries(certTypes.map((t) => [t.id, t.name]))
   }, [certTypes])
 
-  const enrolledCourses = useMemo(() => {
-    if (!enrollments || !allCourses) return []
-    const enrolledIds = new Set(enrollments.map((e) => e.course_id))
+  const coursesWithCert = useMemo(() => {
+    if (!allCourses) return []
     return allCourses
-      .filter((c) => enrolledIds.has(c.id) && c.certificate_type_id != null)
+      .filter((c) => c.certificate_type_id != null)
       .map((c) => ({
         value: c.id,
         label: c.title,
         sublabel: c.certificate_type_id != null ? typeMap[c.certificate_type_id] || 'Tipo' : 'Sin tipo',
       }))
-  }, [enrollments, allCourses, typeMap])
+  }, [allCourses, typeMap])
 
   const referenceMap = useMemo(() => {
     if (!certTypes) return {} as Record<number, string | null>
@@ -529,7 +522,7 @@ export default function CertificatesPage() {
               </div>
               {issueMode === 'in_progress' && (
                 <p className="mt-1 text-xs text-slate-500">
-                  El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%.
+                  El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%. El curso será asignado al estudiante automáticamente.
                 </p>
               )}
             </div>
@@ -544,7 +537,7 @@ export default function CertificatesPage() {
             {issueMode === 'in_progress' ? (
               <SearchableSelect
                 label="Curso"
-                options={enrolledCourses}
+                options={coursesWithCert}
                 value={selectedCourseId}
                 onChange={setSelectedCourseId}
                 placeholder="Buscar curso con tipo de certificado..."

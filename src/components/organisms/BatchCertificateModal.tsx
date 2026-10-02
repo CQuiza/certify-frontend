@@ -163,7 +163,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
           </div>
           {mode === 'in_progress' && (
             <p className="mt-1 text-xs text-slate-500">
-              El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%.
+              El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%. Los cursos seleccionados serán asignados al estudiante automáticamente.
             </p>
           )}
         </div>
