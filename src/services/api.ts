@@ -32,9 +32,37 @@ function isAuthEndpoint(url: string | undefined): boolean {
   return url.includes('/auth/token') || url.includes('/auth/login')
 }
 
+/** Reporta al backend errores de servidor (5xx) o de red del cliente. Fire-and-forget. */
+function reportClientError(error: AxiosError): void {
+  try {
+    const status = error.response?.status
+    if (status && status < 500) return
+    const cfg = error.config as InternalAxiosRequestConfig | undefined
+    const url = cfg?.url ?? ''
+    if (url.includes('/monitoring/logs')) return
+    const method = (cfg?.method ?? 'GET').toUpperCase()
+    void axios
+      .post(
+        `${config.apiUrl}/monitoring/logs`,
+        {
+          level: 'error',
+          source: 'frontend',
+          event: `${method} ${url} → ${status ?? 'network error'}`.slice(0, 255),
+          detail: (error.response?.data as { detail?: string } | undefined)?.detail ?? error.message,
+          path: typeof window !== 'undefined' ? window.location.pathname : null,
+        },
+        { withCredentials: true },
+      )
+      .catch(() => {})
+  } catch {
+    // noop: nunca debe romper la petición
+  }
+}
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
+    reportClientError(error)
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
 
     if (error.response?.status !== 401 || originalRequest._retry) {

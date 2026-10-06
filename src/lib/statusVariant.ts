@@ -17,3 +17,10 @@ export function auditStatusVariant(s: string): BadgeVariant {
   if (s === 'failed' || s === 'error') return 'danger'
   return 'warning'
 }
+
+export function logLevelVariant(level: string): BadgeVariant {
+  if (level === 'error' || level === 'critical') return 'danger'
+  if (level === 'warning') return 'warning'
+  if (level === 'info') return 'info'
+  return 'default'
+}
