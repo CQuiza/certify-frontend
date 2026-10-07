@@ -70,7 +70,7 @@ export default function AppRouter() {
         <Route path="/courses/:courseId/lessons/:lessonId" element={<RoleGuard roles={coursesRoles}><LessonViewPage /></RoleGuard>} />
         <Route path="/certificate-types" element={<RoleGuard roles={['superuser', 'admin']}><CertificateTypesPage /></RoleGuard>} />
         <Route path="/audit" element={<RoleGuard roles={['superuser', 'admin']}><CertificateAuditPage /></RoleGuard>} />
-        <Route path="/monitoring" element={<RoleGuard roles={['superuser', 'admin']}><MonitoringPage /></RoleGuard>} />
+        <Route path="/monitoring" element={<RoleGuard roles={['superuser']}><MonitoringPage /></RoleGuard>} />
         <Route path="/manual" element={<RoleGuard roles={['superuser', 'admin']}><ManualPage /></RoleGuard>} />
         <Route path="/progress" element={<RoleGuard roles={['superuser', 'admin', 'teacher', 'student']}><ProgressPage /></RoleGuard>} />
         <Route path="/profile" element={<RoleGuard roles={['student']}><ProfilePage /></RoleGuard>} />

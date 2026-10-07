@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
   { label: 'Progreso', path: '/progress', icon: BarChart3, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'Tipos de Certificado', path: '/certificate-types', icon: FileCheck, roles: ['superuser', 'admin'] },
   { label: 'Auditoría', path: '/audit', icon: ClipboardList, roles: ['superuser', 'admin'] },
-  { label: 'Monitoreo', path: '/monitoring', icon: Activity, roles: ['superuser', 'admin'] },
+  { label: 'Monitoreo', path: '/monitoring', icon: Activity, roles: ['superuser'] },
   { label: 'Manual', path: '/manual', icon: BookOpen, roles: ['superuser', 'admin'] },
   { label: 'Configuración', path: '/configuration', icon: Settings, roles: ['superuser'] },
   { label: 'FAQ', path: '/faq', icon: HelpCircle, roles: ['superuser', 'admin', 'teacher', 'student'] },
