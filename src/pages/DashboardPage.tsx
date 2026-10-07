@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext'
+import { usePlatform } from '../hooks/usePlatform'
 import { useDashboardStats } from '../hooks/useDashboard'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
@@ -7,6 +8,7 @@ import { Users, Award, GraduationCap, FileCheck, CheckCircle, XCircle, Clock } f
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const { dashboardMessage } = usePlatform()
   const isStaff = !!user && ['superuser', 'admin', 'teacher'].includes(user.role)
 
   const { data: statsData, isLoading, isError } = useDashboardStats({ enabled: isStaff })
@@ -55,7 +57,7 @@ export default function DashboardPage() {
           Bienvenido, {user?.name || 'Usuario'}
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Panel principal de la plataforma Certify
+          {dashboardMessage || 'Panel principal de la plataforma Certify'}
         </p>
       </div>
 

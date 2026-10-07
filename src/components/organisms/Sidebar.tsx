@@ -1,6 +1,7 @@
 import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3, User, Settings, Activity } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { usePlatform } from '../../hooks/usePlatform'
 import { config } from '../../config'
 import type { UserRole } from '../../types'
 
@@ -35,6 +36,7 @@ interface SidebarProps {
 export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
+  const { logoUrl } = usePlatform()
   const navigate = useNavigate()
 
   const filtered = navItems.filter((item) => {
@@ -47,7 +49,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5">
-        <img src="/certify_logo.png" alt="Certify" className="h-20 w-auto" />
+        <img src={logoUrl ?? '/certify_logo.png'} alt="Logo" className="h-20 w-auto" />
         <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 lg:hidden">
           <X className="h-5 w-5" />
         </button>

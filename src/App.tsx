@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { AuthProvider } from './context/AuthContext'
+import { PlatformProvider } from './context/PlatformContext'
 import AppRouter from './AppRouter'
 import ErrorBoundary from './components/ErrorBoundary'
 
@@ -20,10 +21,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <ErrorBoundary>
-            <AppRouter />
-          </ErrorBoundary>
-          <Toaster richColors closeButton position="top-right" />
+          <PlatformProvider>
+            <ErrorBoundary>
+              <AppRouter />
+            </ErrorBoundary>
+            <Toaster richColors closeButton position="top-right" />
+          </PlatformProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
