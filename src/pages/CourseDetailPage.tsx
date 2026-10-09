@@ -5,6 +5,7 @@ import Skeleton from '../components/atoms/Skeleton'
 import Badge from '../components/atoms/Badge'
 import ErrorState from '../components/atoms/ErrorState'
 import ModuleManager from '../components/organisms/course/ModuleManager'
+import EnrollStudentsCard from '../components/organisms/course/EnrollStudentsCard'
 import { ArrowLeft } from 'lucide-react'
 
 export default function CourseDetailPage() {
@@ -18,6 +19,9 @@ export default function CourseDetailPage() {
   if (loadingCourse) return <div className="p-6 lg:p-8 space-y-4"><Skeleton count={3} className="h-8 w-full" /></div>
   if (isError) return <div className="p-6 lg:p-8"><ErrorState message="No se pudo cargar el curso. Inténtalo de nuevo." /></div>
   if (!course) return <div className="p-6 lg:p-8"><p className="text-slate-500">Curso no encontrado</p></div>
+
+  const isAdmin = user?.role === 'superuser' || user?.role === 'admin'
+  const canAdminister = isAdmin || user?.id === course.teacher_id
 
   return (
     <div className="p-6 lg:p-8">
@@ -35,6 +39,12 @@ export default function CourseDetailPage() {
       </div>
 
       <ModuleManager courseId={id} canManage={!!canManage} />
+
+      {canAdminister && (
+        <div className="mt-6">
+          <EnrollStudentsCard courseId={id} />
+        </div>
+      )}
     </div>
   )
 }

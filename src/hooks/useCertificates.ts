@@ -1,8 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { certificateService } from '../services/certificateService'
 import type { CertificateBatchIssueRequest, CertificateIssueRequest, CertificateRenewRequest, CertificateUpdate, PendingCertificateCreate } from '../types'
 
 const QUERY_KEY = ['certificates']
+
+function invalidateCertificates(queryClient: QueryClient) {
+  queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+  // La vista admin agrupa por estudiante (useCertifiedUsers) y el dashboard muestra conteos.
+  queryClient.invalidateQueries({ queryKey: ['users'] })
+  queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] })
+}
 
 export function useCertificates(params?: Record<string, unknown>, options?: { enabled?: boolean }) {
   return useQuery({
@@ -24,7 +31,7 @@ export function useIssueCertificate() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: CertificateIssueRequest) => certificateService.issue(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: () => invalidateCertificates(queryClient),
   })
 }
 
@@ -32,7 +39,7 @@ export function useUpdateCertificate(id: number) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: CertificateUpdate) => certificateService.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: () => invalidateCertificates(queryClient),
   })
 }
 
@@ -40,7 +47,7 @@ export function useRenewCertificate(id: number) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: CertificateRenewRequest) => certificateService.renew(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: () => invalidateCertificates(queryClient),
   })
 }
 
@@ -48,7 +55,7 @@ export function useDeleteCertificate() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => certificateService.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: () => invalidateCertificates(queryClient),
   })
 }
 
@@ -56,7 +63,7 @@ export function useBatchIssueCertificates() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: CertificateBatchIssueRequest) => certificateService.issueBatch(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: () => invalidateCertificates(queryClient),
   })
 }
 
@@ -82,7 +89,7 @@ export function useCreatePendingCertificate() {
     mutationFn: (data: PendingCertificateCreate) => certificateService.createPending(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-certificates'] })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      invalidateCertificates(queryClient)
     },
   })
 }
@@ -101,7 +108,7 @@ export function useForceIssuePendingCertificate() {
     mutationFn: (id: number) => certificateService.forceIssuePending(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-certificates'] })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      invalidateCertificates(queryClient)
     },
   })
 }
