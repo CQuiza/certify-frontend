@@ -20,6 +20,7 @@ import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 import ConfigurationPage from './pages/ConfigurationPage'
 import MonitoringPage from './pages/MonitoringPage'
+import TenantsPage from './pages/TenantsPage'
 import DashboardLayout from './components/organisms/DashboardLayout'
 import type { ReactNode } from 'react'
 import type { UserRole } from './types'
@@ -71,6 +72,7 @@ export default function AppRouter() {
         <Route path="/certificate-types" element={<RoleGuard roles={['superuser', 'admin']}><CertificateTypesPage /></RoleGuard>} />
         <Route path="/audit" element={<RoleGuard roles={['superuser', 'admin']}><CertificateAuditPage /></RoleGuard>} />
         <Route path="/monitoring" element={<RoleGuard roles={['superuser']}><MonitoringPage /></RoleGuard>} />
+        <Route path="/admin/tenants" element={<RoleGuard roles={['superuser']}><TenantsPage /></RoleGuard>} />
         <Route path="/manual" element={<RoleGuard roles={['superuser', 'admin']}><ManualPage /></RoleGuard>} />
         <Route path="/progress" element={<RoleGuard roles={['superuser', 'admin', 'teacher', 'student']}><ProgressPage /></RoleGuard>} />
         <Route path="/profile" element={<RoleGuard roles={['student']}><ProfilePage /></RoleGuard>} />

@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3, User, Settings, Activity } from 'lucide-react'
+import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3, User, Settings, Activity, Building2 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { usePlatform } from '../../hooks/usePlatform'
@@ -23,6 +23,7 @@ const navItems: NavItem[] = [
   { label: 'Tipos de Certificado', path: '/certificate-types', icon: FileCheck, roles: ['superuser', 'admin'] },
   { label: 'Auditoría', path: '/audit', icon: ClipboardList, roles: ['superuser', 'admin'] },
   { label: 'Monitoreo', path: '/monitoring', icon: Activity, roles: ['superuser'] },
+  { label: 'Organizaciones', path: '/admin/tenants', icon: Building2, roles: ['superuser'] },
   { label: 'Manual', path: '/manual', icon: BookOpen, roles: ['superuser', 'admin'] },
   { label: 'Configuración', path: '/configuration', icon: Settings, roles: ['superuser'] },
   { label: 'FAQ', path: '/faq', icon: HelpCircle, roles: ['superuser', 'admin', 'teacher', 'student'] },

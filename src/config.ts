@@ -4,7 +4,8 @@ export const config = {
   showTeacherRole: import.meta.env.VITE_SHOW_TEACHER_ROLE?.toLowerCase() === 'true',
   appName: import.meta.env.VITE_APP_NAME || 'Certify',
   appDescription: import.meta.env.VITE_APP_DESCRIPTION || 'Plataforma de Certificación',
-  contactPhone: import.meta.env.VITE_CONTACT_PHONE || '+57 312 537 0218',
+contactPhone: import.meta.env.VITE_CONTACT_PHONE || '+57 312 537 0218',
   contactEmail: import.meta.env.VITE_CONTACT_EMAIL || 'contacto@certify.com',
   cityCountry: import.meta.env.VITE_CONTACT_CITY_COUNTRY || 'Bogotá, Colombia',
+  rootDomain: import.meta.env.VITE_ROOT_DOMAIN || '',
 } as const
