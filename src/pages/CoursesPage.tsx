@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCourses, useCourse, useCreateCourse, useUpdateCourse } from '../hooks/useCourses'
@@ -6,6 +6,7 @@ import { useUsers } from '../hooks/useUsers'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import Card from '../components/molecules/Card'
 import Modal from '../components/molecules/Modal'
+import SearchBar from '../components/molecules/SearchBar'
 import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
@@ -38,7 +39,19 @@ export default function CoursesPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
 
-  const { data: courses, isLoading, isError } = useCourses({ limit: 2000 })
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  useEffect(() => {
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+    return () => clearTimeout(searchTimer.current)
+  }, [search])
+
+  const { data: courses, isLoading, isError } = useCourses({ limit: 2000, search: debouncedSearch || undefined })
   const { data: fullCourse } = useCourse(editing?.id ?? 0)
   const { data: teachers } = useUsers({ role: 'teacher', limit: 2000 }, { enabled: !!canManage })
   const { data: certTypes } = useCertificateTypes(undefined, { enabled: !!canManage })
@@ -121,12 +134,24 @@ export default function CoursesPage() {
 
       {isError && <ErrorState className="mb-6" />}
 
-      {isLoading ? (
-        <div className="space-y-4"><Skeleton count={5} className="h-16 w-full rounded-lg" /></div>
-      ) : !courses || courses.length === 0 ? (
-        <Card><p className="py-8 text-center text-sm text-slate-500">No hay cursos disponibles</p></Card>
-      ) : (
-        <div className="space-y-2">
+      <Card padding={false}>
+        <div className="border-b border-slate-200 px-4 py-3">
+          <SearchBar
+            value={search}
+            onChange={(v) => setSearch(v)}
+            placeholder="Buscar por título o descripción..."
+          />
+        </div>
+        {isLoading ? (
+          <div className="space-y-4 p-6"><Skeleton count={5} className="h-16 w-full rounded-lg" /></div>
+        ) : !courses || courses.length === 0 ? (
+          <div className="p-6">
+            <p className="py-8 text-center text-sm text-slate-500">
+              {debouncedSearch ? 'No se encontraron cursos para tu búsqueda.' : 'No hay cursos disponibles'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2 p-4 sm:p-6">
           {(courses as Course[]).map((c) => {
             const isOpen = expandedId === c.id
             return (
@@ -175,8 +200,9 @@ export default function CoursesPage() {
               </div>
             )
           })}
-        </div>
-      )}
+          </div>
+        )}
+      </Card>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Editar curso' : 'Nuevo curso'}>
         <form onSubmit={handleSubmit} className="space-y-4">
