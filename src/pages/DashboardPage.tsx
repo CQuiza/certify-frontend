@@ -1,17 +1,20 @@
 import { useAuth } from '../context/AuthContext'
 import { usePlatform } from '../hooks/usePlatform'
-import { useDashboardStats } from '../hooks/useDashboard'
+import { useDashboardStats, useDashboardAdmins } from '../hooks/useDashboard'
 import Card from '../components/molecules/Card'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
-import { Users, Award, GraduationCap, FileCheck, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Users, Award, GraduationCap, FileCheck, CheckCircle, XCircle, Clock, BarChart3, ShieldCheck } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const { dashboardMessage } = usePlatform()
   const isStaff = !!user && ['superuser', 'admin', 'teacher'].includes(user.role)
+  const isAdmin = !!user && ['superuser', 'admin'].includes(user.role)
 
   const { data: statsData, isLoading, isError } = useDashboardStats({ enabled: isStaff })
+  const { data: admins, isLoading: loadingAdmins } = useDashboardAdmins({ enabled: isAdmin })
 
   const stats = [
     {
@@ -105,6 +108,53 @@ export default function DashboardPage() {
           )
         })}
       </div>
+
+      {isAdmin && (
+        <>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-slate-900">Administradores</h2>
+            <Link
+              to="/reports"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Reportes
+            </Link>
+          </div>
+          <Card className="mt-2" padding={false}>
+            {loadingAdmins ? (
+              <div className="space-y-3 p-6"><Skeleton count={3} className="h-10 w-full" /></div>
+            ) : !admins || admins.length === 0 ? (
+              <p className="px-6 py-6 text-sm text-slate-500">No hay administradores registrados.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-200 bg-slate-50/50">
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Código</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Nombres</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Documento</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Correo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Teléfono</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {admins.map((a) => (
+                      <tr key={a.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-3"><span className="inline-flex items-center gap-1.5 font-mono text-xs text-indigo-600"><ShieldCheck className="h-3.5 w-3.5" />{String(a.id).padStart(4, '0')}</span></td>
+                        <td className="px-6 py-3 text-slate-800">{`${a.name} ${a.first_last_name || ''} ${a.second_last_name || ''}`.trim()}</td>
+                        <td className="px-6 py-3 text-slate-600">{`${a.identity_type} ${a.identity_number}`}</td>
+                        <td className="px-6 py-3 text-slate-600">{a.email}</td>
+                        <td className="px-6 py-3 text-slate-600">{a.phone_number}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        </>
+      )}
     </div>
   )
 }

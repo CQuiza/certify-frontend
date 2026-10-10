@@ -10,3 +10,11 @@ export function useDashboardStats(options?: { enabled?: boolean }) {
     ...options,
   })
 }
+
+export function useDashboardAdmins(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['dashboard-admins'],
+    queryFn: () => dashboardService.getAdmins(),
+    ...options,
+  })
+}
