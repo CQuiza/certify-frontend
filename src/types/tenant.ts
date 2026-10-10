@@ -22,3 +22,14 @@ export interface TenantCreate {
 export interface TenantStatusUpdate {
   is_active: boolean
 }
+
+export interface ActingTenant {
+  tenant_id: number | null
+  slug: string | null
+}
+
+export interface ImpersonateResult {
+  detail: string
+  tenant_id: number
+  slug: string
+}

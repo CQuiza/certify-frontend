@@ -27,3 +27,23 @@ export function useUpdateTenantStatus() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
   })
 }
+
+export function useImpersonateTenant() {
+  return useMutation({
+    mutationFn: (id: number) => tenantService.impersonate(id),
+  })
+}
+
+export function useStopImpersonation() {
+  return useMutation({
+    mutationFn: () => tenantService.stop(),
+  })
+}
+
+export function useActingTenant(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['admin', 'acting-tenant'],
+    queryFn: () => tenantService.acting(),
+    ...options,
+  })
+}

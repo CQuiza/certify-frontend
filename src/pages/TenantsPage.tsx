@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { useTenants, useCreateTenant, useUpdateTenantStatus } from '../hooks/useTenants'
+import { useTenants, useCreateTenant, useUpdateTenantStatus, useImpersonateTenant } from '../hooks/useTenants'
 import Card from '../components/molecules/Card'
 import Modal from '../components/molecules/Modal'
 import Button from '../components/atoms/Button'
@@ -9,7 +9,7 @@ import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { config } from '../config'
-import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff } from 'lucide-react'
+import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff, Eye } from 'lucide-react'
 import { formatDate } from '../lib/dates'
 import { getErrorMessage } from '../lib/error'
 import type { TenantCreate } from '../types/tenant'
@@ -28,6 +28,7 @@ export default function TenantsPage() {
   const { data: tenants, isLoading, isError } = useTenants()
   const createTenant = useCreateTenant()
   const updateStatus = useUpdateTenantStatus()
+  const impersonate = useImpersonateTenant()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<TenantCreate>(emptyForm)
@@ -60,6 +61,21 @@ export default function TenantsPage() {
     try {
       await updateStatus.mutateAsync({ id: t.id, payload: { is_active: !t.is_active } })
       toast.success(t.is_active ? 'Organización desactivada' : 'Organización activada')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
+  async function handleImpersonate(t: { id: number; slug: string; name: string }) {
+    try {
+      await impersonate.mutateAsync(t.id)
+      toast.success(`Entrando a ${t.name}`)
+      // La cookie acting_tenant se comparte por subdominios (navegador).
+      if (config.rootDomain && t.slug !== 'default') {
+        window.location.assign(`https://${t.slug}.${config.rootDomain}`)
+      } else {
+        window.location.reload()
+      }
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -127,7 +143,15 @@ export default function TenantsPage() {
                       <Badge variant={t.is_active ? 'success' : 'danger'}>{t.is_active ? 'Activa' : 'Inactiva'}</Badge>
                     </td>
                     <td className="px-6 py-3">
-                      <div className="flex justify-end">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => handleImpersonate(t)}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+                          title="Entrar al tenant como superuser"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          Ver como
+                        </button>
                         <button
                           onClick={() => handleToggle(t)}
                           disabled={t.slug === 'default'}
