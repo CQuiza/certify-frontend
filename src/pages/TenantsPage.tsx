@@ -9,9 +9,10 @@ import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { config } from '../config'
-import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff, Eye } from 'lucide-react'
+import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff, Eye, Database } from 'lucide-react'
 import { formatDate } from '../lib/dates'
 import { getErrorMessage } from '../lib/error'
+import { tenantService } from '../services/tenantService'
 import type { TenantCreate } from '../types/tenant'
 
 const subdomainSuffix = config.rootDomain ? `.${config.rootDomain}` : ''
@@ -76,6 +77,15 @@ export default function TenantsPage() {
       } else {
         window.location.reload()
       }
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
+  async function handleBackup(t: { id: number; slug: string }) {
+    try {
+      await tenantService.downloadBackup(t.id, `backup_${t.slug}.sql`)
+      toast.success('Backup descargado')
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -151,6 +161,14 @@ export default function TenantsPage() {
                         >
                           <Eye className="h-3.5 w-3.5" />
                           Ver como
+                        </button>
+                        <button
+                          onClick={() => handleBackup(t)}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
+                          title="Descargar backup SQL de la base de datos"
+                        >
+                          <Database className="h-3.5 w-3.5" />
+                          Backup
                         </button>
                         <button
                           onClick={() => handleToggle(t)}

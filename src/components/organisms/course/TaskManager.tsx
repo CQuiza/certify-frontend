@@ -5,8 +5,9 @@ import { useTasksByLesson, useCreateTask, useUpdateTask, useDeleteTask, useUploa
 import Modal from '../../molecules/Modal'
 import Button from '../../atoms/Button'
 import Input from '../../atoms/Input'
+import TaskSubmissions from './TaskSubmissions'
 import { downloadTaskFile } from '../../../lib/download'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2, Inbox } from 'lucide-react'
 import type { Task, TaskCreate, TaskUpdate } from '../../../types'
 
 interface TaskManagerProps {
@@ -28,6 +29,7 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
   const [newTaskDesc, setNewTaskDesc] = useState('')
   const [newTaskGoogleDrive, setNewTaskGoogleDrive] = useState('')
   const [uploadFile, setUploadFile] = useState<File | null>(null)
+  const [openSubmissionsTaskId, setOpenSubmissionsTaskId] = useState<number | null>(null)
 
   function handleEdit(task: Task) {
     setEditingTask(task)
@@ -99,31 +101,45 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
             <p className="text-sm text-slate-500">No hay tareas aún.</p>
           ) : (
             tasks.map((t) => (
-              <div key={t.id} className="flex items-start justify-between rounded-lg border border-slate-200 p-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-slate-900">{t.title}</p>
-                  {t.description && <p className="text-xs text-slate-500 mt-0.5">{t.description}</p>}
-                  <div className="mt-1 flex gap-2 text-xs text-slate-400">
-                    {t.file_type === 'google_drive' && t.google_drive_link && (
-                      <a href={t.google_drive_link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Google Drive</a>
-                    )}
-                    {t.file_type === 'upload' && t.file_url && (
-                      <button onClick={() => downloadTaskFile(t.id)} className="text-indigo-600 hover:underline text-xs">Descargar archivo</button>
-                    )}
+              <div key={t.id} className="rounded-lg border border-slate-200 p-3">
+                <div className="flex items-start justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-slate-900">{t.title}</p>
+                    {t.description && <p className="text-xs text-slate-500 mt-0.5">{t.description}</p>}
+                    <div className="mt-1 flex gap-2 text-xs text-slate-400">
+                      {t.file_type === 'google_drive' && t.google_drive_link && (
+                        <a href={t.google_drive_link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Google Drive</a>
+                      )}
+                      {t.file_type === 'upload' && t.file_url && (
+                        <button onClick={() => downloadTaskFile(t.id)} className="text-indigo-600 hover:underline text-xs">Descargar archivo</button>
+                      )}
+                    </div>
                   </div>
+                  {canManage && (
+                    <div className="flex gap-1 shrink-0">
+                      <button
+                        onClick={() => setOpenSubmissionsTaskId(openSubmissionsTaskId === t.id ? null : t.id)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                        title="Ver entregas y calificar"
+                      >
+                        <Inbox className="h-4 w-4" />
+                      </button>
+                      <button onClick={() => handleEdit(t)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar tarea">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => deleteTask.mutateAsync(t.id).then(() => toast.success('Tarea eliminada')).catch((e) => toast.error(e.message))}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        title="Eliminar tarea"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {canManage && (
-                  <div className="flex gap-1 shrink-0">
-                    <button onClick={() => handleEdit(t)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar tarea">
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => deleteTask.mutateAsync(t.id).then(() => toast.success('Tarea eliminada')).catch((e) => toast.error(e.message))}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
-                      title="Eliminar tarea"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                {openSubmissionsTaskId === t.id && (
+                  <div className="mt-3 border-t border-slate-100 pt-3">
+                    <TaskSubmissions taskId={t.id} />
                   </div>
                 )}
               </div>

@@ -1,5 +1,5 @@
 import api from './api'
-import type { TaskSubmission, TaskSubmissionWithUser } from '../types'
+import type { GradeRequest, TaskSubmission, TaskSubmissionWithUser } from '../types'
 
 export const taskSubmissionService = {
   submit: async (taskId: number, file: File): Promise<TaskSubmission> => {
@@ -13,6 +13,11 @@ export const taskSubmissionService = {
 
   listByTask: async (taskId: number): Promise<TaskSubmissionWithUser[]> => {
     const { data } = await api.get<TaskSubmissionWithUser[]>(`/tasks/${taskId}/submissions`)
+    return data
+  },
+
+  grade: async (submissionId: number, payload: GradeRequest): Promise<TaskSubmission> => {
+    const { data } = await api.patch<TaskSubmission>(`/submissions/${submissionId}/grade`, payload)
     return data
   },
 

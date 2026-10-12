@@ -37,4 +37,14 @@ export const tenantService = {
     const { data } = await api.get<ActingTenant>('/admin/tenants/acting')
     return data
   },
+
+  downloadBackup: async (id: number, preferredName?: string): Promise<void> => {
+    const res = await api.get(`/admin/tenants/${id}/backup-sql`, { responseType: 'blob' })
+    const url = URL.createObjectURL(res.data as Blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = preferredName || `backup-${id}.sql`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
 }

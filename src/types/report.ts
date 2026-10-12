@@ -3,11 +3,19 @@ export interface ReportColumn {
   label: string
 }
 
+export interface ReportChartConfig {
+  kind: 'bar' | 'line' | 'pie'
+  x: string | null
+  count?: boolean
+  numericKeys: string[]
+}
+
 export interface ReportMeta {
   key: string
   title: string
   description: string
   columns: ReportColumn[]
+  chart: ReportChartConfig
 }
 
 export interface ReportResult {
@@ -15,6 +23,7 @@ export interface ReportResult {
   title: string
   columns: ReportColumn[]
   rows: Record<string, unknown>[]
+  chart: ReportChartConfig
 }
 
 export interface RunReportParams {
