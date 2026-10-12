@@ -7,6 +7,8 @@ import type {
   EmailTemplateKind,
   EmailTemplateUpdate,
   OrganizationUpdate,
+  PaymentsSettings,
+  PaymentsSettingsUpdate,
 } from '../types/configuration'
 
 const QUERY_KEY = ['configuration', 'certificate-template']
@@ -125,4 +127,23 @@ export function useRestoreEmailTemplate() {
   })
 }
 
-export type { EmailSettings }
+// ── Pagos / Mercado Pago ────────────────────────────────────────────────────
+
+const PAYMENTS_KEY = ['configuration', 'payments']
+
+export function usePaymentsSettings() {
+  return useQuery({
+    queryKey: PAYMENTS_KEY,
+    queryFn: () => configurationService.getPaymentsSettings(),
+  })
+}
+
+export function useUpdatePaymentsSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: PaymentsSettingsUpdate) => configurationService.updatePaymentsSettings(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PAYMENTS_KEY }),
+  })
+}
+
+export type { EmailSettings, PaymentsSettings }

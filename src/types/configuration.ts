@@ -63,3 +63,16 @@ export const EMAIL_TEMPLATE_LABELS: Record<EmailTemplateKind, string> = {
   certificate_issued: 'Certificado emitido',
   certificate_expired: 'Certificado expirado',
 }
+
+export interface PaymentsSettings {
+  mercadopago_enabled: boolean
+  mercadopago_marketplace_user_id: string | null
+  commission_percent: number
+  commission_fixed: string
+  currency: string
+}
+
+export interface PaymentsSettingsUpdate {
+  mercadopago_enabled?: boolean
+  mercadopago_marketplace_user_id?: string | null
+}

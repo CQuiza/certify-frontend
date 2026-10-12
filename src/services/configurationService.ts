@@ -9,6 +9,8 @@ import type {
   EmailTemplateUpdate,
   EmailTemplatesList,
   OrganizationUpdate,
+  PaymentsSettings,
+  PaymentsSettingsUpdate,
 } from '../types/configuration'
 
 export interface CertificateTemplateInfo {
@@ -38,6 +40,17 @@ export const configurationService = {
 
   restoreTemplate: async (): Promise<{ detail: string }> => {
     const { data } = await api.delete<{ detail: string }>('/configuration/certificate-template')
+    return data
+  },
+
+  // ── Pagos / Mercado Pago ──────────────────────────────────
+  getPaymentsSettings: async (): Promise<PaymentsSettings> => {
+    const { data } = await api.get<PaymentsSettings>('/configuration/payments')
+    return data
+  },
+
+  updatePaymentsSettings: async (payload: PaymentsSettingsUpdate): Promise<PaymentsSettings> => {
+    const { data } = await api.put<PaymentsSettings>('/configuration/payments', payload)
     return data
   },
 

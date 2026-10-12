@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import { FileText, Settings, Building2, Mail } from 'lucide-react'
+import { FileText, Settings, Building2, Mail, CreditCard } from 'lucide-react'
 import CertificateConfiguration from '../components/organisms/configuration/CertificateConfiguration'
 import OrganizationConfiguration from '../components/organisms/configuration/OrganizationConfiguration'
 import EmailConfiguration from '../components/organisms/configuration/EmailConfiguration'
+import PaymentsConfiguration from '../components/organisms/configuration/PaymentsConfiguration'
 
-type ConfigTabId = 'certificate' | 'organization' | 'email'
+type ConfigTabId = 'certificate' | 'organization' | 'email' | 'payments'
 
 const tabs: { id: ConfigTabId; label: string; icon: typeof FileText }[] = [
   { id: 'certificate', label: 'Certificado', icon: FileText },
   { id: 'organization', label: 'Organización', icon: Building2 },
   { id: 'email', label: 'Correo', icon: Mail },
+  { id: 'payments', label: 'Pagos', icon: CreditCard },
 ]
 
 export default function ConfigurationPage() {
@@ -49,6 +51,7 @@ export default function ConfigurationPage() {
       {tab === 'certificate' && <CertificateConfiguration />}
       {tab === 'organization' && <OrganizationConfiguration />}
       {tab === 'email' && <EmailConfiguration />}
+      {tab === 'payments' && <PaymentsConfiguration />}
     </div>
   )
 }
