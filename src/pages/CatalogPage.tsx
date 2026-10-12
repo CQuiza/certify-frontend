@@ -9,7 +9,7 @@ import { config } from '../config'
 import { formatCurrency, waLink } from '../types/course'
 
 export default function CatalogPage() {
-  const { data: courses, isLoading, isError } = useCourses({ limit: 50 })
+  const { data: courses, isLoading, isError } = useCourses({ limit: 50, catalog: true })
   const { items, add } = useCart()
   const count = items.length
 
