@@ -10,6 +10,16 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>
+  register: (data: {
+    email: string
+    password: string
+    name: string
+    first_last_name?: string
+    second_last_name?: string | null
+    identity_type?: string
+    identity_number: string
+    phone_number: string
+  }) => Promise<void>
   logout: () => void
 }
 
@@ -80,6 +90,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [navigate],
   )
 
+  const register = useCallback(
+    async (data: {
+      email: string
+      password: string
+      name: string
+      first_last_name?: string
+      second_last_name?: string | null
+      identity_type?: string
+      identity_number: string
+      phone_number: string
+    }) => {
+      const token = await authService.register(data)
+      setRefreshToken(token.refresh_token ?? null)
+
+      const u = await authService.getMe<User>()
+      if (u) storeMinimalUser(u)
+      setUser(u)
+      navigate('/dashboard')
+    },
+    [navigate],
+  )
+
   const logout = useCallback(async () => {
     try {
       await authService.logout()
@@ -93,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [navigate])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

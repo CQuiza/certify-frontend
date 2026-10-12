@@ -12,6 +12,20 @@ export function getRefreshToken(): string | null {
 }
 
 export const authService = {
+  register: async (data: {
+    email: string
+    password: string
+    name: string
+    first_last_name?: string
+    second_last_name?: string | null
+    identity_type?: string
+    identity_number: string
+    phone_number: string
+  }): Promise<Token> => {
+    const { data: response } = await api.post<Token>('/auth/register', data)
+    return response
+  },
+
   login: async (data: LoginRequest): Promise<Token> => {
     const formData = new URLSearchParams()
     formData.append('username', data.username)

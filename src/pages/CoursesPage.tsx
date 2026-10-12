@@ -26,9 +26,11 @@ interface FormData {
   status: string
   teacher_id: number
   certificate_type_id: number
+  price: string
+  is_for_sale: boolean
 }
 
-const emptyForm: FormData = { title: '', description: '', status: 'draft', teacher_id: 0, certificate_type_id: 0 }
+const emptyForm: FormData = { title: '', description: '', status: 'draft', teacher_id: 0, certificate_type_id: 0, price: '', is_for_sale: false }
 
 export default function CoursesPage() {
   const { user } = useAuth()
@@ -66,6 +68,8 @@ export default function CoursesPage() {
         status: fullCourse.status,
         teacher_id: fullCourse.teacher_id ?? 0,
         certificate_type_id: fullCourse.certificate_type_id ?? 0,
+        price: fullCourse.price != null ? String(fullCourse.price) : '',
+        is_for_sale: fullCourse.is_for_sale,
       })
     }
   }, [fullCourse])
@@ -84,6 +88,8 @@ export default function CoursesPage() {
       status: c.status,
       teacher_id: 0,
       certificate_type_id: 0,
+      price: c.price != null ? String(c.price) : '',
+      is_for_sale: c.is_for_sale,
     })
     setModalOpen(true)
   }
@@ -96,6 +102,8 @@ export default function CoursesPage() {
       status: form.status as Course['status'],
       teacher_id: form.teacher_id || null,
       certificate_type_id: form.certificate_type_id || null,
+      price: form.price ? Number(form.price) : 0,
+      is_for_sale: form.is_for_sale,
     }
     try {
       if (editing) {
@@ -240,6 +248,13 @@ export default function CoursesPage() {
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
               {Object.values(CourseStatus).map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Precio (COP, 0 = sin venta)" type="number" min={0} value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="50000" />
+            <label className="flex items-end gap-2 pb-2">
+              <input type="checkbox" checked={form.is_for_sale} onChange={(e) => setForm({ ...form, is_for_sale: e.target.checked })} className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+              <span className="text-sm text-slate-700">Disponible para compra</span>
+            </label>
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" type="button" onClick={() => setModalOpen(false)}>Cancelar</Button>

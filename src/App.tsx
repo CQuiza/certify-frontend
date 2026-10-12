@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { AuthProvider } from './context/AuthContext'
 import { PlatformProvider } from './context/PlatformContext'
+import { CartProvider } from './context/CartContext'
 import AppRouter from './AppRouter'
 import ErrorBoundary from './components/ErrorBoundary'
 
@@ -22,10 +23,12 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <PlatformProvider>
-            <ErrorBoundary>
-              <AppRouter />
-            </ErrorBoundary>
-            <Toaster richColors closeButton position="top-right" />
+            <CartProvider>
+              <ErrorBoundary>
+                <AppRouter />
+              </ErrorBoundary>
+              <Toaster richColors closeButton position="top-right" />
+            </CartProvider>
           </PlatformProvider>
         </AuthProvider>
       </BrowserRouter>

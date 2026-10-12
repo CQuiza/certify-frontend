@@ -6,6 +6,9 @@ import CatalogPage from './pages/CatalogPage'
 import SearchPage from './pages/SearchPage'
 import FaqPage from './pages/FaqPage'
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import CartPage from './pages/CartPage'
+import PaymentResultPage from './pages/PaymentResultPage'
 import DashboardPage from './pages/DashboardPage'
 import UsersPage from './pages/UsersPage'
 import UserCertificatesPanel from './pages/UserCertificatesPanel'
@@ -51,6 +54,9 @@ export default function AppRouter() {
       <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/payments/order/:orderId" element={<PaymentResultPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/faq" element={<FaqPage />} />
       <Route
         path="/login"

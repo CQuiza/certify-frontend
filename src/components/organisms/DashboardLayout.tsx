@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 import Sidebar from '../organisms/Sidebar'
+import WhatsAppButton from '../organisms/WhatsAppButton'
 import { useAuth } from '../../context/AuthContext'
 import { useActingTenant, useStopImpersonation } from '../../hooks/useTenants'
 import { config } from '../../config'
@@ -66,6 +67,8 @@ export default function DashboardLayout() {
 
         <Outlet />
       </main>
+
+      <WhatsAppButton />
 
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/30 lg:hidden" onClick={() => setSidebarOpen(false)} />

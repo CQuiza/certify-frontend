@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { config } from '../config'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
+import { Link } from 'react-router-dom'
 import { getErrorMessage } from '../lib/error'
 
 export default function LoginPage() {
@@ -62,6 +63,10 @@ export default function LoginPage() {
             <Button type="submit" loading={loading} className="w-full">
               Iniciar sesión
             </Button>
+            <p className="text-center text-sm text-slate-500">
+              ¿Eres estudiante y no tienes cuenta?{' '}
+              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-700">Crea una aquí</Link>
+            </p>
           </form>
         </div>
       </div>
