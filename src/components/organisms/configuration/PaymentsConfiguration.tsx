@@ -86,10 +86,10 @@ function PaymentsForm({ initial }: { initial: PaymentsSettings }) {
           </p>
         </div>
         <p className="text-xs text-slate-500">
-          El dinero llegará a la cuenta de Mercado Pago de esta organización mediante el split; la
-          plataforma retiene su comisión definida en el servidor (
-          <code className="rounded bg-slate-100 px-1">PLATFORM_COMMISSION_PERCENT</code> /{' '}
-          <code className="rounded bg-slate-100 px-1">PLATFORM_COMMISSION_FIXED</code>).
+          <strong>Modo split (SaaS):</strong> con ID de vendedor, el dinero llega a la cuenta de MP de esta
+          organización y la plataforma retiene su comisión. <strong>Modo directo (single):</strong> si dejas el ID
+          vacío, todo el dinero llega a la cuenta de la plataforma (la del&nbsp;
+          <code className="rounded bg-slate-100 px-1">MERCADOPAGO_ACCESS_TOKEN</code>), sin split.
         </p>
 
         <Button onClick={handleSave} loading={update.isPending}>
