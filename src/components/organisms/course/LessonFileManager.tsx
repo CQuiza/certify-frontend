@@ -9,6 +9,12 @@ import {
 } from '../../../hooks/useLessonFiles'
 import Modal from '../../molecules/Modal'
 import { Trash2, FileText, Upload } from 'lucide-react'
+import {
+  isAllowedLessonFile,
+  LESSON_FILE_ACCEPT,
+  LESSON_FILE_MAX_SIZE_BYTES,
+  LESSON_FILE_MAX_SIZE_MB,
+} from '../../../lib/lessonFiles'
 
 interface LessonFileManagerProps {
   lessonId: number | null
@@ -24,10 +30,18 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
   const deleteFile = useDeleteLessonFile()
 
   const [uploading, setUploading] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
 
-  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file || !lessonId) return
+  async function uploadFileFrom(file: File) {
+    if (!lessonId || uploading) return
+    if (!isAllowedLessonFile(file)) {
+      toast.error('Tipo de archivo no permitido')
+      return
+    }
+    if (file.size > LESSON_FILE_MAX_SIZE_BYTES) {
+      toast.error(`El archivo supera el límite de ${LESSON_FILE_MAX_SIZE_MB} MB`)
+      return
+    }
 
     setUploading(true)
     try {
@@ -45,8 +59,21 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
       toast.error(err instanceof Error ? err.message : 'Error al subir archivo')
     } finally {
       setUploading(false)
-      e.target.value = ''
     }
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) void uploadFileFrom(file)
+    e.target.value = ''
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault()
+    setIsDragging(false)
+    if (uploading) return
+    const file = e.dataTransfer.files?.[0]
+    if (file) void uploadFileFrom(file)
   }
 
   async function handleDelete(fileId: number) {
@@ -91,10 +118,39 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
 
         {canManage && (
           <div className="border-t border-slate-200 pt-4">
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm text-slate-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
+            <label
+              onDragOver={(e) => {
+                e.preventDefault()
+                if (!uploading) setIsDragging(true)
+              }}
+              onDragEnter={(e) => {
+                e.preventDefault()
+                if (!uploading) setIsDragging(true)
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault()
+                setIsDragging(false)
+              }}
+              onDrop={handleDrop}
+              className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-4 text-sm transition-colors ${
+                isDragging
+                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                  : 'border-slate-300 bg-slate-50 text-slate-600 hover:border-indigo-400 hover:bg-indigo-50'
+              } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
+            >
               <Upload className="h-5 w-5" />
-              {uploading ? 'Subiendo...' : 'Subir archivo'}
-              <input type="file" className="hidden" onChange={handleFileSelect} disabled={uploading} />
+              {uploading
+                ? 'Subiendo...'
+                : isDragging
+                  ? 'Suelta el archivo aquí'
+                  : 'Subir archivo (o arrástralo aquí)'}
+              <input
+                type="file"
+                accept={LESSON_FILE_ACCEPT}
+                className="hidden"
+                onChange={handleFileSelect}
+                disabled={uploading}
+              />
             </label>
           </div>
         )}

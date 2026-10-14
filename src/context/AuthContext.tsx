@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService, setRefreshToken } from '../services/authService'
+import { enrollmentService } from '../services/enrollmentService'
 import type { User } from '../types'
 
 interface AuthState {
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = await authService.login({ username: email, password })
       setRefreshToken(token.refresh_token ?? null)
 
-      let u: User | null = null
+      let u: User | null
       try {
         u = await authService.getMe<User>()
       } catch {
@@ -84,7 +85,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (role === 'teacher') {
         navigate('/courses')
       } else {
-        navigate('/dashboard')
+        let hasCourses = false
+        try {
+          const enrollments = await enrollmentService.list({ limit: 1 })
+          hasCourses = enrollments.length > 0
+        } catch {
+          // sin confirmación de inscripciones se asume que no tiene cursos
+        }
+        navigate(hasCourses ? '/courses' : '/catalog')
       }
     },
     [navigate],
@@ -107,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const u = await authService.getMe<User>()
       if (u) storeMinimalUser(u)
       setUser(u)
-      navigate('/dashboard')
+      navigate('/catalog')
     },
     [navigate],
   )

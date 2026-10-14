@@ -38,7 +38,9 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 function RoleGuard({ children, roles }: { children: ReactNode; roles: UserRole[] }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
-  if (!roles.includes(user.role)) return <Navigate to="/dashboard" replace />
+  if (!roles.includes(user.role)) {
+    return <Navigate to={user.role === 'student' ? '/courses' : '/dashboard'} replace />
+  }
   return <>{children}</>
 }
 
@@ -47,7 +49,8 @@ const coursesRoles: UserRole[] = config.hideCoursesForAdmin
   : ['superuser', 'admin', 'teacher', 'student']
 
 export default function AppRouter() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
+  const authenticatedHome = user?.role === 'student' ? '/courses' : '/dashboard'
 
   return (
     <Routes>
@@ -60,7 +63,7 @@ export default function AppRouter() {
       <Route path="/faq" element={<FaqPage />} />
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+        element={isAuthenticated ? <Navigate to={authenticatedHome} replace /> : <LoginPage />}
       />
       <Route
         element={

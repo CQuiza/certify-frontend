@@ -60,7 +60,7 @@ function FileTextViewer({ url }: { url: string }) {
   return <pre className="max-h-[400px] overflow-auto rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 whitespace-pre-wrap">{content}</pre>
 }
 
-function TaskSubmissionUpload({ taskId, taskTitle: _t }: { taskId: number; taskTitle: string }) {
+function TaskSubmissionUpload({ taskId }: { taskId: number }) {
   const { data: submission, isLoading: loadingSub } = useMyTaskSubmission(taskId)
   const submitMutation = useSubmitTask()
   const [file, setFile] = useState<File | null>(null)
@@ -70,35 +70,71 @@ function TaskSubmissionUpload({ taskId, taskTitle: _t }: { taskId: number; taskT
   if (loadingSub) return <Skeleton className="h-16 w-full" />
 
   if (submission) {
+    const graded = submission.score != null
+    const passed = !!submission.passed
     return (
-      <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <CheckCircle className="h-5 w-5 shrink-0 text-emerald-500" />
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-emerald-800">Entregado</p>
-            <p className="text-xs text-emerald-600 truncate">{submission.original_filename}</p>
-            <p className="text-xs text-emerald-500">
-              {new Date(submission.submitted_at).toLocaleString('es-CO')}
-            </p>
+      <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <CheckCircle className="h-5 w-5 shrink-0 text-emerald-500" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-emerald-800">Entregado</p>
+              <p className="text-xs text-emerald-600 truncate">{submission.original_filename}</p>
+              <p className="text-xs text-emerald-500">
+                {new Date(submission.submitted_at).toLocaleString('es-CO')}
+              </p>
+            </div>
           </div>
+          <button
+            onClick={async () => {
+              setDownloading(true)
+              try {
+                await taskSubmissionService.downloadFile(submission.id, submission.original_filename)
+              } catch {
+                toast.error('Error al descargar')
+              } finally {
+                setDownloading(false)
+              }
+            }}
+            disabled={downloading}
+            className="flex items-center gap-1 shrink-0 rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition-colors disabled:opacity-50"
+          >
+            {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowUp className="h-3.5 w-3.5" />}
+            {downloading ? 'Descargando...' : 'Descargar'}
+          </button>
         </div>
-        <button
-          onClick={async () => {
-            setDownloading(true)
-            try {
-              await taskSubmissionService.downloadFile(submission.id, submission.original_filename)
-            } catch {
-              toast.error('Error al descargar')
-            } finally {
-              setDownloading(false)
-            }
-          }}
-          disabled={downloading}
-          className="flex items-center gap-1 shrink-0 rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition-colors disabled:opacity-50"
-        >
-          {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowUp className="h-3.5 w-3.5" />}
-          {downloading ? 'Descargando...' : 'Descargar'}
-        </button>
+
+        <div className="mt-3 border-t border-emerald-200 pt-3">
+          {graded ? (
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                    passed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                  }`}
+                >
+                  Nota: {submission.score}
+                </span>
+                <span className={`text-xs font-medium ${passed ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  {passed ? 'Aprobada' : 'No aprobada'}
+                </span>
+                {submission.graded_at && (
+                  <span className="text-xs text-slate-500">
+                    Calificada el {new Date(submission.graded_at).toLocaleDateString('es-CO')}
+                  </span>
+                )}
+              </div>
+              {submission.feedback && (
+                <p className="text-xs text-slate-600 whitespace-pre-wrap">
+                  <span className="font-medium">Comentarios: </span>
+                  {submission.feedback}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-xs text-slate-500">Pendiente de calificación</p>
+          )}
+        </div>
       </div>
     )
   }
@@ -427,7 +463,7 @@ export default function LessonViewPage() {
                         </div>
                       </div>
                     </div>
-                    <TaskSubmissionUpload taskId={task.id} taskTitle={task.title} />
+                    <TaskSubmissionUpload taskId={task.id} />
                   </div>
                 </Card>
               ))}

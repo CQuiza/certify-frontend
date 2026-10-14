@@ -231,29 +231,45 @@ export default function ProgressPage() {
                             {mod.tasks && mod.tasks.length > 0 && (
                               <div className="border-t border-slate-50 bg-slate-50/50 px-5 py-2 space-y-1.5">
                                 {mod.tasks.map((t) => (
-                                  <div key={t.task_id} className="flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2 min-w-0">
-                                      <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-                                      <span className="text-slate-700 truncate">{t.task_title}</span>
-                                      {t.submitted ? (
-                                        <span className="text-emerald-600 font-medium shrink-0">Entregado</span>
-                                      ) : (
-                                        <span className="text-amber-600 font-medium shrink-0">No entregado</span>
+                                  <div key={t.task_id} className="text-xs">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                                        <span className="text-slate-700 truncate">{t.task_title}</span>
+                                        {t.submitted ? (
+                                          <span className="text-emerald-600 font-medium shrink-0">Entregado</span>
+                                        ) : (
+                                          <span className="text-amber-600 font-medium shrink-0">No entregado</span>
+                                        )}
+                                        {t.submitted && t.score != null && (
+                                          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${t.passed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                                            Nota: {t.score}
+                                          </span>
+                                        )}
+                                        {t.submitted && t.score == null && (
+                                          <span className="shrink-0 text-slate-400">Pendiente</span>
+                                        )}
+                                      </div>
+                                      {t.submitted && t.submission_id && (
+                                        <button
+                                          onClick={() => handleDownload(t.submission_id!, t.original_filename || undefined)}
+                                          disabled={downloading === t.submission_id}
+                                          className="flex items-center gap-1 shrink-0 rounded bg-white border border-slate-200 px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                                        >
+                                          {downloading === t.submission_id ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                          ) : (
+                                            <FileText className="h-3 w-3" />
+                                          )}
+                                          {downloading === t.submission_id ? 'Descargando...' : 'Descargar'}
+                                        </button>
                                       )}
                                     </div>
-                                    {t.submitted && t.submission_id && (
-                                      <button
-                                        onClick={() => handleDownload(t.submission_id!, t.original_filename || undefined)}
-                                        disabled={downloading === t.submission_id}
-                                        className="flex items-center gap-1 shrink-0 rounded bg-white border border-slate-200 px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
-                                      >
-                                        {downloading === t.submission_id ? (
-                                          <Loader2 className="h-3 w-3 animate-spin" />
-                                        ) : (
-                                          <FileText className="h-3 w-3" />
-                                        )}
-                                        {downloading === t.submission_id ? 'Descargando...' : 'Descargar'}
-                                      </button>
+                                    {t.submitted && t.feedback && (
+                                      <p className="mt-1 pl-5 text-slate-500 whitespace-pre-wrap">
+                                        <span className="font-medium">Comentarios: </span>
+                                        {t.feedback}
+                                      </p>
                                     )}
                                   </div>
                                 ))}

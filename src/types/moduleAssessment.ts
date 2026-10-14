@@ -83,6 +83,10 @@ export interface TaskProgressItem {
   file_url: string | null
   original_filename: string | null
   submitted_at: string | null
+  score: number | null
+  feedback: string | null
+  passed: boolean
+  graded_at: string | null
 }
 
 export interface ModuleProgressItem {

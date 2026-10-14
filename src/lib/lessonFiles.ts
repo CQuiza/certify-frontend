@@ -1,10 +1,8 @@
 export const LESSON_FILE_ALLOWED_EXTENSIONS = new Set([
-  '.pdf', '.doc', '.docx', '.xls', '.xlsx',
-  '.ppt', '.pptx', '.txt', '.csv',
-  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg',
-  '.mp4', '.webm', '.avi',
-  '.zip', '.rar',
+  '.jpg', '.png', '.pdf', '.docx', '.pptx', '.xlsx',
 ])
+
+export const LESSON_FILE_ACCEPT = Array.from(LESSON_FILE_ALLOWED_EXTENSIONS).join(',')
 
 export const LESSON_FILE_MAX_SIZE_MB = 50
 export const LESSON_FILE_MAX_SIZE_BYTES = LESSON_FILE_MAX_SIZE_MB * 1024 * 1024

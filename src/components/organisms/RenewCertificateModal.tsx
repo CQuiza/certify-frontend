@@ -13,12 +13,6 @@ interface Props {
   certificate: Certificate
 }
 
-function toLocalIsoDate(value: string): string {
-  const d = new Date(value)
-  if (isNaN(d.getTime())) return value
-  return d.toISOString()
-}
-
 export default function RenewCertificateModal({ open, onClose, certificate }: Props) {
   const [issuedAt, setIssuedAt] = useState('')
   const [validityExtension, setValidityExtension] = useState<number | null>(null)
@@ -39,7 +33,7 @@ export default function RenewCertificateModal({ open, onClose, certificate }: Pr
     e.preventDefault()
     try {
       await renew.mutateAsync({
-        issued_at: issuedAt ? toLocalIsoDate(issuedAt) : undefined,
+        issued_at: issuedAt || undefined,
         validity_extension: validityExtension ?? undefined,
         hours: hours ?? undefined,
       })

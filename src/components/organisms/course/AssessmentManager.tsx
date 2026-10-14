@@ -38,6 +38,16 @@ function emptyQuestion(type: 'multiple_choice' | 'true_false' = 'multiple_choice
   return { question_text: '', question_type: type, points: 1, order_index: 0, options: opts }
 }
 
+function questionError(q: QuestionForm): string | null {
+  if (q.question_type === 'multiple_choice' && q.options.length < 2) {
+    return 'La pregunta debe tener al menos 2 opciones'
+  }
+  if (!q.options.some((o) => o.is_correct)) {
+    return 'Debes marcar una respuesta correcta'
+  }
+  return null
+}
+
 export default function AssessmentManager({ moduleId, onClose }: AssessmentManagerProps) {
   const { data: assessment, isLoading } = useModuleAssessment(moduleId)
   const upsertAssessment = useUpsertAssessment()
@@ -46,6 +56,8 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
   const [passingScore, setPassingScore] = useState(70)
   const [questions, setQuestions] = useState<QuestionForm[]>([])
   const initialized = useRef(false)
+
+  const hasErrors = questions.some((q) => questionError(q) !== null)
 
   useEffect(() => {
     if (assessment && !initialized.current) {
@@ -93,7 +105,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
     const updated = [...questions]
     const opts = [...updated[qIdx].options]
     opts[oIdx] = { ...opts[oIdx], [field]: value }
-    if (field === 'is_correct' && value === true && updated[qIdx].question_type === 'multiple_choice') {
+    if (field === 'is_correct' && value === true) {
       for (let i = 0; i < opts.length; i++) {
         if (i !== oIdx) opts[i] = { ...opts[i], is_correct: false }
       }
@@ -120,6 +132,10 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
   }
 
   async function handleSave() {
+    if (hasErrors) {
+      toast.error('Marca la respuesta correcta en cada pregunta de opción múltiple')
+      return
+    }
     const data: ModuleAssessmentCreate = {
       passing_score: passingScore,
       questions: questions.map((q, i) => ({
@@ -174,6 +190,9 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
               />
               <span className="text-sm font-semibold text-indigo-600 w-10 text-right">{passingScore}%</span>
             </div>
+            <p className="mt-1.5 text-xs text-amber-600">
+              Para cursos relacionados con la salud se recomienda un puntaje superior a 80.
+            </p>
           </div>
 
           <div className="space-y-4">
@@ -273,6 +292,10 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                     </button>
                   )}
                 </div>
+
+                {questionError(q) && (
+                  <p className="text-xs font-medium text-red-600">{questionError(q)}</p>
+                )}
               </div>
             ))}
           </div>
@@ -285,7 +308,12 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
             )}
             <div className="flex gap-3 ml-auto">
               <Button variant="secondary" onClick={onClose}>Cancelar</Button>
-              <Button onClick={handleSave} loading={upsertAssessment.isPending}>
+              <Button
+                onClick={handleSave}
+                loading={upsertAssessment.isPending}
+                disabled={hasErrors}
+                title={hasErrors ? 'Marca la respuesta correcta en cada pregunta' : undefined}
+              >
                 {assessment ? 'Guardar cambios' : 'Crear evaluación'}
               </Button>
             </div>
