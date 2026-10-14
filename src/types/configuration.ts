@@ -2,11 +2,21 @@ export interface Branding {
   organization_name: string | null
   dashboard_message: string
   has_custom_logo: boolean
+  contact_phone: string | null
+  contact_email: string | null
 }
 
 export interface OrganizationUpdate {
   organization_name?: string | null
   dashboard_message?: string | null
+  contact_phone?: string | null
+  contact_email?: string | null
+}
+
+export interface PublicBranding {
+  organization_name: string | null
+  contact_phone: string | null
+  contact_email: string | null
 }
 
 export interface EmailSettings {

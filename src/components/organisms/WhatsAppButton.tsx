@@ -1,9 +1,10 @@
-import { config } from '../../config'
+import { usePlatform } from '../../hooks/usePlatform'
 import { waLink } from '../../types/course'
 import { MessageCircle } from 'lucide-react'
 
 export default function WhatsAppButton() {
-  const href = waLink(config.contactPhone, 'Hola, quiero información sobre los cursos.')
+  const { contactPhone } = usePlatform()
+  const href = waLink(contactPhone, 'Hola, quiero información sobre los cursos.')
   return (
     <a
       href={href}

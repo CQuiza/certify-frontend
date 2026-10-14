@@ -39,10 +39,12 @@ export default function OrganizationConfiguration() {
 
   return (
     <OrganizationForm
-      key={`${data.organization_name ?? ''}|${data.dashboard_message}|${data.has_custom_logo}`}
+      key={`${data.organization_name ?? ''}|${data.dashboard_message}|${data.has_custom_logo}|${data.contact_phone ?? ''}|${data.contact_email ?? ''}`}
       initialOrganizationName={data.organization_name ?? ''}
       initialDashboardMessage={data.dashboard_message}
       initialHasCustomLogo={data.has_custom_logo}
+      initialContactPhone={data.contact_phone ?? ''}
+      initialContactEmail={data.contact_email ?? ''}
     />
   )
 }
@@ -51,12 +53,16 @@ interface FormProps {
   initialOrganizationName: string
   initialDashboardMessage: string
   initialHasCustomLogo: boolean
+  initialContactPhone: string
+  initialContactEmail: string
 }
 
 function OrganizationForm({
   initialOrganizationName,
   initialDashboardMessage,
   initialHasCustomLogo,
+  initialContactPhone,
+  initialContactEmail,
 }: FormProps) {
   const updateOrg = useUpdateOrganization()
   const uploadLogo = useUploadBrandingLogo()
@@ -64,6 +70,8 @@ function OrganizationForm({
 
   const [organizationName, setOrganizationName] = useState(initialOrganizationName)
   const [dashboardMessage, setDashboardMessage] = useState(initialDashboardMessage)
+  const [contactPhone, setContactPhone] = useState(initialContactPhone)
+  const [contactEmail, setContactEmail] = useState(initialContactEmail)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   async function handleSave() {
@@ -71,6 +79,8 @@ function OrganizationForm({
       await updateOrg.mutateAsync({
         organization_name: organizationName || null,
         dashboard_message: dashboardMessage || null,
+        contact_phone: contactPhone || null,
+        contact_email: contactEmail || null,
       })
       toast.success('Configuración de la organización guardada')
     } catch (err) {
@@ -115,6 +125,25 @@ function OrganizationForm({
           onChange={(e) => setOrganizationName(e.target.value)}
           placeholder="Ej. Fundación Educativa ACME"
         />
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input
+            label="Teléfono de contacto (WhatsApp)"
+            value={contactPhone}
+            onChange={(e) => setContactPhone(e.target.value)}
+            placeholder="Ej. +57 300 000 0000"
+          />
+          <Input
+            label="Correo de contacto"
+            type="email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            placeholder="contacto@organizacion.com"
+          />
+        </div>
+        <p className="-mt-2 text-xs text-slate-500">
+          Estos contactos se usan en los botones de WhatsApp y en las páginas públicas de la organización.
+        </p>
 
         <div className="space-y-1.5">
           <label className="block text-sm font-medium text-slate-700">

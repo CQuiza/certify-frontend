@@ -13,10 +13,13 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { Link } from 'react-router-dom'
-import { Plus, Pencil, Eye, ChevronDown } from 'lucide-react'
+import { Plus, Pencil, Eye, ChevronDown, BookOpen, MessageCircle, GraduationCap } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { courseStatusVariant } from '../lib/statusVariant'
+import { usePublicBranding } from '../hooks/useConfiguration'
+import { waLink } from '../types/course'
+import { config } from '../config'
 import type { Course } from '../types'
 import { CourseStatus } from '../types'
 
@@ -34,6 +37,8 @@ const emptyForm: FormData = { title: '', description: '', status: 'draft', teach
 
 export default function CoursesPage() {
   const { user } = useAuth()
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
   const canManage = user && ['superuser', 'admin', 'teacher'].includes(user.role)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -153,11 +158,44 @@ export default function CoursesPage() {
         {isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-16 w-full rounded-lg" /></div>
         ) : !courses || courses.length === 0 ? (
-          <div className="p-6">
-            <p className="py-8 text-center text-sm text-slate-500">
-              {debouncedSearch ? 'No se encontraron cursos para tu búsqueda.' : 'No hay cursos disponibles'}
-            </p>
-          </div>
+          debouncedSearch ? (
+            <div className="p-6">
+              <p className="py-8 text-center text-sm text-slate-500">
+                No se encontraron cursos para tu búsqueda.
+              </p>
+            </div>
+          ) : user?.role === 'student' ? (
+            <div className="p-8 text-center">
+              <GraduationCap className="mx-auto h-12 w-12 text-slate-300" />
+              <p className="mt-4 text-lg font-medium text-slate-700">Aún no tienes cursos asignados</p>
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                Revisa el <strong>catálogo</strong> para comprar un curso, o comunícate con un asesor
+                para que te asignen uno.
+              </p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  to="/catalog"
+                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Ver catálogo
+                </Link>
+                <a
+                  href={waLink(contactPhone, 'Hola, quiero información para adquirir o que me asignen un curso.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Contactar a un asesor
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="p-6">
+              <p className="py-8 text-center text-sm text-slate-500">No hay cursos disponibles</p>
+            </div>
+          )
         ) : (
           <div className="space-y-2 p-4 sm:p-6">
           {(courses as Course[]).map((c) => {

@@ -1,4 +1,5 @@
 import { useCourses } from '../hooks/useCourses'
+import { usePublicBranding } from '../hooks/useConfiguration'
 import { GraduationCap, Clock, BookOpen, ShoppingCart, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -10,6 +11,8 @@ import { formatCurrency, waLink } from '../types/course'
 
 export default function CatalogPage() {
   const { data: courses, isLoading, isError } = useCourses({ limit: 50, catalog: true })
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
   const { items, add } = useCart()
   const count = items.length
 
@@ -97,7 +100,7 @@ export default function CatalogPage() {
                       <p className="mb-2 text-sm text-slate-400">No disponible para compra</p>
                     )}
                     <a
-                      href={waLink(config.contactPhone, `Hola, me interesa el curso "${course.title}". ¿Me das más información?`)}
+                      href={waLink(contactPhone, `Hola, me interesa el curso "${course.title}". ¿Me das más información?`)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"

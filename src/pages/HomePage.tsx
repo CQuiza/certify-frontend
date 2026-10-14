@@ -1,8 +1,12 @@
 import { Award, GraduationCap, Users, FileCheck, Shield, Phone, Mail, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
+import { usePublicBranding } from '../hooks/useConfiguration'
 
 export default function HomePage() {
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
+  const contactEmail = pub?.contact_email || config.contactEmail
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
@@ -94,8 +98,8 @@ export default function HomePage() {
           <p className="mx-auto mt-2 max-w-xl text-center text-slate-500">Estamos aquí para ayudarte</p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             {[
-              { icon: Phone, label: config.contactPhone },
-              { icon: Mail, label: config.contactEmail },
+              { icon: Phone, label: contactPhone },
+              { icon: Mail, label: contactEmail },
               { icon: MapPin, label: config.cityCountry },
             ].map((c) => {
               const Icon = c.icon

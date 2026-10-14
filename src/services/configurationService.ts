@@ -11,6 +11,7 @@ import type {
   OrganizationUpdate,
   PaymentsSettings,
   PaymentsSettingsUpdate,
+  PublicBranding,
 } from '../types/configuration'
 
 export interface CertificateTemplateInfo {
@@ -57,6 +58,11 @@ export const configurationService = {
   // ── Marca / organización ──────────────────────────────────
   getBranding: async (): Promise<Branding> => {
     const { data } = await api.get<Branding>('/configuration/branding')
+    return data
+  },
+
+  getPublicBranding: async (): Promise<PublicBranding> => {
+    const { data } = await api.get<PublicBranding>('/configuration/public')
     return data
   },
 

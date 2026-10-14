@@ -48,6 +48,15 @@ export function useBranding(options?: { enabled?: boolean }) {
   })
 }
 
+const PUBLIC_BRANDING_KEY = ['configuration', 'public-branding']
+
+export function usePublicBranding() {
+  return useQuery({
+    queryKey: PUBLIC_BRANDING_KEY,
+    queryFn: () => configurationService.getPublicBranding(),
+  })
+}
+
 export function useUpdateOrganization() {
   const queryClient = useQueryClient()
   return useMutation({

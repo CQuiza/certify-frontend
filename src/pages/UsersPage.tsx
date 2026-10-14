@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from '../hooks/useUsers'
+import { useUsers, useCreateUser, useUpdateUser } from '../hooks/useUsers'
 import { useEnrollments, useCreateEnrollment, useDeleteEnrollment } from '../hooks/useEnrollments'
 import { useCourses } from '../hooks/useCourses'
 import Card from '../components/molecules/Card'
@@ -14,7 +14,7 @@ import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { toast } from 'sonner'
-import { Plus, Pencil, Trash2, GraduationCap, X, FileText } from 'lucide-react'
+import { Plus, Pencil, GraduationCap, X, FileText } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { useAuth } from '../context/AuthContext'
@@ -42,7 +42,6 @@ export default function UsersPage() {
 
   const { data: users, isLoading, isError } = useUsers({ skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined })
   const createUser = useCreateUser()
-  const deleteUser = useDeleteUser()
   const updateUser = useUpdateUser(formUser?.id ?? 0)
 
   const [enrollUserId, setEnrollUserId] = useState<number | null>(null)
@@ -104,16 +103,6 @@ export default function UsersPage() {
     }
   }
 
-  async function handleDelete(u: User) {
-    if (!confirm(`¿Eliminar a ${u.name || u.email}?`)) return
-    try {
-      await deleteUser.mutateAsync(u.id)
-      toast.success(`Usuario ${u.email} eliminado exitosamente.`)
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    }
-  }
-
   const columns = [
     { key: 'name', header: 'Nombre', render: (u: User) => (
       <div>
@@ -138,9 +127,6 @@ export default function UsersPage() {
         </Link>
         <button onClick={(e) => { e.stopPropagation(); openEdit(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
           <Pencil className="h-4 w-4" />
-        </button>
-        <button onClick={(e) => { e.stopPropagation(); handleDelete(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-          <Trash2 className="h-4 w-4" />
         </button>
         <button onClick={(e) => { e.stopPropagation(); setEnrollUserId(u.id); setSelectedCourseId('') }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Asignar cursos">
           <GraduationCap className="h-4 w-4" />

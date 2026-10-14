@@ -2,6 +2,7 @@ import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/cart'
 import { useCheckout } from '../hooks/usePayments'
+import { usePublicBranding } from '../hooks/useConfiguration'
 import Card from '../components/molecules/Card'
 import Button from '../components/atoms/Button'
 import { ShoppingCart, Trash2, CreditCard, LogIn, ArrowRight } from 'lucide-react'
@@ -13,6 +14,8 @@ import { getErrorMessage } from '../lib/error'
 export default function CartPage() {
   const { user, isAuthenticated } = useAuth()
   const { items, total, remove, clear, removeMany } = useCart()
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
   const checkout = useCheckout()
 
   async function handleCheckout() {
@@ -100,7 +103,7 @@ export default function CartPage() {
                 </Button>
               </div>
               <p className="mt-4 text-xs text-slate-500">
-                ¿Dudas? <a className="text-green-600 hover:underline" href={waLink(config.contactPhone, 'Hola, tengo dudas sobre el pago de cursos.')} target="_blank" rel="noopener noreferrer">Habla con un asesor por WhatsApp</a>
+                ¿Dudas? <a className="text-green-600 hover:underline" href={waLink(contactPhone, 'Hola, tengo dudas sobre el pago de cursos.')} target="_blank" rel="noopener noreferrer">Habla con un asesor por WhatsApp</a>
               </p>
             </Card>
           </div>
