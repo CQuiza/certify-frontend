@@ -1,6 +1,8 @@
 export interface CheckoutResponse {
-  order_id: number
-  init_point: string
+  order_id: number | null
+  init_point: string | null
+  free: boolean
+  detail: string | null
 }
 
 export interface OrderItemRead {

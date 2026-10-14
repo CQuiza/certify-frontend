@@ -1,10 +1,13 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../context/AuthContext'
 import { useCertifiedUsers, useUsers } from '../hooks/useUsers'
 import { useCertificates, useUpdateCertificate, useIssueCertificate, useCreatePendingCertificate, usePendingCertificates } from '../hooks/useCertificates'
 import { useCourses } from '../hooks/useCourses'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
+import { useRenewCheckout } from '../hooks/usePayments'
+import { usePublicBranding } from '../hooks/useConfiguration'
 import RenewCertificateModal from '../components/organisms/RenewCertificateModal'
 import Card from '../components/molecules/Card'
 import SearchBar from '../components/molecules/SearchBar'
@@ -16,11 +19,12 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import Pagination from '../components/molecules/Pagination'
-import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react'
+import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw, RefreshCw } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { certificateStatusVariant } from '../lib/statusVariant'
 import { config } from '../config'
+import { waLink } from '../types/course'
 import type { Certificate } from '../types'
 
 const PAGE_SIZE = 15
@@ -83,6 +87,27 @@ export default function CertificatesPage() {
   const [editStatus, setEditStatus] = useState('')
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [renewCert, setRenewCert] = useState<Certificate | null>(null)
+  const [studentRenewCert, setStudentRenewCert] = useState<Certificate | null>(null)
+  const renewCheckout = useRenewCheckout()
+  const queryClient = useQueryClient()
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
+
+  async function handleStudentRenew() {
+    if (!studentRenewCert) return
+    try {
+      const res = await renewCheckout.mutateAsync(studentRenewCert.id)
+      if (res.free) {
+        toast.success('Renovación iniciada. Vuelve a completar el curso para reactivar el certificado.')
+        setStudentRenewCert(null)
+        queryClient.invalidateQueries({ queryKey: ['certificates'] })
+      } else if (res.init_point) {
+        window.location.assign(res.init_point)
+      }
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
 
   const { data: certifiedUsers, isLoading: loadingCertified, isError: certifiedError } = useCertifiedUsers(
     { skip: (certPage - 1) * PAGE_SIZE, limit: PAGE_SIZE, search: debouncedSearch || undefined },
@@ -478,6 +503,16 @@ export default function CertificatesPage() {
                         >
                           <QrCode className="h-4 w-4" />
                         </button>
+                        {r.cert.can_renew && (
+                          <button
+                            onClick={() => setStudentRenewCert(r.cert)}
+                            className="inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 transition-colors"
+                            title="Solicitar renovación"
+                          >
+                            <RefreshCw className="h-3.5 w-3.5" />
+                            Renovar
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -589,6 +624,40 @@ export default function CertificatesPage() {
           certificate={renewCert}
         />
       )}
+
+      <Modal open={!!studentRenewCert} onClose={() => setStudentRenewCert(null)} title="Solicitar renovación">
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600">
+            Estás a punto de ir a la pasarela de pagos para renovar
+            {studentRenewCert?.renewal_course_title ? (
+              <> el curso <strong>{studentRenewCert.renewal_course_title}</strong></>
+            ) : (
+              ' el curso asociado'
+            )}
+            {studentRenewCert?.renewal_price != null && Number(studentRenewCert.renewal_price) > 0 ? (
+              <> por <strong>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(studentRenewCert.renewal_price))}</strong></>
+            ) : (
+              <> <strong>sin costo</strong></>
+            )}
+            . Se te reasignará el curso y deberás completarlo de nuevo al 100% para reactivar el certificado.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <a
+              href={waLink(contactPhone, `Hola, quiero renovar mi certificado${studentRenewCert?.renewal_course_title ? ` del curso "${studentRenewCert.renewal_course_title}"` : ''}.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+            >
+              Contactar a un asesor
+            </a>
+            <Button onClick={handleStudentRenew} loading={renewCheckout.isPending}>
+              {studentRenewCert?.renewal_price != null && Number(studentRenewCert.renewal_price) > 0
+                ? 'Continuar al pago'
+                : 'Continuar'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

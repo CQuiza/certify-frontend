@@ -22,8 +22,8 @@ export const certificateService = {
     return data
   },
 
-  renew: async (id: number, payload: CertificateRenewRequest): Promise<Certificate> => {
-    const { data } = await api.post<Certificate>(`/certificates/${id}/renew`, payload)
+  renew: async (id: number, payload: CertificateRenewRequest): Promise<{ id: number; status: string }> => {
+    const { data } = await api.post<{ id: number; status: string }>(`/certificates/${id}/renew`, payload)
     return data
   },
 

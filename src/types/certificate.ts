@@ -24,6 +24,7 @@ export interface Certificate {
   id: number
   unique_id: string
   certificate_type_id: number | null
+  course_id: number | null
   user_id: number | null
   issued_at: string
   expires_at: string | null
@@ -32,6 +33,9 @@ export interface Certificate {
   pdf_url: string | null
   created_at: string
   updated_at: string
+  can_renew?: boolean
+  renewal_price?: number | null
+  renewal_course_title?: string | null
 }
 
 export interface CertificateBatchIssueRequest {

@@ -11,4 +11,9 @@ export const paymentService = {
     const { data } = await api.get<OrderRead>(`/payments/orders/${orderId}`)
     return data
   },
+
+  renewCheckout: async (certificateId: number): Promise<CheckoutResponse> => {
+    const { data } = await api.post<CheckoutResponse>(`/payments/renew/${certificateId}`)
+    return data
+  },
 }

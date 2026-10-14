@@ -7,6 +7,7 @@ export interface CourseCreate {
   teacher_id?: number | null
   status?: CourseStatus
   price?: number | null
+  renewal_price?: number | null
   is_for_sale?: boolean
 }
 
@@ -17,6 +18,7 @@ export interface CourseUpdate {
   teacher_id?: number | null
   status?: CourseStatus
   price?: number | null
+  renewal_price?: number | null
   is_for_sale?: boolean
 }
 
@@ -30,6 +32,7 @@ export interface Course {
   updated_at: string
   status: CourseStatus
   price: number | null
+  renewal_price: number | null
   is_for_sale: boolean
 }
 

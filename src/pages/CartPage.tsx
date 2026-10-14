@@ -27,7 +27,7 @@ export default function CartPage() {
     try {
       const res = await checkout.mutateAsync(items.map((i) => i.id))
       removeMany(items.map((i) => i.id)) // bloqueado en el pedido
-      window.location.assign(res.init_point)
+      if (res.init_point) window.location.assign(res.init_point)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }

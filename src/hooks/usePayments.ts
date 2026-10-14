@@ -7,6 +7,12 @@ export function useCheckout() {
   })
 }
 
+export function useRenewCheckout() {
+  return useMutation({
+    mutationFn: (certificateId: number) => paymentService.renewCheckout(certificateId),
+  })
+}
+
 export function useOrder(orderId: number, options?: { enabled?: boolean; refetchInterval?: number }) {
   return useQuery({
     queryKey: ['payments', 'order', orderId],

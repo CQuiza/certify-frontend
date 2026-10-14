@@ -30,10 +30,11 @@ interface FormData {
   teacher_id: number
   certificate_type_id: number
   price: string
+  renewal_price: string
   is_for_sale: boolean
 }
 
-const emptyForm: FormData = { title: '', description: '', status: 'draft', teacher_id: 0, certificate_type_id: 0, price: '', is_for_sale: false }
+const emptyForm: FormData = { title: '', description: '', status: 'draft', teacher_id: 0, certificate_type_id: 0, price: '', renewal_price: '', is_for_sale: false }
 
 export default function CoursesPage() {
   const { user } = useAuth()
@@ -74,6 +75,7 @@ export default function CoursesPage() {
         teacher_id: fullCourse.teacher_id ?? 0,
         certificate_type_id: fullCourse.certificate_type_id ?? 0,
         price: fullCourse.price != null ? String(fullCourse.price) : '',
+        renewal_price: fullCourse.renewal_price != null ? String(fullCourse.renewal_price) : '',
         is_for_sale: fullCourse.is_for_sale,
       })
     }
@@ -94,6 +96,7 @@ export default function CoursesPage() {
       teacher_id: 0,
       certificate_type_id: 0,
       price: c.price != null ? String(c.price) : '',
+      renewal_price: c.renewal_price != null ? String(c.renewal_price) : '',
       is_for_sale: c.is_for_sale,
     })
     setModalOpen(true)
@@ -108,6 +111,7 @@ export default function CoursesPage() {
       teacher_id: form.teacher_id || null,
       certificate_type_id: form.certificate_type_id || null,
       price: form.price ? Number(form.price) : 0,
+      renewal_price: form.renewal_price ? Number(form.renewal_price) : null,
       is_for_sale: form.is_for_sale,
     }
     try {
@@ -289,11 +293,12 @@ export default function CoursesPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="Precio (COP, 0 = sin venta)" type="number" min={0} value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="50000" />
-            <label className="flex items-end gap-2 pb-2">
-              <input type="checkbox" checked={form.is_for_sale} onChange={(e) => setForm({ ...form, is_for_sale: e.target.checked })} className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-              <span className="text-sm text-slate-700">Disponible para compra</span>
-            </label>
+            <Input label="Precio renovación (COP, 0 = gratis)" type="number" min={0} value={form.renewal_price} onChange={(e) => setForm({ ...form, renewal_price: e.target.value })} placeholder="Igual al precio si se deja vacío" />
           </div>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={form.is_for_sale} onChange={(e) => setForm({ ...form, is_for_sale: e.target.checked })} className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            <span className="text-sm text-slate-700">Disponible para compra</span>
+          </label>
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" type="button" onClick={() => setModalOpen(false)}>Cancelar</Button>
             <Button type="submit" loading={createCourse.isPending || updateCourse.isPending}>

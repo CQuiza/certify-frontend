@@ -43,7 +43,7 @@ export default function RenewCertificateModal({ open, onClose, certificate }: Pr
         validity_extension: validityExtension ?? undefined,
         hours: hours ?? undefined,
       })
-      toast.success('Certificado renovado correctamente')
+      toast.success('Renovación iniciada: curso reasignado y progreso reiniciado. Se renovará al completar el 100% (o puedes forzarlo).')
       onClose()
     } catch (err) {
       toast.error(getErrorMessage(err))
