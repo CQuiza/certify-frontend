@@ -255,25 +255,32 @@ export default function CoursesPage() {
               >
                 <button
                   onClick={() => toggleExpand(c.id)}
-                  className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-slate-50"
+                  className="flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-slate-50 sm:items-center sm:gap-4 sm:px-5"
                 >
                   {c.has_image ? (
                     <img
                       src={courseService.imageUrl(c.id)}
                       alt={c.title}
-                      className="h-12 w-16 shrink-0 rounded-lg border border-slate-200 object-cover"
+                      className="h-10 w-14 shrink-0 rounded-lg border border-slate-200 object-cover sm:h-12 sm:w-16"
                     />
                   ) : (
-                    <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500">
+                    <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500 sm:h-12 sm:w-16">
                       <BookOpen className="h-5 w-5" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-slate-900 truncate">{c.title}</h3>
-                    <p className="mt-0.5 text-sm text-slate-500 truncate">{c.description || 'Sin descripción'}</p>
+                    <h3 className="font-semibold text-slate-900 leading-snug line-clamp-2 sm:truncate sm:line-clamp-none">{c.title}</h3>
+                    <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                      <span className="shrink-0 sm:hidden">
+                        <Badge variant={courseStatusVariant(c.status)}>{c.status}</Badge>
+                      </span>
+                      <p className="truncate text-sm text-slate-500">{c.description || 'Sin descripción'}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <Badge variant={courseStatusVariant(c.status)}>{c.status}</Badge>
+                  <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                    <span className="hidden sm:inline-flex">
+                      <Badge variant={courseStatusVariant(c.status)}>{c.status}</Badge>
+                    </span>
                     <div className="text-slate-400 transition-transform duration-200" style={{ transform: isOpen ? 'rotate(180deg)' : '' }}>
                       <ChevronDown className="h-4 w-4" />
                     </div>
