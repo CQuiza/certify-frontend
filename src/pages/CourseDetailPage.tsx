@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCourse } from '../hooks/useCourses'
-import { courseService } from '../services/courseService'
+import CourseImage from '../components/molecules/CourseImage'
 import Skeleton from '../components/atoms/Skeleton'
 import Badge from '../components/atoms/Badge'
 import ErrorState from '../components/atoms/ErrorState'
@@ -32,11 +32,7 @@ export default function CourseDetailPage() {
       </Link>
 
       {course.has_image && (
-        <img
-          src={courseService.imageUrl(id)}
-          alt={course.title}
-          className="mb-6 h-56 w-full rounded-xl border border-slate-200 object-cover sm:h-72"
-        />
+        <CourseImage courseId={id} title={course.title} hasImage={course.has_image} variant="banner" />
       )}
 
       <div className="mb-8 flex items-start justify-between">

@@ -28,15 +28,15 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <div className="flex flex-1 items-center justify-center px-4">
+      <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-4 h-20 w-auto" />
-            <h1 className="text-2xl font-bold text-slate-900">{config.appName}</h1>
+            <img src="/certify_logo.png" alt={config.appName} className="mx-auto mb-4 h-16 w-auto" />
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{config.appName}</h1>
             <p className="mt-1 text-sm text-slate-500">Inicia sesión en tu cuenta</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <Input
               label="Correo electrónico"
               type="email"
@@ -70,12 +70,18 @@ export default function LoginPage() {
           </form>
         </div>
       </div>
-      <div className="hidden flex-1 bg-indigo-600 lg:flex items-center justify-center">
-        <div className="max-w-md text-center text-white">
-          <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-6 h-20 w-auto opacity-90" />
-          <h2 className="text-3xl font-bold">Plataforma de Certificación</h2>
-          <p className="mt-3 text-lg text-indigo-200">
-            Gestiona cursos, usuarios y certificados de forma centralizada.
+      <div className="relative hidden flex-1 items-center justify-center overflow-hidden bg-slate-900 lg:flex">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(60% 60% at 20% 20%, rgba(99,102,241,0.35) 0%, rgba(15,23,42,0) 60%), radial-gradient(50% 50% at 80% 80%, rgba(16,185,129,0.25) 0%, rgba(15,23,42,0) 60%)',
+          }}
+        />
+        <div className="relative max-w-md px-10 text-center text-white">
+          <h2 className="text-3xl font-bold tracking-tight">La infraestructura para certificar</h2>
+          <p className="mt-3 text-lg text-slate-300">
+            Gestiona cursos, usuarios y certificados de forma centralizada y segura.
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FileText, Settings, Building2, Mail, CreditCard } from 'lucide-react'
+import { FileText, Building2, Mail, CreditCard } from 'lucide-react'
+import PageHeader from '../components/molecules/PageHeader'
 import CertificateConfiguration from '../components/organisms/configuration/CertificateConfiguration'
 import OrganizationConfiguration from '../components/organisms/configuration/OrganizationConfiguration'
 import EmailConfiguration from '../components/organisms/configuration/EmailConfiguration'
@@ -19,13 +20,7 @@ export default function ConfigurationPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-6 flex items-center gap-3">
-        <Settings className="h-6 w-6 text-indigo-600" />
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
-          <p className="mt-1 text-sm text-slate-500">Personalización de la plataforma</p>
-        </div>
-      </div>
+      <PageHeader title="Configuración" subtitle="Personalización de la plataforma" />
 
       <div className="mb-6 flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
         {tabs.map((t) => {

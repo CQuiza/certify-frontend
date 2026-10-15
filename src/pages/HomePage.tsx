@@ -123,7 +123,7 @@ export default function HomePage() {
               capacitaciones corporativas
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-slate-300 lg:mx-0">
-              Escala tu academia con espacios white-label para cada organización,
+              Escala tu academia con espacios personalizables para cada organización,
               certificación automatizada con QR verificable y control de progreso de
               principio a fin.
             </p>

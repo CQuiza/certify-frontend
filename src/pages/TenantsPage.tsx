@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { useTenants, useCreateTenant, useUpdateTenantStatus, useImpersonateTenant } from '../hooks/useTenants'
 import Card from '../components/molecules/Card'
 import Modal from '../components/molecules/Modal'
+import PageHeader from '../components/molecules/PageHeader'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import Badge from '../components/atoms/Badge'
@@ -93,18 +94,16 @@ export default function TenantsPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Organizaciones</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Tenants que alquilan la plataforma (SaaS). Sus datos están aislados entre sí.
-          </p>
-        </div>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4" />
-          Nueva organización
-        </Button>
-      </div>
+      <PageHeader
+        title="Organizaciones"
+        subtitle="Tenants que alquilan la plataforma (SaaS). Sus datos están aislados entre sí."
+        actions={
+          <Button onClick={openCreate}>
+            <Plus className="h-4 w-4" />
+            Nueva organización
+          </Button>
+        }
+      />
 
       {isError && <ErrorState className="mb-6" />}
 

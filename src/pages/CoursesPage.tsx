@@ -14,6 +14,8 @@ import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
+import CourseImage from '../components/molecules/CourseImage'
+import PageHeader from '../components/molecules/PageHeader'
 import { Link } from 'react-router-dom'
 import { Plus, Pencil, Eye, ChevronDown, BookOpen, MessageCircle, GraduationCap, Image as ImageIcon } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
@@ -180,18 +182,18 @@ export default function CoursesPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Cursos</h1>
-          <p className="mt-1 text-sm text-slate-500">Administra los cursos de la plataforma</p>
-        </div>
-        {canManage && (
-          <Button onClick={openCreate}>
-            <Plus className="h-4 w-4" />
-            Nuevo curso
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Cursos"
+        subtitle="Administra los cursos de la plataforma"
+        actions={
+          canManage ? (
+            <Button onClick={openCreate}>
+              <Plus className="h-4 w-4" />
+              Nuevo curso
+            </Button>
+          ) : undefined
+        }
+      />
 
       {isError && <ErrorState className="mb-6" />}
 
@@ -257,17 +259,7 @@ export default function CoursesPage() {
                   onClick={() => toggleExpand(c.id)}
                   className="flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-slate-50 sm:items-center sm:gap-4 sm:px-5"
                 >
-                  {c.has_image ? (
-                    <img
-                      src={courseService.imageUrl(c.id)}
-                      alt={c.title}
-                      className="h-10 w-14 shrink-0 rounded-lg border border-slate-200 object-cover sm:h-12 sm:w-16"
-                    />
-                  ) : (
-                    <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500 sm:h-12 sm:w-16">
-                      <BookOpen className="h-5 w-5" />
-                    </div>
-                  )}
+                  <CourseImage courseId={c.id} title={c.title} hasImage={c.has_image} variant="thumb" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-slate-900 leading-snug line-clamp-2 sm:truncate sm:line-clamp-none">{c.title}</h3>
                     <div className="mt-0.5 flex min-w-0 items-center gap-2">

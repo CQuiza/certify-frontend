@@ -6,6 +6,7 @@ import DataTable from '../components/molecules/DataTable'
 import SearchBar from '../components/molecules/SearchBar'
 import Pagination from '../components/molecules/Pagination'
 import Modal from '../components/molecules/Modal'
+import PageHeader from '../components/molecules/PageHeader'
 import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
@@ -117,16 +118,16 @@ export default function CertificateTypesPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Tipos de Certificado</h1>
-          <p className="mt-1 text-sm text-slate-500">Gestiona los tipos de certificado disponibles</p>
-        </div>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4" />
-          Nuevo tipo
-        </Button>
-      </div>
+      <PageHeader
+        title="Tipos de Certificado"
+        subtitle="Gestiona los tipos de certificado disponibles"
+        actions={
+          <Button onClick={openCreate}>
+            <Plus className="h-4 w-4" />
+            Nuevo tipo
+          </Button>
+        }
+      />
 
       <Card padding={false}>
         <div className="border-b border-slate-200 px-4 py-3">

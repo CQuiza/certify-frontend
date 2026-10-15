@@ -13,6 +13,7 @@ import Card from '../components/molecules/Card'
 import SearchBar from '../components/molecules/SearchBar'
 import SearchableSelect from '../components/molecules/SearchableSelect'
 import Modal from '../components/molecules/Modal'
+import PageHeader from '../components/molecules/PageHeader'
 import Button from '../components/atoms/Button'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
@@ -267,18 +268,18 @@ export default function CertificatesPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Certificados</h1>
-          <p className="mt-1 text-sm text-slate-500">Emite y gestiona certificados</p>
-        </div>
-        {isAdmin && (
-          <Button onClick={() => setIssueModalOpen(true)}>
-            <Plus className="h-4 w-4" />
-            Adicionar Nuevo Certificado
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Certificados"
+        subtitle="Emite y gestiona certificados"
+        actions={
+          isAdmin ? (
+            <Button onClick={() => setIssueModalOpen(true)}>
+              <Plus className="h-4 w-4" />
+              Adicionar Nuevo Certificado
+            </Button>
+          ) : undefined
+        }
+      />
 
       <Card padding={false}>
         <div className="border-b border-slate-200 px-4 py-3">

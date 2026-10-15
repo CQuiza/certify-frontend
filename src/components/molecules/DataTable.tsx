@@ -71,9 +71,9 @@ export default function DataTable<T>({ columns, data, loading, onRowClick }: Dat
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm">
+      <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-200">
+          <tr className="border-b border-slate-200 bg-slate-50">
             {columns.map((col) => {
               const colKey = String(col.key)
               const canSort = col.sortable ?? colKey !== 'actions'
@@ -82,7 +82,7 @@ export default function DataTable<T>({ columns, data, loading, onRowClick }: Dat
                 <th
                   key={colKey}
                   onClick={canSort ? () => handleSort(colKey) : undefined}
-                  className={`px-4 py-3 font-medium text-slate-600 ${canSort ? 'cursor-pointer select-none hover:text-slate-900' : ''}`}
+                  className={`px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 ${canSort ? 'cursor-pointer select-none hover:text-slate-900' : ''}`}
                 >
                   <span className="inline-flex items-center gap-1">
                     {col.header}

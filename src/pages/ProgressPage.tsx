@@ -4,6 +4,7 @@ import { useAllProgressSummaries } from '../hooks/useModuleAssessments'
 import { useUsers } from '../hooks/useUsers'
 import { taskSubmissionService } from '../services/taskSubmissionService'
 import Card from '../components/molecules/Card'
+import PageHeader from '../components/molecules/PageHeader'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
 import ErrorState from '../components/atoms/ErrorState'
@@ -60,9 +61,7 @@ export default function ProgressPage() {
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Progreso</h1>
-      </div>
+      <PageHeader title="Progreso" />
 
       {canSearch && (
         <div className="relative">

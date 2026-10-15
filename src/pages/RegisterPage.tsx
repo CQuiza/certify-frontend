@@ -50,7 +50,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-3 h-20 w-auto" />
-          <h1 className="text-2xl font-bold text-slate-900">Crear cuenta de estudiante</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Crear cuenta de estudiante</h1>
           <p className="mt-1 text-sm text-slate-500">Accede a {config.appName} para comprar y cursar</p>
         </div>
 

@@ -62,7 +62,7 @@ export default function SearchableSelect({
       <div ref={containerRef} className="relative">
         <div
           onClick={() => { if (!disabled) { setOpen(!open); setSearch(''); setTimeout(() => inputRef.current?.focus(), 50) }}}
-          className={`flex items-center justify-between w-full rounded-lg border px-3 py-2.5 text-sm cursor-pointer ${
+          className={`flex items-center justify-between w-full rounded-lg border px-3 py-2.5 text-sm shadow-sm cursor-pointer ${
             disabled ? 'bg-slate-50 text-slate-400' : 'bg-white text-slate-900'
           } ${open ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-300'}`}
         >

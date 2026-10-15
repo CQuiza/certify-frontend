@@ -2,6 +2,7 @@ import { useAuth } from '../context/AuthContext'
 import { usePlatform } from '../hooks/usePlatform'
 import { useDashboardStats, useDashboardAdmins } from '../hooks/useDashboard'
 import Card from '../components/molecules/Card'
+import PageHeader from '../components/molecules/PageHeader'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { Link } from 'react-router-dom'
@@ -55,14 +56,11 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">
-          Bienvenido, {user?.name || 'Usuario'}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {dashboardMessage || 'Panel principal de la plataforma Certify'}
-        </p>
-      </div>
+      <PageHeader
+        title={`Bienvenido, ${user?.name || 'Usuario'}`}
+        subtitle={dashboardMessage || 'Panel principal de la plataforma'}
+        className="mb-8"
+      />
 
       {isError && <ErrorState className="mb-6" />}
 
@@ -70,7 +68,7 @@ export default function DashboardPage() {
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
-            <Card key={stat.label}>
+            <Card key={stat.label} className="transition-shadow hover:shadow-md">
               <div className="flex items-center gap-4">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6" />
@@ -94,7 +92,7 @@ export default function DashboardPage() {
         {certStatusCards.map((c) => {
           const Icon = c.icon
           return (
-            <Card key={c.label}>
+            <Card key={c.label} className="transition-shadow hover:shadow-md">
               <div className="flex items-center gap-4">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${c.color}`}>
                   <Icon className="h-6 w-6" />

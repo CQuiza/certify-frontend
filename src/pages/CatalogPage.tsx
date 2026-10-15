@@ -1,12 +1,12 @@
 import { useCourses } from '../hooks/useCourses'
 import { usePublicBranding } from '../hooks/useConfiguration'
-import { courseService } from '../services/courseService'
-import { GraduationCap, Clock, BookOpen, ShoppingCart, MessageCircle } from 'lucide-react'
+import { GraduationCap, Clock, ShoppingCart, MessageCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
+import CourseImage from '../components/molecules/CourseImage'
 import { useCart } from '../context/cart'
 import { config } from '../config'
 import { formatCurrency, waLink } from '../types/course'
@@ -58,17 +58,7 @@ export default function CatalogPage() {
               const forSale = course.is_for_sale && Number(course.price) > 0
               return (
                 <div key={course.id} className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-md">
-                  {course.has_image ? (
-                    <img
-                      src={courseService.imageUrl(course.id)}
-                      alt={course.title}
-                      className="h-44 w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-44 w-full items-center justify-center bg-indigo-50 text-indigo-500">
-                      <BookOpen className="h-10 w-10" />
-                    </div>
-                  )}
+                  <CourseImage courseId={course.id} title={course.title} hasImage={course.has_image} variant="cover" />
                   <div className="flex flex-1 flex-col p-6">
                   <h3 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">{course.title}</h3>
                   {course.description && <p className="mt-2 text-sm text-slate-500 line-clamp-3">{course.description}</p>}

@@ -49,14 +49,16 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
   const sidebarContent = (
     <>
-      <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5">
-        <img src={logoUrl ?? '/certify_logo.png'} alt="Logo" className="h-20 w-auto" />
-        <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 lg:hidden">
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4">
+        <div className="flex h-11 items-center rounded-xl bg-white px-3 shadow-sm">
+          <img src={logoUrl ?? '/certify_logo.png'} alt="Logo" className="h-7 w-auto" />
+        </div>
+        <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden">
           <X className="h-5 w-5" />
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {filtered.map((item) => {
           const active = pathname === item.path || pathname.startsWith(item.path + '/')
           const Icon = item.icon
@@ -65,12 +67,15 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
               key={item.path}
               to={item.path}
               onClick={onClose}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-white/10 text-white'
+                  : 'text-slate-300 hover:bg-white/5 hover:text-white'
               }`}
             >
+              {active && (
+                <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-emerald-400" />
+              )}
               <Icon className="h-5 w-5" />
               {item.label}
             </Link>
@@ -78,19 +83,19 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         })}
       </nav>
 
-      <div className="border-t border-slate-200 px-4 py-4">
-        <Link to="/profile" className="mb-3 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-50">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600">
+      <div className="border-t border-white/10 px-4 py-4">
+        <Link to="/profile" className="mb-3 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-sm font-medium text-white">
             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900 hover:text-indigo-600">{user?.name || 'Usuario'}</p>
-            <p className="truncate text-xs text-slate-500 capitalize">{user?.role}</p>
+            <p className="truncate text-sm font-medium text-white">{user?.name || 'Usuario'}</p>
+            <p className="truncate text-xs capitalize text-slate-400">{user?.role}</p>
           </div>
         </Link>
         <button
           onClick={() => { logout(); navigate('/login') }}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
         >
           <LogOut className="h-5 w-5" />
           Cerrar sesión
@@ -101,11 +106,11 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-slate-800 bg-slate-900 lg:flex">
         {sidebarContent}
       </aside>
 
-      <aside className={`fixed inset-y-0 left-0 z-40 flex h-screen w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:hidden ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-40 flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 transition-transform duration-200 lg:hidden ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {sidebarContent}
       </aside>
     </>
