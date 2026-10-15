@@ -19,7 +19,7 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import Pagination from '../components/molecules/Pagination'
-import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, FileText, QrCode, ChevronDown, ChevronRight, RotateCcw, RefreshCw, AlertTriangle } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { certificateStatusVariant } from '../lib/statusVariant'
@@ -559,6 +559,23 @@ export default function CertificatesPage() {
                 <p className="mt-1 text-xs text-slate-500">
                   El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%. El curso será asignado al estudiante automáticamente.
                 </p>
+              )}
+              {issueMode === 'available' && (
+                <div className="mt-3 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                  <div className="text-sm text-amber-800">
+                    <p className="font-medium">Aviso sobre la emisión por "Disponible"</p>
+                    <p className="mt-1">
+                      Emitir un certificado por esta vía <strong>no lo vincula a un curso ni al progreso</strong> del
+                      estudiante, por lo que <strong>no habilitará la renovación automática</strong> al vencer y el
+                      estudiante no quedará inscrito en ningún curso.
+                    </p>
+                    <p className="mt-1">
+                      Se recomienda usar la vía <strong>"En proceso"</strong>, que asocia curso y progreso y habilita
+                      las renovaciones automáticas del estudiante.
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
             <SearchableSelect
