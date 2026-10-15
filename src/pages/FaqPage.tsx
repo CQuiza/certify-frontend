@@ -1,43 +1,53 @@
 import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
+import PublicHeader from '../components/organisms/PublicHeader'
+import PublicFooter from '../components/organisms/PublicFooter'
 
 const faqs = [
   {
-    q: '¿Qué es Certify?',
-    a: 'Certify es una plataforma de certificación profesional que permite gestionar, emitir y verificar certificados académicos y profesionales de forma segura, rápida y centralizada.',
+    q: '¿Qué es Acreditapp?',
+    a: 'Acreditapp es una infraestructura SaaS multitenant white-label que permite gestionar, vender, dictar y certificar procesos de formación corporativa. Cada organización opera en su propio espacio con su marca, catálogo y reglas de certificación.',
   },
   {
-    q: '¿Quiénes pueden usar Certify?',
-    a: 'La plataforma está diseñada para instituciones educativas, empresas y organizaciones que necesiten emitir certificados. Los roles disponibles son: superusuario, administrador, docente y estudiante.',
+    q: '¿Para quién está pensada?',
+    a: 'Para empresas de capacitación, academias e instituciones que ofrecen educación complementaria e informal. La plataforma tiene cuatro roles: superusuario (operación de la plataforma), administrador (organización), docente (contenido y evaluación) y estudiante.',
   },
   {
-    q: '¿Cómo se emite un certificado?',
-    a: 'Los administradores y superusuarios pueden emitir certificados desde la sección "Certificados" del panel. Solo necesitan seleccionar el usuario y el tipo de certificado, y el sistema genera automáticamente un certificado digital con UUID único y código QR.',
+    q: '¿Cómo funciona el modelo multitenant white-label?',
+    a: 'Cada organización (tenant) cuenta con un espacio exclusivo bajo su propio subdominio o dominio personalizado, con su marca, usuarios y datos totalmente aislados del resto de organizaciones.',
   },
   {
-    q: '¿Los certificados son válidos legalmente?',
-    a: 'Certify genera certificados digitales con códigos QR y UUID únicos que permiten su verificación en línea. La validez legal depende de las políticas de cada institución u organización.',
+    q: '¿Cómo se emiten los certificados?',
+    a: 'Pueden emitirse de forma automática al completar el curso (todas las evaluaciones aprobadas y todas las tareas entregadas) o manualmente por un administrador. Cada certificado recibe un UUID único, un código QR y un PDF verificable.',
+  },
+  {
+    q: '¿Los certificados tienen validez legal?',
+    a: 'Acreditapp emite constancias y certificados de educación informal con trazabilidad y verificación pública. La validez legal depende de las políticas de cada organización. La plataforma está alineada con el marco colombiano de educación informal (Ley 115 de 1994 y Decreto 1075 de 2015), con la norma NTC 3100 y con el tratamiento de datos (Ley 1581 de 2012).',
   },
   {
     q: '¿Cómo se verifica un certificado?',
-    a: 'Cada certificado incluye un código QR y un UUID único. Cualquier persona puede escanear el QR o ingresar el UUID en la plataforma para verificar la autenticidad del certificado.',
+    a: 'Cada certificado incluye un código QR y un UUID. Cualquier persona puede escanear el QR o ingresar el número de identificación en la página de verificación pública, sin necesidad de autenticarse.',
   },
   {
-    q: '¿Qué tipos de certificado existen?',
-    a: 'Actualmente hay tres tipos: básico (45 horas, 1 año de vigencia), avanzado (70 horas, 2 años) y diplomado (150 horas, 3 años). Los administradores pueden crear tipos personalizados.',
+    q: '¿Se pueden vender cursos en línea?',
+    a: 'Sí. El catálogo se integra con una pasarela de pago (Checkout Pro de Mercado Pago) para la venta autónoma de capacitaciones en pesos colombianos, con carrito, pago en línea y verificación server-to-server del pago.',
   },
   {
-    q: '¿Los docentes pueden crear cursos?',
-    a: 'Los docentes pueden crear y gestionar módulos y lecciones dentro de los cursos que tienen asignados. Los cursos son creados por administradores o superusuarios.',
+    q: '¿Qué incluye un curso?',
+    a: 'Cada curso se compone de módulos y lecciones con contenido de texto, imágenes, videos y archivos adjuntos. Los docentes pueden crear tareas y evaluaciones por módulo con puntaje mínimo de aprobación.',
   },
   {
-    q: '¿Cómo se asignan cursos a estudiantes?',
-    a: 'Los administradores y superusuarios pueden asignar cursos a estudiantes y docentes desde la sección "Usuarios", usando el botón de cursos en cada usuario.',
+    q: '¿Qué puede hacer cada rol?',
+    a: 'El superusuario gestiona la plataforma y las organizaciones; el administrador gestiona usuarios, cursos, certificados y auditoría de su organización; el docente gestiona el contenido y la evaluación de los cursos que tiene asignados; el estudiante consume el contenido, entrega tareas, presenta evaluaciones y consulta sus certificados.',
   },
   {
-    q: '¿Qué información contiene una lección?',
-    a: 'Cada lección puede incluir contenido de texto, imágenes, videos y archivos adjuntos. Los docentes pueden estructurar el contenido en módulos dentro de cada curso.',
+    q: '¿Cómo se asignan los cursos a los estudiantes?',
+    a: 'Un administrador o docente puede inscribir estudiantes manualmente, o el estudiante puede inscribirse automáticamente al comprar un curso desde el catálogo.',
+  },
+  {
+    q: '¿Se pueden renovar certificados vencidos?',
+    a: 'Sí. El estudiante puede solicitar la renovación (con costo o gratuita según el curso) o un administrador puede iniciarla. La renovación reasigna el curso y reinicia el progreso: el certificado se reactiva al completar nuevamente el curso.',
   },
   {
     q: '¿Cómo puedo contactar soporte?',
@@ -50,19 +60,12 @@ export default function FaqPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link to="/">
-            <img src="/certify_logo.png" alt="Certify" className="h-20 w-auto" />
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">Iniciar sesión</Link>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto max-w-3xl px-6 py-16">
         <Link to="/" className="mb-6 inline-flex text-sm text-slate-500 hover:text-slate-700 transition-colors">&larr; Volver al inicio</Link>
         <h1 className="text-3xl font-bold text-slate-900">Preguntas Frecuentes</h1>
-        <p className="mt-2 text-slate-600">Respuestas a las dudas más comunes sobre Certify.</p>
+        <p className="mt-2 text-slate-600">Respuestas a las dudas más comunes sobre Acreditapp.</p>
 
         <div className="mt-8 space-y-3">
           {faqs.map((faq, i) => {
@@ -87,11 +90,7 @@ export default function FaqPage() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-white py-6">
-        <div className="mx-auto max-w-3xl px-6 text-center text-sm text-slate-500">
-          &copy; {new Date().getFullYear()} Certify. Todos los derechos reservados.
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }

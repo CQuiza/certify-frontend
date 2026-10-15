@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { FileText, QrCode, Search, User, IdCard, Calendar, Clock, AlertCircle } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import Card from '../components/molecules/Card'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
 import Button from '../components/atoms/Button'
 import Skeleton from '../components/atoms/Skeleton'
+import PublicHeader from '../components/organisms/PublicHeader'
+import PublicFooter from '../components/organisms/PublicFooter'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import { certificateStatusVariant } from '../lib/statusVariant'
 import { formatDate } from '../lib/dates'
@@ -59,17 +60,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="shrink-0">
-            <img src="/certify_logo.png" alt="Certify" className="h-12 w-auto sm:h-20" />
-          </Link>
-          <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
-            <Link to="/" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Inicio</Link>
-            <Link to="/login" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">Iniciar sesión</Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto max-w-2xl px-6 py-12">
         <div className="text-center mb-8">
@@ -176,15 +167,7 @@ export default function SearchPage() {
         )}
       </section>
 
-      <footer className="border-t border-slate-200 bg-white py-6">
-        <div className="mx-auto max-w-6xl px-6 text-center text-sm text-slate-500">
-          <Link to="/catalog" className="text-indigo-600 hover:text-indigo-700 transition-colors">Catálogo</Link>
-          <span className="mx-3 text-slate-300">·</span>
-          <Link to="/faq" className="text-indigo-600 hover:text-indigo-700 transition-colors">Preguntas frecuentes</Link>
-          <span className="mx-3 text-slate-300">·</span>
-          &copy; {new Date().getFullYear()} Certify
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }

@@ -2,10 +2,11 @@ import { useCourses } from '../hooks/useCourses'
 import { usePublicBranding } from '../hooks/useConfiguration'
 import { courseService } from '../services/courseService'
 import { GraduationCap, Clock, BookOpen, ShoppingCart, MessageCircle } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
+import PublicHeader from '../components/organisms/PublicHeader'
+import PublicFooter from '../components/organisms/PublicFooter'
 import { useCart } from '../context/cart'
 import { config } from '../config'
 import { formatCurrency, waLink } from '../types/course'
@@ -14,8 +15,7 @@ export default function CatalogPage() {
   const { data: courses, isLoading, isError } = useCourses({ limit: 50, catalog: true })
   const { data: pub } = usePublicBranding()
   const contactPhone = pub?.contact_phone || config.contactPhone
-  const { items, add } = useCart()
-  const count = items.length
+  const { add } = useCart()
 
   const published = (courses || []).filter((c) => c.status === 'published')
 
@@ -26,24 +26,7 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="shrink-0">
-            <img src="/certify_logo.png" alt="Certify" className="h-12 w-auto sm:h-20" />
-          </Link>
-          <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
-            <Link to="/cart" className="relative rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors" aria-label="Carrito">
-              <ShoppingCart className="h-5 w-5" />
-              {count > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-indigo-600 px-1 text-[10px] font-bold text-white">
-                  {count}
-                </span>
-              )}
-            </Link>
-            <Link to="/login" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">Iniciar sesión</Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-8 text-center">
@@ -127,13 +110,7 @@ export default function CatalogPage() {
         )}
       </section>
 
-      <footer className="border-t border-slate-200 bg-white py-6">
-        <div className="mx-auto max-w-6xl px-6 text-center text-sm text-slate-500">
-          <Link to="/faq" className="text-indigo-600 hover:text-indigo-700 transition-colors">Preguntas frecuentes</Link>
-          <span className="mx-3 text-slate-300">·</span>
-          &copy; {new Date().getFullYear()} Certify. Todos los derechos reservados.
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }
