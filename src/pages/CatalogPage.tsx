@@ -1,5 +1,6 @@
 import { useCourses } from '../hooks/useCourses'
 import { usePublicBranding } from '../hooks/useConfiguration'
+import { courseService } from '../services/courseService'
 import { GraduationCap, Clock, BookOpen, ShoppingCart, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -73,10 +74,19 @@ export default function CatalogPage() {
             {published.map((course) => {
               const forSale = course.is_for_sale && Number(course.price) > 0
               return (
-                <div key={course.id} className="group flex flex-col rounded-xl border border-slate-200 bg-white p-6 transition-shadow hover:shadow-md">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-                    <BookOpen className="h-5 w-5" />
-                  </div>
+                <div key={course.id} className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-md">
+                  {course.has_image ? (
+                    <img
+                      src={courseService.imageUrl(course.id)}
+                      alt={course.title}
+                      className="h-44 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-44 w-full items-center justify-center bg-indigo-50 text-indigo-500">
+                      <BookOpen className="h-10 w-10" />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-6">
                   <h3 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">{course.title}</h3>
                   {course.description && <p className="mt-2 text-sm text-slate-500 line-clamp-3">{course.description}</p>}
                   <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-400">
@@ -108,6 +118,7 @@ export default function CatalogPage() {
                       <MessageCircle className="h-4 w-4" />
                       Consultar con un asesor
                     </a>
+                  </div>
                   </div>
                 </div>
               )

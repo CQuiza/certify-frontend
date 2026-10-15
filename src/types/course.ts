@@ -34,6 +34,7 @@ export interface Course {
   price: number | null
   renewal_price: number | null
   is_for_sale: boolean
+  has_image?: boolean
 }
 
 export interface CoursePublic {
@@ -43,6 +44,7 @@ export interface CoursePublic {
   status: CourseStatus
   price: number | null
   is_for_sale: boolean
+  has_image?: boolean
 }
 
 export function formatCurrency(value: number | null | undefined): string {

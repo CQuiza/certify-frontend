@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useAuth } from '../context/AuthContext'
 import { useCourses, useCourse, useCreateCourse, useUpdateCourse } from '../hooks/useCourses'
 import { useUsers } from '../hooks/useUsers'
 import { useCertificateTypes } from '../hooks/useCertificateTypes'
+import { courseService } from '../services/courseService'
 import Card from '../components/molecules/Card'
 import Modal from '../components/molecules/Modal'
 import SearchBar from '../components/molecules/SearchBar'
@@ -13,7 +15,7 @@ import Input from '../components/atoms/Input'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { Link } from 'react-router-dom'
-import { Plus, Pencil, Eye, ChevronDown, BookOpen, MessageCircle, GraduationCap } from 'lucide-react'
+import { Plus, Pencil, Eye, ChevronDown, BookOpen, MessageCircle, GraduationCap, Image as ImageIcon } from 'lucide-react'
 import { getErrorMessage } from '../lib/error'
 import { formatDate } from '../lib/dates'
 import { courseStatusVariant } from '../lib/statusVariant'
@@ -46,6 +48,10 @@ export default function CoursesPage() {
   const [editing, setEditing] = useState<Course | null>(null)
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [savingImage, setSavingImage] = useState(false)
+  const qc = useQueryClient()
 
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
@@ -84,6 +90,8 @@ export default function CoursesPage() {
   function openCreate() {
     setEditing(null)
     setForm(emptyForm)
+    setImageFile(null)
+    setImagePreview(null)
     setModalOpen(true)
   }
 
@@ -99,7 +107,33 @@ export default function CoursesPage() {
       renewal_price: c.renewal_price != null ? String(c.renewal_price) : '',
       is_for_sale: c.is_for_sale,
     })
+    setImageFile(null)
+    setImagePreview(c.has_image ? courseService.imageUrl(c.id) : null)
     setModalOpen(true)
+  }
+
+  function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    if (!f.type.startsWith('image/')) {
+      toast.error('Selecciona un archivo de imagen válido')
+      return
+    }
+    setImageFile(f)
+    setImagePreview(URL.createObjectURL(f))
+  }
+
+  async function handleRemoveImage() {
+    if (!editing) return
+    try {
+      await courseService.removeImage(editing.id)
+      setImageFile(null)
+      setImagePreview(null)
+      qc.invalidateQueries({ queryKey: ['courses'] })
+      toast.success('Imagen eliminada')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -115,16 +149,26 @@ export default function CoursesPage() {
       is_for_sale: form.is_for_sale,
     }
     try {
-      if (editing) {
-        await updateCourse.mutateAsync(payload)
-        toast.success('Curso actualizado correctamente')
-      } else {
-        await createCourse.mutateAsync(payload)
-        toast.success('Curso creado correctamente')
+      const saved = editing
+        ? await updateCourse.mutateAsync(payload)
+        : await createCourse.mutateAsync(payload)
+      if (imageFile) {
+        setSavingImage(true)
+        try {
+          await courseService.uploadImage(saved.id, imageFile)
+          qc.invalidateQueries({ queryKey: ['courses'] })
+        } catch (err) {
+          toast.error(getErrorMessage(err))
+        } finally {
+          setSavingImage(false)
+        }
       }
+      toast.success(editing ? 'Curso actualizado correctamente' : 'Curso creado correctamente')
       setModalOpen(false)
       setEditing(null)
       setForm(emptyForm)
+      setImageFile(null)
+      setImagePreview(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -213,6 +257,17 @@ export default function CoursesPage() {
                   onClick={() => toggleExpand(c.id)}
                   className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-slate-50"
                 >
+                  {c.has_image ? (
+                    <img
+                      src={courseService.imageUrl(c.id)}
+                      alt={c.title}
+                      className="h-12 w-16 shrink-0 rounded-lg border border-slate-200 object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500">
+                      <BookOpen className="h-5 w-5" />
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-slate-900 truncate">{c.title}</h3>
                     <p className="mt-0.5 text-sm text-slate-500 truncate">{c.description || 'Sin descripción'}</p>
@@ -261,6 +316,30 @@ export default function CoursesPage() {
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Descripción</label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Imagen del curso (opcional)</label>
+            {imagePreview ? (
+              <img src={imagePreview} alt="Vista previa" className="mb-2 h-40 w-full rounded-lg border border-slate-200 object-cover" />
+            ) : (
+              <div className="mb-2 flex h-40 w-full items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 text-slate-400">
+                <ImageIcon className="h-8 w-8" />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+              />
+              {editing && (editing.has_image || imageFile) && (
+                <Button variant="secondary" size="sm" type="button" className="shrink-0" onClick={handleRemoveImage}>
+                  Quitar
+                </Button>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-slate-400">Se redimensiona automáticamente (máx. 5 MB).</p>
+          </div>
           {editing && fullCourse && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Creado" value={formatDate(fullCourse.created_at)} disabled />
@@ -301,7 +380,7 @@ export default function CoursesPage() {
           </label>
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" type="button" onClick={() => setModalOpen(false)}>Cancelar</Button>
-            <Button type="submit" loading={createCourse.isPending || updateCourse.isPending}>
+            <Button type="submit" loading={createCourse.isPending || updateCourse.isPending || savingImage}>
               {editing ? 'Guardar cambios' : 'Crear curso'}
             </Button>
           </div>
