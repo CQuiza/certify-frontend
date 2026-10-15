@@ -49,8 +49,8 @@ export default function DashboardLayout() {
         </div>
 
         {acting?.slug && (
-          <div className="flex items-center justify-between gap-3 bg-amber-50 px-4 py-2 text-sm text-amber-800">
-            <span className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+            <span className="flex items-center gap-2 min-w-0">
               <ShieldAlert className="h-4 w-4 shrink-0" />
               Actuando como <strong>{acting.slug}</strong> — el superuser está operando dentro de esta organización.
             </span>

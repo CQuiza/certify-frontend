@@ -179,8 +179,8 @@ export default function ReportsPage() {
         <div className="mt-8 space-y-6">
           {generated.map((result) => (
             <Card key={result.key}>
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <h2 className="text-lg font-semibold text-slate-900">{result.title}</h2>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h2 className="min-w-0 text-lg font-semibold text-slate-900">{result.title}</h2>
                 <div className="flex shrink-0 items-center gap-2">
                   <Button variant="secondary" size="sm" onClick={() => toggleChart(result.key)}>
                     <ChartPie className="h-4 w-4" />

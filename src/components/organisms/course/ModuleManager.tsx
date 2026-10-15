@@ -194,10 +194,10 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                     onClick={() => setExpandedModule(expanded ? null : mod.id)}
                     className="flex flex-1 items-center justify-between px-5 py-4 text-left transition-colors hover:bg-slate-50"
                   >
-                    <div className="flex items-center gap-3">
-                      <BookOpen className="h-5 w-5 text-indigo-500" />
-                      <div>
-                        <p className="font-medium text-slate-900">{mod.title}</p>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <BookOpen className="h-5 w-5 shrink-0 text-indigo-500" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-slate-900 truncate">{mod.title}</p>
                         <p className="text-xs text-slate-500">Módulo {mod.order_index}</p>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                           >
                             {contentTypeIcon(lesson)}
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-slate-800">{lesson.title}</p>
+                              <p className="text-sm font-medium text-slate-800 truncate">{lesson.title}</p>
                               {lesson.text_content && (
                                 <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">{lesson.text_content}</p>
                               )}
@@ -241,7 +241,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                             <Eye className="h-4 w-4 text-slate-400 shrink-0" />
                           </Link>
                           {canManage && (
-                            <div className="flex gap-1 pr-3">
+                            <div className="flex gap-1 pr-3 shrink-0">
                               <button onClick={(e) => { e.stopPropagation(); setFileModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Archivos">
                                 <Paperclip className="h-4 w-4" />
                               </button>
@@ -261,7 +261,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                     ) : (
                       <p className="px-5 py-4 text-sm text-slate-500">Sin lecciones</p>
                     )}
-                    {!canManage && (
+                    {!canManage && mod.has_assessment && (
                       <div className="border-t border-slate-100 px-5 py-3">
                         <button
                           onClick={(e) => { e.stopPropagation(); setAssessmentViewModuleId(mod.id) }}

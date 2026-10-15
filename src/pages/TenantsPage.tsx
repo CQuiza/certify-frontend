@@ -156,7 +156,7 @@ export default function TenantsPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleImpersonate(t)}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
                           title="Entrar al tenant como superuser"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -164,7 +164,7 @@ export default function TenantsPage() {
                         </button>
                         <button
                           onClick={() => handleBackup(t)}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
                           title="Descargar backup SQL de la base de datos"
                         >
                           <Database className="h-3.5 w-3.5" />
@@ -173,7 +173,7 @@ export default function TenantsPage() {
                         <button
                           onClick={() => handleToggle(t)}
                           disabled={t.slug === 'default'}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                           title={t.slug === 'default' ? 'El tenant por defecto no se puede desactivar' : (t.is_active ? 'Desactivar' : 'Activar')}
                         >
                           {t.is_active ? <PowerOff className="h-3.5 w-3.5" /> : <Power className="h-3.5 w-3.5" />}
@@ -197,8 +197,8 @@ export default function TenantsPage() {
               (solo se muestra una vez; guárdala antes de cerrar):
             </div>
             <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-              <code className="font-mono text-sm text-slate-800">{createdPassword}</code>
-              <Button variant="secondary" size="sm" onClick={() => { navigator.clipboard.writeText(createdPassword); toast.success('Contraseña copiada') }}>
+              <code className="min-w-0 flex-1 break-all font-mono text-sm text-slate-800">{createdPassword}</code>
+              <Button variant="secondary" size="sm" className="shrink-0" onClick={() => { navigator.clipboard.writeText(createdPassword); toast.success('Contraseña copiada') }}>
                 Copiar
               </Button>
             </div>

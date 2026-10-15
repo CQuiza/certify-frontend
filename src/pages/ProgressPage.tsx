@@ -173,7 +173,7 @@ export default function ProgressPage() {
                         <div className="flex-1">
                           <div className="h-2 w-full rounded-full bg-slate-200">
                             <div
-                              className="h-2 rounded-full bg-emerald-500 transition-all duration-500"
+                              className={`h-2 rounded-full transition-all duration-500 ${course.progress_percent === 100 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
                               style={{ width: `${course.progress_percent}%` }}
                             />
                           </div>
@@ -232,8 +232,8 @@ export default function ProgressPage() {
                               <div className="border-t border-slate-50 bg-slate-50/50 px-5 py-2 space-y-1.5">
                                 {mod.tasks.map((t) => (
                                   <div key={t.task_id} className="text-xs">
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 min-w-0">
+                                    <div className="flex items-center justify-between gap-2">
+                                      <div className="flex flex-wrap items-center gap-2 min-w-0">
                                         <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
                                         <span className="text-slate-700 truncate">{t.task_title}</span>
                                         {t.submitted ? (

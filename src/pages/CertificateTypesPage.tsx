@@ -159,7 +159,7 @@ export default function CertificateTypesPage() {
             </select>
           </div>
           <Input label="Horas" type="number" min={0} value={form.hours} onChange={(e) => setForm({ ...form, hours: Number(e.target.value) })} required />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Unidad de vigencia</label>
               <select value={form.validity_type} onChange={(e) => setForm({ ...form, validity_type: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>

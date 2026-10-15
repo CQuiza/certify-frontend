@@ -262,7 +262,7 @@ export default function CoursesPage() {
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           {editing && fullCourse && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Creado" value={formatDate(fullCourse.created_at)} disabled />
               <Input label="Actualizado" value={formatDate(fullCourse.updated_at)} disabled />
             </div>

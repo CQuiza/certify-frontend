@@ -262,13 +262,13 @@ export default function LessonViewPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-4xl">
-      <div className="mb-6 flex items-center gap-4 text-sm">
-        <Link to={`/courses/${courseIdNum}`} className="inline-flex items-center gap-1.5 font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
-          <ArrowLeft className="h-4 w-4" />
-          {course?.title || 'Curso'}
+      <div className="mb-6 flex items-center gap-2 text-sm">
+        <Link to={`/courses/${courseIdNum}`} className="inline-flex min-w-0 items-center gap-1.5 font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+          <ArrowLeft className="h-4 w-4 shrink-0" />
+          <span className="truncate">{course?.title || 'Curso'}</span>
         </Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-500">{mod?.title || `Módulo`}</span>
+        <span className="shrink-0 text-slate-300">/</span>
+        <span className="min-w-0 truncate text-slate-500">{mod?.title || `Módulo`}</span>
       </div>
 
       <Card>

@@ -57,7 +57,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
   const [questions, setQuestions] = useState<QuestionForm[]>([])
   const initialized = useRef(false)
 
-  const hasErrors = questions.some((q) => questionError(q) !== null)
+  const hasErrors = questions.length === 0 || questions.some((q) => questionError(q) !== null)
 
   useEffect(() => {
     if (assessment && !initialized.current) {
@@ -132,6 +132,10 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
   }
 
   async function handleSave() {
+    if (questions.length === 0) {
+      toast.error('Agrega al menos una pregunta')
+      return
+    }
     if (hasErrors) {
       toast.error('Marca la respuesta correcta en cada pregunta de opción múltiple')
       return
@@ -222,8 +226,8 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                   </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="col-span-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div className="sm:col-span-2">
                     <Input
                       label="Texto de la pregunta"
                       value={q.question_text}
@@ -300,7 +304,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
             ))}
           </div>
 
-          <div className="flex justify-between border-t border-slate-200 pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
             {assessment && (
               <Button variant="danger" onClick={handleDelete} loading={deleteAssessment.isPending}>
                 Eliminar evaluación

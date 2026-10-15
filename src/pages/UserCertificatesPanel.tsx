@@ -163,15 +163,15 @@ export default function UserCertificatesPanel() {
           <ArrowLeft className="h-4 w-4" />
           Volver a usuarios
         </Link>
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <FileText className="h-6 w-6 text-indigo-600" />
-              <h1 className="text-2xl font-bold text-slate-900">{user.name} {user.first_last_name}</h1>
+              <FileText className="h-6 w-6 shrink-0 text-indigo-600" />
+              <h1 className="truncate text-2xl font-bold text-slate-900">{user.name} {user.first_last_name}</h1>
             </div>
-            <p className="text-sm text-slate-500">{user.email} · {user.identity_number}</p>
+            <p className="truncate text-sm text-slate-500">{user.email} · {user.identity_number}</p>
           </div>
-          <button onClick={() => setBatchModalOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
+          <button onClick={() => setBatchModalOpen(true)} className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
             <Plus className="h-4 w-4" />
             Nuevo certificado(s)
           </button>
@@ -211,7 +211,7 @@ export default function UserCertificatesPanel() {
                     {p.status === 'in_progress' && ' — se emitirá al completar el curso'}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center justify-end gap-2">
                   <Badge variant={p.status === 'issued' ? 'success' : 'warning'}>
                     {p.status === 'issued' ? 'Emitido' : 'En proceso'}
                   </Badge>

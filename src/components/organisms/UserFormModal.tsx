@@ -143,12 +143,12 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input label="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <Input label="Primer apellido" value={form.first_last_name} onChange={(e) => setForm({ ...form, first_last_name: e.target.value })} />
         </div>
         <Input label="Segundo apellido" value={form.second_last_name} onChange={(e) => setForm({ ...form, second_last_name: e.target.value })} />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Rol</label>
             <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
@@ -164,7 +164,7 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
             </select>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input label="Número ID" value={form.identity_number} onChange={(e) => setForm({ ...form, identity_number: e.target.value })} required />
           <Input label="Teléfono" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value })} required />
         </div>

@@ -71,9 +71,9 @@ export default function PaymentResultPage() {
 
         <ul className="mb-4 divide-y divide-slate-100 rounded-lg border border-slate-200">
           {order.items.map((it) => (
-            <li key={it.course_id} className="flex items-center justify-between px-4 py-2.5 text-sm">
-              <span className="text-slate-800">{it.course_title}</span>
-              <span className="text-slate-500">{it.unit_price}</span>
+            <li key={it.course_id} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
+              <span className="min-w-0 break-words text-slate-800">{it.course_title}</span>
+              <span className="shrink-0 text-slate-500">{it.unit_price}</span>
             </li>
           ))}
         </ul>

@@ -135,7 +135,7 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
         </p>
       )}
 
-      <div className="flex gap-3 justify-end">
+      <div className="flex flex-wrap gap-3 justify-end">
         {onBack && (
           <Button variant="secondary" onClick={onBack}>Volver</Button>
         )}

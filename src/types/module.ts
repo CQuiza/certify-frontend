@@ -14,4 +14,5 @@ export interface Module {
   course_id: number
   title: string
   order_index: number
+  has_assessment?: boolean
 }

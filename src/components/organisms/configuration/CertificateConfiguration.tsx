@@ -130,8 +130,8 @@ export default function CertificateConfiguration() {
         <ErrorState message="No se pudo cargar la configuración de la plantilla." />
       ) : (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-slate-700">Plantilla en uso</p>
               <p className="text-xs text-slate-500">
                 {info?.is_custom ? 'Plantilla personalizada' : 'Plantilla por defecto'}
@@ -139,7 +139,7 @@ export default function CertificateConfiguration() {
                 {info?.size_bytes != null ? ` · ${(info.size_bytes / 1024).toFixed(1)} KB` : ''}
               </p>
             </div>
-            <Button variant="secondary" onClick={handleDownload}>
+            <Button variant="secondary" className="shrink-0" onClick={handleDownload}>
               <Download className="h-4 w-4" />
               Descargar certificado actual
             </Button>

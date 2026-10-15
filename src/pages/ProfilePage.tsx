@@ -76,27 +76,27 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 py-8">
+    <div className="mx-auto max-w-2xl space-y-8 px-4 py-8">
       <h1 className="text-2xl font-bold text-slate-900">Mi Perfil</h1>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-start gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
             <User className="h-8 w-8" />
           </div>
-          <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="min-w-0 text-lg font-semibold text-slate-900">
                 {[user.name, user.first_last_name, user.second_last_name].filter(Boolean).join(' ') || 'Sin nombre'}
               </h2>
               <Badge variant={roleVariants[user.role] || 'default'}>
                 {roleLabels[user.role] || user.role}
               </Badge>
             </div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
               <div>
                 <span className="text-slate-500">Email:</span>
-                <p className="text-slate-900">{user.email}</p>
+                <p className="break-words text-slate-900">{user.email}</p>
               </div>
               <div>
                 <span className="text-slate-500">Teléfono:</span>

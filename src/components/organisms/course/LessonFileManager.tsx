@@ -30,41 +30,59 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
   const deleteFile = useDeleteLessonFile()
 
   const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  async function uploadFileFrom(file: File) {
-    if (!lessonId || uploading) return
-    if (!isAllowedLessonFile(file)) {
-      toast.error('Tipo de archivo no permitido')
-      return
-    }
-    if (file.size > LESSON_FILE_MAX_SIZE_BYTES) {
-      toast.error(`El archivo supera el límite de ${LESSON_FILE_MAX_SIZE_MB} MB`)
-      return
-    }
+  async function uploadFiles(list: File[]) {
+    if (!lessonId || uploading || list.length === 0) return
+
+    const valid = list.filter((file) => {
+      if (!isAllowedLessonFile(file)) {
+        toast.error(`Tipo de archivo no permitido: ${file.name}`)
+        return false
+      }
+      if (file.size > LESSON_FILE_MAX_SIZE_BYTES) {
+        toast.error(`${file.name} supera el límite de ${LESSON_FILE_MAX_SIZE_MB} MB`)
+        return false
+      }
+      return true
+    })
+    if (valid.length === 0) return
 
     setUploading(true)
-    try {
-      const created = await createFile.mutateAsync({
-        lessonId,
-        data: {
-          original_filename: file.name,
-          mime_type: file.type || null,
-          order_index: (files?.length ?? 0) + 1,
-        },
-      })
-      await uploadFile.mutateAsync({ lessonId, fileId: created.id, file })
-      toast.success('Archivo subido correctamente')
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Error al subir archivo')
-    } finally {
-      setUploading(false)
+    setUploadProgress({ done: 0, total: valid.length })
+    const base = files?.length ?? 0
+    let ok = 0
+    for (let i = 0; i < valid.length; i++) {
+      const file = valid[i]
+      try {
+        const created = await createFile.mutateAsync({
+          lessonId,
+          data: {
+            original_filename: file.name,
+            mime_type: file.type || null,
+            order_index: base + i + 1,
+          },
+        })
+        await uploadFile.mutateAsync({ lessonId, fileId: created.id, file })
+        ok += 1
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Error al subir archivo'
+        toast.error(`${file.name}: ${msg}`)
+      } finally {
+        setUploadProgress({ done: i + 1, total: valid.length })
+      }
     }
+    if (ok > 0) {
+      toast.success(ok === 1 ? 'Archivo subido correctamente' : `${ok} archivos subidos correctamente`)
+    }
+    setUploading(false)
+    setUploadProgress(null)
   }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (file) void uploadFileFrom(file)
+    const list = Array.from(e.target.files ?? [])
+    if (list.length) void uploadFiles(list)
     e.target.value = ''
   }
 
@@ -72,8 +90,8 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
     e.preventDefault()
     setIsDragging(false)
     if (uploading) return
-    const file = e.dataTransfer.files?.[0]
-    if (file) void uploadFileFrom(file)
+    const list = Array.from(e.dataTransfer.files ?? [])
+    if (list.length) void uploadFiles(list)
   }
 
   async function handleDelete(fileId: number) {
@@ -140,13 +158,16 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
             >
               <Upload className="h-5 w-5" />
               {uploading
-                ? 'Subiendo...'
+                ? uploadProgress
+                  ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}...`
+                  : 'Subiendo...'
                 : isDragging
-                  ? 'Suelta el archivo aquí'
-                  : 'Subir archivo (o arrástralo aquí)'}
+                  ? 'Suelta los archivos aquí'
+                  : 'Subir archivos (o arrástralos aquí)'}
               <input
                 type="file"
                 accept={LESSON_FILE_ACCEPT}
+                multiple
                 className="hidden"
                 onChange={handleFileSelect}
                 disabled={uploading}

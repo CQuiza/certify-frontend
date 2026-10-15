@@ -11,8 +11,8 @@ export default function HomePage() {
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <img src="/certify_logo.png" alt="Certify" className="h-20 w-auto" />
-          <div className="flex items-center gap-4">
+          <img src="/certify_logo.png" alt="Certify" className="h-12 w-auto shrink-0 sm:h-20" />
+          <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
             <Link to="/search" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Verificar certificado</Link>
             <Link to="/catalog" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Catálogo</Link>
             <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Iniciar sesión</Link>

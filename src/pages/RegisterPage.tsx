@@ -58,7 +58,7 @@ export default function RegisterPage() {
           <Input label="Nombre" value={form.name} onChange={(e) => set('name', e.target.value)} required />
           <Input label="Apellido" value={form.first_last_name} onChange={(e) => set('first_last_name', e.target.value)} />
           <Input label="Correo electrónico" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} required />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-700">Tipo de documento</label>
               <select value={form.identity_type} onChange={(e) => set('identity_type', e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
