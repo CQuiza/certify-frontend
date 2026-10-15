@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { usePublicBranding } from '../hooks/useConfiguration'
+import { configurationService } from '../services/configurationService'
 import { config } from '../config'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
@@ -8,10 +10,13 @@ import { getErrorMessage } from '../lib/error'
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const { data: pub } = usePublicBranding()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/certify_logo.png'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +36,7 @@ export default function LoginPage() {
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <img src="/certify_logo.png" alt={config.appName} className="mx-auto mb-4 h-16 w-auto" />
+            <img src={logoSrc} alt={config.appName} className="mx-auto mb-4 h-16 w-auto" />
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">{config.appName}</h1>
             <p className="mt-1 text-sm text-slate-500">Inicia sesión en tu cuenta</p>
           </div>
@@ -68,6 +73,10 @@ export default function LoginPage() {
               <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-700">Crea una aquí</Link>
             </p>
           </form>
+
+          <p className="mt-6 text-center text-xs text-slate-400">
+            Servicio prestado por {config.appName}
+          </p>
         </div>
       </div>
       <div className="relative hidden flex-1 items-center justify-center overflow-hidden bg-slate-900 lg:flex">

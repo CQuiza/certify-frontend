@@ -26,7 +26,7 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <PublicHeader />
+      <PublicHeader useTenantLogo />
 
       <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-8 text-center">

@@ -69,7 +69,10 @@ export function useUploadBrandingLogo() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (file: File) => configurationService.uploadLogo(file),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: BRANDING_KEY }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: BRANDING_KEY })
+      queryClient.invalidateQueries({ queryKey: PUBLIC_BRANDING_KEY })
+    },
   })
 }
 
@@ -77,6 +80,25 @@ export function useRestoreBrandingLogo() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => configurationService.restoreLogo(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: BRANDING_KEY })
+      queryClient.invalidateQueries({ queryKey: PUBLIC_BRANDING_KEY })
+    },
+  })
+}
+
+export function useUploadDarkLogo() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (file: File) => configurationService.uploadDarkLogo(file),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: BRANDING_KEY }),
+  })
+}
+
+export function useRestoreDarkLogo() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => configurationService.restoreDarkLogo(),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: BRANDING_KEY }),
   })
 }

@@ -2,6 +2,9 @@ export interface Branding {
   organization_name: string | null
   dashboard_message: string
   has_custom_logo: boolean
+  has_dark_logo: boolean
+  logo_surface: 'auto' | 'none' | 'light'
+  logo_is_dark: boolean
   contact_phone: string | null
   contact_email: string | null
 }
@@ -11,10 +14,12 @@ export interface OrganizationUpdate {
   dashboard_message?: string | null
   contact_phone?: string | null
   contact_email?: string | null
+  logo_surface?: 'auto' | 'none' | 'light'
 }
 
 export interface PublicBranding {
   organization_name: string | null
+  has_custom_logo: boolean
   contact_phone: string | null
   contact_email: string | null
 }

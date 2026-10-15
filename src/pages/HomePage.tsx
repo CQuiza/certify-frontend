@@ -312,7 +312,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PublicFooter />
+      <PublicFooter showDeveloper />
     </div>
   )
 }

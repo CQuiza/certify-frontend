@@ -5,6 +5,8 @@ import {
   useUpdateOrganization,
   useUploadBrandingLogo,
   useRestoreBrandingLogo,
+  useUploadDarkLogo,
+  useRestoreDarkLogo,
 } from '../../../hooks/useConfiguration'
 import { configurationService } from '../../../services/configurationService'
 import { config } from '../../../config'
@@ -15,6 +17,8 @@ import Skeleton from '../../atoms/Skeleton'
 import ErrorState from '../../atoms/ErrorState'
 import { Building2, RotateCcw } from 'lucide-react'
 import { getErrorMessage } from '../../../lib/error'
+
+type LogoSurface = 'auto' | 'none' | 'light'
 
 function interpolate(template: string, organization: string): string {
   return template
@@ -39,10 +43,12 @@ export default function OrganizationConfiguration() {
 
   return (
     <OrganizationForm
-      key={`${data.organization_name ?? ''}|${data.dashboard_message}|${data.has_custom_logo}|${data.contact_phone ?? ''}|${data.contact_email ?? ''}`}
+      key={`${data.organization_name ?? ''}|${data.dashboard_message}|${data.has_custom_logo}|${data.has_dark_logo}|${data.logo_surface}|${data.contact_phone ?? ''}|${data.contact_email ?? ''}`}
       initialOrganizationName={data.organization_name ?? ''}
       initialDashboardMessage={data.dashboard_message}
       initialHasCustomLogo={data.has_custom_logo}
+      initialHasDarkLogo={data.has_dark_logo}
+      initialLogoSurface={data.logo_surface}
       initialContactPhone={data.contact_phone ?? ''}
       initialContactEmail={data.contact_email ?? ''}
     />
@@ -53,6 +59,8 @@ interface FormProps {
   initialOrganizationName: string
   initialDashboardMessage: string
   initialHasCustomLogo: boolean
+  initialHasDarkLogo: boolean
+  initialLogoSurface: LogoSurface
   initialContactPhone: string
   initialContactEmail: string
 }
@@ -61,18 +69,24 @@ function OrganizationForm({
   initialOrganizationName,
   initialDashboardMessage,
   initialHasCustomLogo,
+  initialHasDarkLogo,
+  initialLogoSurface,
   initialContactPhone,
   initialContactEmail,
 }: FormProps) {
   const updateOrg = useUpdateOrganization()
   const uploadLogo = useUploadBrandingLogo()
   const restoreLogo = useRestoreBrandingLogo()
+  const uploadDarkLogo = useUploadDarkLogo()
+  const restoreDarkLogo = useRestoreDarkLogo()
 
   const [organizationName, setOrganizationName] = useState(initialOrganizationName)
   const [dashboardMessage, setDashboardMessage] = useState(initialDashboardMessage)
   const [contactPhone, setContactPhone] = useState(initialContactPhone)
   const [contactEmail, setContactEmail] = useState(initialContactEmail)
+  const [logoSurface, setLogoSurface] = useState<LogoSurface>(initialLogoSurface)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const darkInputRef = useRef<HTMLInputElement>(null)
 
   async function handleSave() {
     try {
@@ -81,6 +95,7 @@ function OrganizationForm({
         dashboard_message: dashboardMessage || null,
         contact_phone: contactPhone || null,
         contact_email: contactEmail || null,
+        logo_surface: logoSurface,
       })
       toast.success('Configuración de la organización guardada')
     } catch (err) {
@@ -100,7 +115,7 @@ function OrganizationForm({
   }
 
   async function handleRestoreLogo() {
-    if (!confirm('¿Restaurar el logo por defecto de Certify?')) return
+    if (!confirm('¿Restaurar el logo por defecto de Acreditapp?')) return
     try {
       await restoreLogo.mutateAsync()
       toast.success('Logo por defecto restaurado')
@@ -109,7 +124,31 @@ function OrganizationForm({
     }
   }
 
+  async function handleUploadDarkLogo(file: File | null) {
+    if (!file) return
+    try {
+      await uploadDarkLogo.mutateAsync(file)
+      toast.success('Logo para fondos oscuros actualizado')
+      if (darkInputRef.current) darkInputRef.current.value = ''
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
+  async function handleRestoreDarkLogo() {
+    if (!confirm('¿Quitar el logo para fondos oscuros?')) return
+    try {
+      await restoreDarkLogo.mutateAsync()
+      toast.success('Logo para fondos oscuros eliminado')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
   const logoUrl = initialHasCustomLogo ? configurationService.getLogoUrl() : null
+  const darkLogoUrl = initialHasDarkLogo ? configurationService.getDarkLogoUrl() : null
+  const fileInputClass =
+    'block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100'
 
   return (
     <Card>
@@ -176,33 +215,82 @@ function OrganizationForm({
 
         <div className="border-t border-slate-200 pt-5">
           <p className="text-sm font-medium text-slate-700">
-            Logo de la organización (también se incluye en los correos)
+            Logos de la organización (también se incluyen en los correos)
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-4">
-            <div className="flex h-20 w-32 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-2">
-              {initialHasCustomLogo && logoUrl ? (
-                <img src={logoUrl} alt="Logo personalizado" className="max-h-full max-w-full object-contain" />
-              ) : (
-                <img src="/certify_logo.png" alt="Logo por defecto" className="max-h-full max-w-full object-contain" />
-              )}
+
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 p-3">
+              <p className="text-xs font-medium text-slate-500">Logo principal (fondos claros)</p>
+              <div className="mt-2 flex h-20 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-2">
+                <img
+                  src={logoUrl ?? '/certify_logo.png'}
+                  alt="Logo"
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              <div className="mt-2 flex flex-col gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => handleUploadLogo(e.target.files?.[0] ?? null)}
+                  className={fileInputClass}
+                />
+                {initialHasCustomLogo && (
+                  <Button variant="secondary" size="sm" onClick={handleRestoreLogo} loading={restoreLogo.isPending}>
+                    <RotateCcw className="h-4 w-4" />
+                    Restaurar por defecto
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={(e) => handleUploadLogo(e.target.files?.[0] ?? null)}
-                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
-              />
-              {initialHasCustomLogo && (
-                <Button variant="secondary" size="sm" onClick={handleRestoreLogo} loading={restoreLogo.isPending}>
-                  <RotateCcw className="h-4 w-4" />
-                  Restaurar logo por defecto
-                </Button>
-              )}
+
+            <div className="rounded-xl border border-slate-200 p-3">
+              <p className="text-xs font-medium text-slate-500">Logo para fondos oscuros (sidebar)</p>
+              <div className="mt-2 flex h-20 items-center justify-center rounded-lg bg-slate-900 p-2">
+                {darkLogoUrl ? (
+                  <img src={darkLogoUrl} alt="Logo oscuro" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-xs text-slate-400">Sin logo específico</span>
+                )}
+              </div>
+              <div className="mt-2 flex flex-col gap-2">
+                <input
+                  ref={darkInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => handleUploadDarkLogo(e.target.files?.[0] ?? null)}
+                  className={fileInputClass}
+                />
+                {initialHasDarkLogo && (
+                  <Button variant="secondary" size="sm" onClick={handleRestoreDarkLogo} loading={restoreDarkLogo.isPending}>
+                    <RotateCcw className="h-4 w-4" />
+                    Quitar
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              Fondo del logo en superficies oscuras (si no subes un logo oscuro)
+            </label>
+            <select
+              value={logoSurface}
+              onChange={(e) => setLogoSurface(e.target.value as LogoSurface)}
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:max-w-xs"
+            >
+              <option value="auto">Automático (según el color del logo)</option>
+              <option value="none">Sin fondo (transparente)</option>
+              <option value="light">Fondo claro</option>
+            </select>
+            <p className="mt-1 text-xs text-slate-500">
+              Se aplica en la barra lateral (navy) cuando no hay un logo específico para fondos oscuros.
+            </p>
+          </div>
+
+          <p className="mt-3 text-xs text-slate-500">
             PNG, JPG o WebP, máximo 2 MB. Se normaliza a PNG.
           </p>
         </div>

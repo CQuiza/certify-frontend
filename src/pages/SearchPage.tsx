@@ -60,7 +60,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <PublicHeader />
+      <PublicHeader useTenantLogo />
 
       <section className="mx-auto max-w-2xl px-6 py-12">
         <div className="text-center mb-8">

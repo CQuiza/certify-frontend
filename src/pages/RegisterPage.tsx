@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { usePublicBranding } from '../hooks/useConfiguration'
+import { configurationService } from '../services/configurationService'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import { Link } from 'react-router-dom'
@@ -8,6 +10,8 @@ import { getErrorMessage } from '../lib/error'
 
 export default function RegisterPage() {
   const { register } = useAuth()
+  const { data: pub } = usePublicBranding()
+  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/certify_logo.png'
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -49,7 +53,7 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
-          <img src="/certify_logo.png" alt="Certify" className="mx-auto mb-3 h-20 w-auto" />
+          <img src={logoSrc} alt={config.appName} className="mx-auto mb-3 h-16 w-auto" />
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Crear cuenta de estudiante</h1>
           <p className="mt-1 text-sm text-slate-500">Accede a {config.appName} para comprar y cursar</p>
         </div>
@@ -81,6 +85,10 @@ export default function RegisterPage() {
             ¿Ya tienes cuenta? <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-700">Inicia sesión</Link>
           </p>
         </form>
+
+        <p className="mt-6 text-center text-xs text-slate-400">
+          Servicio prestado por {config.appName}
+        </p>
       </div>
     </div>
   )

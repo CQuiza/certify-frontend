@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, ShoppingCart } from 'lucide-react'
 import { usePublicBranding } from '../../hooks/useConfiguration'
+import { configurationService } from '../../services/configurationService'
 import { useCart } from '../../context/cart'
 
 const NAV = [
@@ -10,18 +11,27 @@ const NAV = [
   { to: '/faq', label: 'Preguntas frecuentes' },
 ]
 
-export default function PublicHeader() {
+interface PublicHeaderProps {
+  useTenantLogo?: boolean
+}
+
+export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProps) {
   const { data: pub } = usePublicBranding()
   const brand = pub?.organization_name || 'Acreditapp'
   const { items } = useCart()
   const count = items.length
   const [open, setOpen] = useState(false)
 
+  const logoSrc =
+    useTenantLogo && pub?.has_custom_logo
+      ? configurationService.getPublicLogoUrl()
+      : '/certify_logo.png'
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link to="/" className="shrink-0" aria-label={brand} onClick={() => setOpen(false)}>
-          <img src="/certify_logo.png" alt={brand} className="h-9 w-auto sm:h-11" />
+          <img src={logoSrc} alt={brand} className="h-9 w-auto sm:h-11" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

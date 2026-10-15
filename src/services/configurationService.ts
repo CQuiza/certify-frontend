@@ -68,6 +68,10 @@ export const configurationService = {
 
   getLogoUrl: (): string => `${config.apiUrl}/configuration/branding/logo`,
 
+  getDarkLogoUrl: (): string => `${config.apiUrl}/configuration/branding/logo/dark`,
+
+  getPublicLogoUrl: (): string => `${config.apiUrl}/configuration/public/logo`,
+
   updateOrganization: async (payload: OrganizationUpdate): Promise<Branding> => {
     const { data } = await api.put<Branding>('/configuration/organization', payload)
     return data
@@ -126,6 +130,20 @@ export const configurationService = {
 
   restoreLogo: async (): Promise<{ detail: string }> => {
     const { data } = await api.delete<{ detail: string }>('/configuration/email/logo')
+    return data
+  },
+
+  uploadDarkLogo: async (file: File): Promise<{ detail: string }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const { data } = await api.post<{ detail: string }>('/configuration/email/logo/dark', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return data
+  },
+
+  restoreDarkLogo: async (): Promise<{ detail: string }> => {
+    const { data } = await api.delete<{ detail: string }>('/configuration/email/logo/dark')
     return data
   },
 }

@@ -37,8 +37,11 @@ interface SidebarProps {
 export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
-  const { logoUrl } = usePlatform()
+  const { logoUrl, logoDarkUrl, logoSurface, logoIsDark } = usePlatform()
   const navigate = useNavigate()
+
+  const logoSrc = logoDarkUrl ?? logoUrl ?? '/certify_logo.png'
+  const needsLightPill = !logoDarkUrl && (logoSurface === 'light' || (logoSurface === 'auto' && logoIsDark))
 
   const filtered = navItems.filter((item) => {
     if (!user) return false
@@ -50,8 +53,8 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4">
-        <div className="flex h-11 items-center rounded-xl bg-white px-3 shadow-sm">
-          <img src={logoUrl ?? '/certify_logo.png'} alt="Logo" className="h-7 w-auto" />
+        <div className={`flex h-11 items-center rounded-xl px-3 ${needsLightPill ? 'bg-white shadow-sm' : ''}`}>
+          <img src={logoSrc} alt="Logo" className="h-7 w-auto" />
         </div>
         <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden">
           <X className="h-5 w-5" />

@@ -3,7 +3,11 @@ import { Mail, MapPin, Phone } from 'lucide-react'
 import { config } from '../../config'
 import { usePublicBranding } from '../../hooks/useConfiguration'
 
-export default function PublicFooter() {
+interface PublicFooterProps {
+  showDeveloper?: boolean
+}
+
+export default function PublicFooter({ showDeveloper = false }: PublicFooterProps) {
   const { data: pub } = usePublicBranding()
   const contactPhone = pub?.contact_phone || config.contactPhone
   const contactEmail = pub?.contact_email || config.contactEmail
@@ -65,8 +69,24 @@ export default function PublicFooter() {
         </div>
       </div>
 
-      <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 px-6 pt-6 text-xs">
-        &copy; {new Date().getFullYear()} Acreditapp. Todos los derechos reservados.
+      <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 px-6 pt-6">
+        <div className="flex flex-col items-center justify-between gap-5 sm:flex-row">
+          <p className="text-xs">
+            &copy; {new Date().getFullYear()} Acreditapp. Todos los derechos reservados.
+          </p>
+          {showDeveloper && (
+            <a
+              href="https://cristhianquiza.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-1 transition-opacity hover:opacity-80"
+            >
+              <span className="text-[11px] text-slate-500">Desarrollado por:</span>
+              <img src="/cristhianquiza-logo.svg" alt="Cristhian Quiza" className="h-8 w-auto" />
+              <span className="text-[11px] font-medium text-slate-300">cristhianquiza.com</span>
+            </a>
+          )}
+        </div>
       </div>
     </footer>
   )
