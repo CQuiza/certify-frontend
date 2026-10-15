@@ -4,7 +4,7 @@ import { useBatchIssueCertificates, useCreatePendingCertificate } from '../../ho
 import Modal from '../molecules/Modal'
 import Button from '../atoms/Button'
 import Input from '../atoms/Input'
-import { Search, CheckSquare, Square } from 'lucide-react'
+import { Search, CheckSquare, Square, AlertTriangle } from 'lucide-react'
 import { getErrorMessage } from '../../lib/error'
 import type { CertificateType, Course } from '../../types'
 
@@ -165,6 +165,23 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
             <p className="mt-1 text-xs text-slate-500">
               El certificado quedará retenido y se emitirá automáticamente cuando el estudiante complete el curso al 100%. Los cursos seleccionados serán asignados al estudiante automáticamente.
             </p>
+          )}
+          {mode === 'available' && (
+            <div className="mt-3 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+              <div className="text-sm text-amber-800">
+                <p className="font-medium">Aviso sobre la emisión por "Disponible"</p>
+                <p className="mt-1">
+                  Emitir certificados por esta vía <strong>no los vincula a un curso ni al progreso</strong> del
+                  estudiante, por lo que <strong>no habilitará la renovación automática</strong> al vencer y el
+                  estudiante no quedará inscrito en ningún curso.
+                </p>
+                <p className="mt-1">
+                  Se recomienda usar la vía <strong>"En proceso"</strong>, que asocia curso y progreso y habilita
+                  las renovaciones automáticas del estudiante.
+                </p>
+              </div>
+            </div>
           )}
         </div>
 
