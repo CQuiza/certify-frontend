@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, ShoppingCart } from 'lucide-react'
+import { config } from '../../config'
 import { usePublicBranding } from '../../hooks/useConfiguration'
 import { configurationService } from '../../services/configurationService'
 import { useCart } from '../../context/cart'
@@ -17,7 +18,7 @@ interface PublicHeaderProps {
 
 export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProps) {
   const { data: pub } = usePublicBranding()
-  const brand = pub?.organization_name || 'Acreditapp'
+  const brand = pub?.organization_name || config.appName
   const { items } = useCart()
   const count = items.length
   const [open, setOpen] = useState(false)
@@ -25,7 +26,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
   const logoSrc =
     useTenantLogo && pub?.has_custom_logo
       ? configurationService.getPublicLogoUrl()
-      : '/certify_logo.png'
+      : '/app_logo.png'
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
@@ -70,7 +71,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
             to="/register"
             className="hidden rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 md:inline-flex"
           >
-            Probar Acreditapp
+            Probar {config.appName}
           </Link>
 
           <button
@@ -111,7 +112,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
                 onClick={() => setOpen(false)}
                 className="rounded-lg bg-indigo-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
               >
-                Probar Acreditapp
+                Probar {config.appName}
               </Link>
             </div>
           </nav>

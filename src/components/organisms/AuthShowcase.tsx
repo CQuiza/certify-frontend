@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Sparkles } from 'lucide-react'
 import { config } from '../../config'
-import { usePublicBranding } from '../../hooks/useConfiguration'
 
 interface Slide {
   title: string
@@ -34,8 +33,7 @@ const SLIDES: Slide[] = [
 ]
 
 export default function AuthShowcase() {
-  const { data: pub } = usePublicBranding()
-  const brand = pub?.organization_name || config.appName
+  const brand = config.appName
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
@@ -77,9 +75,9 @@ export default function AuthShowcase() {
                     rel="noopener noreferrer"
                     className="flex flex-col items-center gap-3 transition-opacity hover:opacity-80"
                   >
-                    <span className="text-sm text-slate-400">Desarrollado por:</span>
-                    <img src="/cristhianquiza-logo.svg" alt="Cristhian Quiza" className="h-14 w-auto" />
-                    <span className="text-sm font-medium text-slate-200">cristhianquiza.com</span>
+                    <span className="text-base text-slate-300">Desarrollado por:</span>
+                    <img src="/cristhianquiza-logo.svg" alt="Cristhian Quiza" className="h-20 w-auto" />
+                    <span className="text-base font-semibold text-slate-100">cristhianquiza.com</span>
                   </a>
                 ) : (
                   <>

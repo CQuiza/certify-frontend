@@ -44,7 +44,7 @@ export default function DashboardLayout() {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500">
               <span className="text-xs font-bold text-white">A</span>
             </div>
-            <span className="text-sm font-semibold text-white">Acreditapp</span>
+            <span className="text-sm font-semibold text-white">{config.appName}</span>
           </div>
         </div>
 

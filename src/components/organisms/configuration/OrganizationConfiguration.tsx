@@ -115,7 +115,7 @@ function OrganizationForm({
   }
 
   async function handleRestoreLogo() {
-    if (!confirm('¿Restaurar el logo por defecto de Acreditapp?')) return
+    if (!confirm(`¿Restaurar el logo por defecto de ${config.appName}?`)) return
     try {
       await restoreLogo.mutateAsync()
       toast.success('Logo por defecto restaurado')
@@ -223,7 +223,7 @@ function OrganizationForm({
               <p className="text-xs font-medium text-slate-500">Logo principal (fondos claros)</p>
               <div className="mt-2 flex h-32 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <img
-                  src={logoUrl ?? '/certify_logo.png'}
+                  src={logoUrl ?? '/app_logo.png'}
                   alt="Logo"
                   className="max-h-full w-auto max-w-full object-contain"
                 />

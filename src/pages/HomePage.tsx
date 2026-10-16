@@ -96,7 +96,7 @@ export default function HomePage() {
   const contactPhone = pub?.contact_phone || config.contactPhone
   const demoLink = waLink(
     contactPhone,
-    'Hola, quiero solicitar una demo de Acreditapp para mi organización.',
+    `Hola, quiero solicitar una demo de ${config.appName} para mi organización.`,
   )
 
   return (
@@ -132,7 +132,7 @@ export default function HomePage() {
                 to="/register"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-colors hover:bg-emerald-400 sm:w-auto"
               >
-                Probar Acreditapp
+                Probar {config.appName}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <a
@@ -158,7 +158,7 @@ export default function HomePage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900">Verificación de certificado</p>
-                      <p className="text-xs text-slate-500">acreditapp.com/verificar</p>
+                      <p className="text-xs text-slate-500">{config.appName.toLowerCase()}.com/verificar</p>
                     </div>
                   </div>
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
@@ -296,7 +296,7 @@ export default function HomePage() {
               to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-400"
             >
-              Probar Acreditapp
+              Probar {config.appName}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a

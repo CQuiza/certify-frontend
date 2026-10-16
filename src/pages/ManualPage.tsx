@@ -189,7 +189,7 @@ const sections: Record<RoleKey, RoleSection> = {
         content: (
           <div className="space-y-2 text-sm text-slate-600">
             <p>
-              Acreditapp es una <strong>herramienta tecnológica</strong> de gestión, emisión y verificación de
+              {config.appName} es una <strong>herramienta tecnológica</strong> de gestión, emisión y verificación de
               constancias y certificados de educación complementaria e informal. <strong>No es una institución
               de educación formal</strong> ni otorga títulos o certificaciones ocupacionales.
             </p>

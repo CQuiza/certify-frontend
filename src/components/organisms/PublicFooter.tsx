@@ -16,7 +16,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
     <footer className="border-t border-white/10 bg-slate-900 py-12 text-slate-400">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-1">
-          <p className="text-lg font-bold tracking-tight text-white">Acreditapp</p>
+          <p className="text-lg font-bold tracking-tight text-white">{config.appName}</p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed">
             La infraestructura tecnológica para gestionar, vender y certificar tus
             capacitaciones corporativas.
@@ -33,7 +33,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
               <Link to="/search" className="transition-colors hover:text-white">Verificar certificado</Link>
             </li>
             <li>
-              <Link to="/register" className="transition-colors hover:text-white">Probar Acreditapp</Link>
+              <Link to="/register" className="transition-colors hover:text-white">Probar {config.appName}</Link>
             </li>
           </ul>
         </div>
@@ -72,7 +72,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
       <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 px-6 pt-6">
         <div className="flex flex-col items-center justify-between gap-5 sm:flex-row">
           <p className="text-xs">
-            &copy; {new Date().getFullYear()} Acreditapp. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} {config.appName}. Todos los derechos reservados.
           </p>
           {showDeveloper && (
             <a

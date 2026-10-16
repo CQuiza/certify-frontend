@@ -12,7 +12,7 @@ import { getErrorMessage } from '../lib/error'
 export default function RegisterPage() {
   const { register } = useAuth()
   const { data: pub } = usePublicBranding()
-  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/certify_logo.png'
+  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/app_logo.png'
   const [form, setForm] = useState({
     email: '',
     password: '',

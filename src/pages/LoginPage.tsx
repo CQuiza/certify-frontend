@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/certify_logo.png'
+  const logoSrc = pub?.has_custom_logo ? configurationService.getPublicLogoUrl() : '/app_logo.png'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
