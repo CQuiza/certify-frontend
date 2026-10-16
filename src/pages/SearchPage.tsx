@@ -130,27 +130,29 @@ export default function SearchPage() {
 
             {result.certificates.map((cert) => (
               <Card key={cert.id}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant={certificateStatusVariant(cert.status)}>{cert.status}</Badge>
                       {cert.certificate_type_id != null && typeMap[cert.certificate_type_id] && (
-                        <span className="text-base font-bold text-slate-900 break-words">{typeMap[cert.certificate_type_id]}</span>
+                        <span className="min-w-0 break-words text-base font-bold text-slate-900">
+                          {typeMap[cert.certificate_type_id]}
+                        </span>
                       )}
                     </div>
                     <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
                       <div className="flex items-center gap-1.5 text-slate-600">
-                        <Calendar className="h-3.5 w-3.5" />
+                        <Calendar className="h-3.5 w-3.5 shrink-0" />
                         <span>Emitido: {formatDate(cert.issued_at)}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-slate-600">
-                        <Clock className="h-3.5 w-3.5" />
+                        <Clock className="h-3.5 w-3.5 shrink-0" />
                         <span>Expira: {cert.expires_at ? formatDate(cert.expires_at) : '—'}</span>
                       </div>
                     </div>
                     <p className="font-mono text-xs text-slate-400">ID: {cert.unique_id.slice(0, 8)}...</p>
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex shrink-0 gap-2">
                     <a
                       href={`${config.apiUrl}/certificates/view/${cert.unique_id}`}
                       target="_blank"
