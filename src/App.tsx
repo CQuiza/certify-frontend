@@ -27,7 +27,13 @@ function App() {
               <ErrorBoundary>
                 <AppRouter />
               </ErrorBoundary>
-              <Toaster richColors closeButton position="top-right" />
+              <Toaster
+                richColors
+                closeButton
+                position="bottom-right"
+                offset={{ bottom: 96, right: 24 }}
+                mobileOffset={{ bottom: 96, right: 16 }}
+              />
             </CartProvider>
           </PlatformProvider>
         </AuthProvider>
