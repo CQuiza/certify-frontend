@@ -31,7 +31,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link to="/" className="shrink-0" aria-label={brand} onClick={() => setOpen(false)}>
-          <img src={logoSrc} alt={brand} className="h-9 w-auto sm:h-11" />
+          <img src={logoSrc} alt={brand} className="h-10 w-auto max-w-full object-contain sm:h-12" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

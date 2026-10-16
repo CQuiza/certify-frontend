@@ -53,7 +53,7 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
-          <img src={logoSrc} alt={config.appName} className="mx-auto mb-3 h-16 w-auto" />
+          <img src={logoSrc} alt={config.appName} className="mx-auto mb-3 h-20 w-auto max-w-full object-contain" />
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Crear cuenta de estudiante</h1>
           <p className="mt-1 text-sm text-slate-500">Accede a {config.appName} para comprar y cursar</p>
         </div>

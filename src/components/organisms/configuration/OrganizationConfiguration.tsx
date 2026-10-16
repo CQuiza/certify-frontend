@@ -221,11 +221,11 @@ function OrganizationForm({
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl border border-slate-200 p-3">
               <p className="text-xs font-medium text-slate-500">Logo principal (fondos claros)</p>
-              <div className="mt-2 flex h-20 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-2">
+              <div className="mt-2 flex h-32 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <img
                   src={logoUrl ?? '/certify_logo.png'}
                   alt="Logo"
-                  className="max-h-full max-w-full object-contain"
+                  className="max-h-full w-auto max-w-full object-contain"
                 />
               </div>
               <div className="mt-2 flex flex-col gap-2">
@@ -247,9 +247,9 @@ function OrganizationForm({
 
             <div className="rounded-xl border border-slate-200 p-3">
               <p className="text-xs font-medium text-slate-500">Logo para fondos oscuros (sidebar)</p>
-              <div className="mt-2 flex h-20 items-center justify-center rounded-lg bg-slate-900 p-2">
+              <div className="mt-2 flex h-32 items-center justify-center rounded-lg bg-slate-900 p-3">
                 {darkLogoUrl ? (
-                  <img src={darkLogoUrl} alt="Logo oscuro" className="max-h-full max-w-full object-contain" />
+                  <img src={darkLogoUrl} alt="Logo oscuro" className="max-h-full w-auto max-w-full object-contain" />
                 ) : (
                   <span className="text-xs text-slate-400">Sin logo específico</span>
                 )}

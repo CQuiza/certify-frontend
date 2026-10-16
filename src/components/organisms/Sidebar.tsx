@@ -53,8 +53,8 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4">
-        <div className={`flex h-11 items-center rounded-xl px-3 ${needsLightPill ? 'bg-white shadow-sm' : ''}`}>
-          <img src={logoSrc} alt="Logo" className="h-7 w-auto" />
+        <div className={`flex h-14 items-center rounded-xl px-3 ${needsLightPill ? 'bg-white shadow-sm' : ''}`}>
+          <img src={logoSrc} alt="Logo" className="h-10 w-auto max-w-full object-contain" />
         </div>
         <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden">
           <X className="h-5 w-5" />
