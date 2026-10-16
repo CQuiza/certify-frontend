@@ -62,27 +62,37 @@ export default function SearchPage() {
     <div className="min-h-screen bg-slate-50">
       <PublicHeader useTenantLogo />
 
-      <section className="mx-auto max-w-2xl px-6 py-12">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Verificar Certificados</h1>
-          <p className="mt-2 text-slate-500">Ingresa tu número de identificación para consultar tus certificados</p>
-        </div>
-
-        <Card>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Número de identificación"
-              placeholder="Ej: 1234567890"
-              value={identityNumber}
-              onChange={(e) => setIdentityNumber(e.target.value)}
-              required
+      <section className="mx-auto max-w-6xl px-6 py-12">
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div>
+            <div className="text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">Verificar Certificados</h1>
+              <p className="mt-2 text-slate-500">Ingresa tu número de identificación para consultar tus certificados</p>
+            </div>
+            <Card className="mt-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  label="Número de identificación"
+                  placeholder="Ej: 1234567890"
+                  value={identityNumber}
+                  onChange={(e) => setIdentityNumber(e.target.value)}
+                  required
+                />
+                <Button type="submit" loading={loading} className="w-full">
+                  <Search className="h-4 w-4" />
+                  Consultar
+                </Button>
+              </form>
+            </Card>
+          </div>
+          <div className="flex items-center justify-center md:justify-end">
+            <img
+              src="/logos/certified.png"
+              alt="Calidad certificada"
+              className="w-full grayscale transition duration-500 hover:grayscale-0"
             />
-            <Button type="submit" loading={loading} className="w-full">
-              <Search className="h-4 w-4" />
-              Consultar
-            </Button>
-          </form>
-        </Card>
+          </div>
+        </div>
 
         {loading && (
           <div className="mt-6 space-y-4">

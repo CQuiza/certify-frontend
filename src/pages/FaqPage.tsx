@@ -1,7 +1,9 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { Bot, ChevronRight } from 'lucide-react'
 import { config } from '../config'
+import { usePublicBranding } from '../hooks/useConfiguration'
+import { waLink } from '../types/course'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
 
@@ -57,37 +59,114 @@ const faqs = [
 ]
 
 export default function FaqPage() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const { data: pub } = usePublicBranding()
+  const contactPhone = pub?.contact_phone || config.contactPhone
+  const [messages, setMessages] = useState<{ q: string; a: string }[]>([])
+  const chatRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  function ask(faq: { q: string; a: string }) {
+    setMessages((prev) => [...prev, faq])
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      chatRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [messages])
 
   return (
     <div className="min-h-screen bg-slate-50">
       <PublicHeader />
 
-      <section className="mx-auto max-w-3xl px-6 py-16">
-        <Link to="/" className="mb-6 inline-flex text-sm text-slate-500 hover:text-slate-700 transition-colors">&larr; Volver al inicio</Link>
-        <h1 className="text-3xl font-bold text-slate-900">Preguntas Frecuentes</h1>
-        <p className="mt-2 text-slate-600">Respuestas a las dudas más comunes sobre {config.appName}.</p>
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <Link to="/" className="mb-6 inline-flex text-sm text-slate-500 transition-colors hover:text-slate-700">
+          &larr; Volver al inicio
+        </Link>
+        <div className="max-w-2xl">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Preguntas Frecuentes</h1>
+          <p className="mt-2 text-slate-600">
+            Respuestas a las dudas más comunes sobre {config.appName}.
+          </p>
+        </div>
 
-        <div className="mt-8 space-y-3">
-          {faqs.map((faq, i) => {
-            const open = openIndex === i
-            return (
-              <div key={i} className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <button
-                  onClick={() => setOpenIndex(open ? null : i)}
-                  className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-slate-50"
-                >
-                  <span className="font-medium text-slate-900">{faq.q}</span>
-                  {open ? <ChevronDown className="h-5 w-5 text-slate-400 shrink-0" /> : <ChevronRight className="h-5 w-5 text-slate-400 shrink-0" />}
-                </button>
-                {open && (
-                  <div className="border-t border-slate-100 px-5 py-4 text-sm text-slate-600 leading-relaxed">
-                    {faq.a}
-                  </div>
-                )}
+        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-start">
+          {/* Questions */}
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <button
+                key={i}
+                onClick={() => ask(faq)}
+                className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-left transition-all duration-200 hover:-translate-x-0.5 hover:border-indigo-200 hover:shadow-md hover:shadow-slate-200/60"
+              >
+                <span className="font-medium text-slate-900">{faq.q}</span>
+                <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-indigo-600" />
+              </button>
+            ))}
+          </div>
+
+          {/* Assistant */}
+          <div ref={chatRef} className="lg:sticky lg:top-24">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex items-center gap-3 bg-slate-900 px-5 py-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 text-white">
+                  <Bot className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Asistente {config.appName}</p>
+                  <p className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    En línea
+                  </p>
+                </div>
               </div>
-            )
-          })}
+
+              <div className="max-h-[440px] space-y-4 overflow-y-auto bg-slate-50 p-5">
+                <div className="flex items-start gap-2">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                  <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-4 py-2.5 text-sm text-slate-700 ring-1 ring-slate-200">
+                    ¡Hola! 👋 Elige una pregunta de la izquierda y te responderé al instante.
+                  </div>
+                </div>
+
+                {messages.map((m, i) => (
+                  <div key={i} className="animate-slide-in-left space-y-3">
+                    <div className="flex justify-end">
+                      <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5 text-sm text-white">
+                        {m.q}
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white">
+                        <Bot className="h-4 w-4" />
+                      </div>
+                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-4 py-2.5 text-sm leading-relaxed text-slate-700 ring-1 ring-slate-200">
+                        {m.a}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+
+              <div className="border-t border-slate-200 bg-white px-5 py-4">
+                <p className="text-center text-xs text-slate-500">
+                  Este asistente responde preguntas frecuentes. ¿Necesitas algo más?{' '}
+                  <a
+                    href={waLink(contactPhone, `Hola, tengo una consulta sobre ${config.appName}.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-emerald-600 transition-colors hover:text-emerald-700"
+                  >
+                    Contacta a un asesor
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

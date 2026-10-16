@@ -5,6 +5,18 @@
     Roboto, Helvetica, Arial, sans-serif;
   --animate-shimmer-x: shimmer-x 1.8s ease-in-out infinite;
   --animate-shimmer-y: shimmer-y 1.8s ease-in-out infinite;
+  --animate-slide-in-left: slide-in-left 0.4s ease-out both;
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes shimmer-x {

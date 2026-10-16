@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ShoppingCart } from 'lucide-react'
 import { config } from '../../config'
 import { usePublicBranding } from '../../hooks/useConfiguration'
@@ -7,6 +7,7 @@ import { configurationService } from '../../services/configurationService'
 import { useCart } from '../../context/cart'
 
 const NAV = [
+  { to: '/', label: 'Inicio' },
   { to: '/catalog', label: 'Catálogo' },
   { to: '/search', label: 'Verificar certificado' },
   { to: '/faq', label: 'Preguntas frecuentes' },
@@ -18,6 +19,7 @@ interface PublicHeaderProps {
 
 export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProps) {
   const { data: pub } = usePublicBranding()
+  const { pathname } = useLocation()
   const brand = pub?.organization_name || config.appName
   const { items } = useCart()
   const count = items.length
@@ -35,16 +37,23 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
           <img src={logoSrc} alt={brand} className="h-10 w-auto max-w-full object-contain sm:h-12" />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
-          {NAV.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              {n.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-2 md:flex">
+          {NAV.map((n) => {
+            const active = pathname === n.to
+            return (
+              <Link
+                key={n.to}
+                to={n.to}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-slate-100 text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                {n.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
@@ -94,7 +103,9 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+                className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  pathname === n.to ? 'bg-slate-100 text-slate-900' : 'text-slate-700 hover:bg-slate-100'
+                }`}
               >
                 {n.label}
               </Link>
