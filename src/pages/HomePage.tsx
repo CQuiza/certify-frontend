@@ -4,6 +4,7 @@ import {
   Building2,
   CheckCircle2,
   CreditCard,
+  Database,
   FileCheck2,
   Globe2,
   GraduationCap,
@@ -11,6 +12,7 @@ import {
   LineChart,
   MessageCircle,
   QrCode,
+  Rocket,
   ShieldCheck,
   Sparkles,
   Workflow,
@@ -91,12 +93,55 @@ const trust = [
   },
 ]
 
+const successCases = [
+  {
+    name: 'Innova Center',
+    logo: '/logos/innova-center.png',
+    logoClass: 'h-10 md:h-12',
+    url: 'http://innova-center.com/',
+    tag: 'Educación & Innovación',
+    model: 'Single Tenancy / On-Premise',
+    highlights: [
+      'Plataforma dedicada para la administración de procesos formativos.',
+      'Gestión de usuarios e infraestructura de desarrollo.',
+    ],
+  },
+  {
+    name: 'Innova Salud',
+    logo: '/logos/innova-salud.png',
+    logoClass: 'h-10 md:h-12',
+    url: 'https://innova-salud.com.co/',
+    tag: 'Sector Salud & Ecosistemas Digitales',
+    model: 'Single Tenancy / On-Premise',
+    highlights: [
+      'Alta disponibilidad y seguridad de datos sensibles.',
+      'Trazabilidad y cumplimiento normativo.',
+    ],
+  },
+  {
+    name: 'Medi Center',
+    logo: '/logos/medi-center.png',
+    logoClass: 'h-10 md:h-12',
+    url: 'http://medi-center.com.co/',
+    tag: 'Gestión educativa Integral',
+    model: 'Single Tenancy / On-Premise',
+    highlights: [
+      'Control centralizado de registros y usuarios.',
+      'Administración integral de contenido de salud.',
+    ],
+  },
+]
+
 export default function HomePage() {
   const { data: pub } = usePublicBranding()
   const contactPhone = pub?.contact_phone || config.contactPhone
   const demoLink = waLink(
     contactPhone,
     `Hola, quiero solicitar una demo de ${config.appName} para mi organización.`,
+  )
+  const migrationLink = waLink(
+    contactPhone,
+    `Hola, quiero una consulta sobre Migración de Datos para mi organización (${config.appName}).`,
   )
 
   return (
@@ -224,8 +269,128 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Migration service */}
+      <section id="migracion" className="bg-slate-50 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="group relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-8 shadow-2xl sm:p-12">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(50% 50% at 12% 0%, rgba(2,132,199,0.20) 0%, rgba(15,23,42,0) 60%), radial-gradient(45% 45% at 92% 100%, rgba(16,185,129,0.18) 0%, rgba(15,23,42,0) 60%)',
+              }}
+            />
+            <div className="relative">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
+                ¿Ya operas en otro sistema?
+              </span>
+              <h2 className="mt-5 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Trae tu Base de Datos sin perder nada.{' '}
+                <span className="text-emerald-300">Nos encargamos del resto.</span>
+              </h2>
+              <p className="mt-4 max-w-2xl text-slate-300">
+                Servicio de Onboarding y Migración Asistida para que inicies la operación con tus datos.
+              </p>
+
+              <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+                {/* Legacy system */}
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-700/60 text-slate-300">
+                      <Database className="h-5 w-5" />
+                    </div>
+                    <p className="font-semibold text-white">Tu Sistema Actual</p>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm text-slate-400">
+                    {[
+                      'Base de datos de estudiantes',
+                      'Historial de cursos y contenido',
+                      'Certificados emitidos',
+                    ].map((t) => (
+                      <li key={t} className="flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Migration engine connector */}
+                <div className="flex flex-col items-center gap-3 lg:flex-row lg:px-2">
+                  <span className="whitespace-nowrap rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-300">
+                    Migración Personalizada
+                  </span>
+                  <div className="relative h-10 w-0.5 overflow-hidden rounded-full bg-white/10 transition-colors group-hover:bg-white/20 lg:h-0.5 lg:w-24">
+                    <span className="absolute left-0 h-6 w-full animate-shimmer-y rounded-full bg-cyan-400 shadow-[0_0_10px_2px_rgba(34,211,238,0.7)] transition-shadow group-hover:shadow-[0_0_14px_4px_rgba(34,211,238,0.9)] lg:top-0 lg:h-full lg:w-10 lg:animate-shimmer-x" />
+                  </div>
+                </div>
+
+                {/* Formativa tenant */}
+                <div className="rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.06] p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/15 text-emerald-300">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <p className="font-semibold text-white">Tu Espacio en {config.appName}</p>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm text-emerald-100/80">
+                    {[
+                      '100% Datos intactos y reales',
+                      'Verificación QR activa',
+                      'Listo para operar en 24–48h',
+                    ].map((t) => (
+                      <li key={t} className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {[
+                  {
+                    t: 'Sin interrupciones',
+                    d: 'Tu academia o empresa no detiene operaciones durante la transición.',
+                  },
+                  {
+                    t: 'Validación e integridad',
+                    d: 'Verificamos duplicados y consistencia de datos antes del lanzamiento.',
+                  },
+                  {
+                    t: 'Costo transparente',
+                    d: 'Tarifa única (one-time fee) adicional a tu plan de suscripción al activar tu espacio.',
+                  },
+                ].map((b) => (
+                  <div
+                    key={b.t}
+                    className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-white/[0.08] hover:shadow-[0_8px_30px_-8px_rgba(16,185,129,0.35)]"
+                  >
+                    <p className="font-semibold text-white">{b.t}</p>
+                    <p className="mt-1 text-sm text-slate-400">{b.d}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-10">
+                <a
+                  href={migrationLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-6 py-3 text-sm font-semibold text-emerald-200 transition-colors hover:bg-emerald-400/20"
+                >
+                  <Rocket className="h-4 w-4" />
+                  Solicitar evaluación de migración
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Workflow */}
-      <section id="como-funciona" className="border-y border-slate-200 bg-slate-50 py-20">
+      <section id="como-funciona" className="bg-white py-20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -256,7 +421,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust / normative */}
-      <section className="bg-white py-20">
+      <section className="bg-slate-50 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -277,6 +442,73 @@ export default function HomePage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Success cases */}
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-4xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+              Trazabilidad & Respaldo Enterprise
+            </span>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:whitespace-nowrap">
+              Experiencia Comprobada, Conocemos el Negocio
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-slate-500">
+              Hemos creado soluciones empresariales para las necesidades especificas del mercado.
+            </p>
+          </div>
+
+          <div className="mt-14 flex flex-col gap-4 md:flex-row md:items-start">
+            {successCases.map((c) => (
+              <div
+                key={c.name}
+                className="group relative flex-1 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-6 transition-all duration-500 ease-out md:hover:flex-[1.7] md:hover:border-slate-700"
+              >
+                <div className="flex justify-center transition-all duration-500 md:group-hover:mb-6 md:group-hover:justify-start">
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${c.name} — sitio web`}
+                    className="inline-flex"
+                  >
+                    <img
+                      src={c.logo}
+                      alt={c.name}
+                      className={`w-auto origin-left opacity-100 transition-all duration-500 md:opacity-60 md:grayscale md:group-hover:scale-[2] md:group-hover:opacity-100 md:group-hover:grayscale-0 ${c.logoClass}`}
+                    />
+                  </a>
+                </div>
+
+                <div className="max-h-[520px] overflow-hidden opacity-100 transition-all duration-500 ease-out md:max-h-0 md:opacity-0 md:group-hover:max-h-[520px] md:group-hover:opacity-100">
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-300">
+                      {c.tag}
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-medium text-slate-300">
+                      {c.model}
+                    </span>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm text-slate-400">
+                    {c.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-cyan-400" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center">
+            <p className="max-w-2xl rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-center text-lg font-semibold text-slate-800">
+              Este conocimiento ahora se integra para impulsar{' '}
+              <span className="text-emerald-600">{config.appName}</span>.
+            </p>
           </div>
         </div>
       </section>
