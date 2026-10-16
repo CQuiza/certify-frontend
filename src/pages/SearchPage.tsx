@@ -85,7 +85,7 @@ export default function SearchPage() {
               </form>
             </Card>
           </div>
-          <div className="flex items-center justify-center md:justify-end">
+          <div className="hidden items-center justify-center md:flex md:justify-end">
             <img
               src="/logos/certified.png"
               alt="Calidad certificada"
