@@ -107,7 +107,6 @@ const sections: Record<RoleKey, RoleSection> = {
               <li><strong>Activar / desactivar:</strong> una organización inactiva no permite acceso a sus usuarios.</li>
               <li><strong>Reset de administrador:</strong> regenera la contraseña del administrador de la organización.</li>
               <li><strong>Ver como (impersonar):</strong> el superusuario entra al contexto de esa organización.</li>
-              <li><strong>Backup SQL:</strong> descarga un respaldo completo de la base de datos (PostgreSQL).</li>
             </ul>
           </div>
         ),
@@ -174,7 +173,7 @@ const sections: Record<RoleKey, RoleSection> = {
               <li>Configurar la plataforma por organización (marca, correo, plantillas, pagos).</li>
               <li>Gestionar cualquier usuario, curso, tipo de certificado y certificado.</li>
               <li>Emitir, revocar, renovar y eliminar certificados; emitir en lote y forzar pendientes.</li>
-              <li>Ver reportes, dashboard, auditoría y monitoreo; descargar backups de base de datos.</li>
+              <li>Ver reportes, dashboard, auditoría y monitoreo.</li>
             </ul>
             <Warn>
               Por su alcance, el superusuario puede ver y modificar información de cualquier organización.
@@ -303,7 +302,7 @@ const sections: Record<RoleKey, RoleSection> = {
           <ul className="list-disc list-inside space-y-1 text-sm text-slate-600">
             <li>No puede ver, crear ni editar superusuarios.</li>
             <li>No gestiona organizaciones (tenants) ni la configuración de plataforma.</li>
-            <li>No accede a Monitoreo ni a backups de base de datos.</li>
+            <li>No accede a Monitoreo.</li>
           </ul>
         ),
       },
