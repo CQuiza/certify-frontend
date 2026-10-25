@@ -54,7 +54,7 @@ export default function PaymentResultPage() {
             <XCircle className="h-8 w-8 text-red-500" />
           )}
           <div>
-            <h1 className="text-xl font-bold text-slate-900">
+            <h1 className="font-display text-xl font-bold text-slate-900">
               {approved ? 'Pago aprobado' : pending ? 'Pago pendiente' : 'Pago no completado'}
             </h1>
             <p className="text-sm text-slate-500">Pedido {order.order_no}</p>

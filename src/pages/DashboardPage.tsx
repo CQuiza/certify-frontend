@@ -22,7 +22,7 @@ export default function DashboardPage() {
       label: 'Usuarios activos',
       value: isStaff ? (statsData?.total_users ?? '—') : '—',
       icon: Users,
-      color: 'text-indigo-600 bg-indigo-50',
+      color: 'text-emerald-600 bg-emerald-50',
       loading: isLoading,
     },
     {
@@ -77,7 +77,7 @@ export default function DashboardPage() {
                   {stat.loading ? (
                     <Skeleton className="h-7 w-16" />
                   ) : (
-                    <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+                    <p className="font-display text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">{stat.value}</p>
                   )}
                   <p className="text-sm text-slate-500">{stat.label}</p>
                 </div>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                   <Icon className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{c.value}</p>
+                  <p className="font-display text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">{c.value}</p>
                   <p className="text-sm text-slate-500">{c.label}</p>
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold text-slate-900">Administradores</h2>
             <Link
               to="/reports"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
             >
               <BarChart3 className="h-4 w-4" />
               Reportes
@@ -139,7 +139,7 @@ export default function DashboardPage() {
                   <tbody className="divide-y divide-slate-100">
                     {admins.map((a) => (
                       <tr key={a.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-3"><span className="inline-flex items-center gap-1.5 font-mono text-xs text-indigo-600"><ShieldCheck className="h-3.5 w-3.5" />{String(a.id).padStart(4, '0')}</span></td>
+                        <td className="px-6 py-3"><span className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-600"><ShieldCheck className="h-3.5 w-3.5" />{String(a.id).padStart(4, '0')}</span></td>
                         <td className="px-6 py-3 text-slate-800">{`${a.name} ${a.first_last_name || ''} ${a.second_last_name || ''}`.trim()}</td>
                         <td className="px-6 py-3 text-slate-600">{`${a.identity_type} ${a.identity_number}`}</td>
                         <td className="px-6 py-3 text-slate-600">{a.email}</td>

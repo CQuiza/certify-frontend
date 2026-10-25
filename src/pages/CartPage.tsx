@@ -37,7 +37,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <Link to="/catalog" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+          <Link to="/catalog" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
             ← Seguir comprando
           </Link>
           <span className="text-sm font-medium text-slate-600">Mi carrito</span>
@@ -49,7 +49,7 @@ export default function CartPage() {
           <Card className="text-center">
             <ShoppingCart className="mx-auto h-10 w-10 text-slate-300" />
             <p className="mt-4 text-lg font-medium text-slate-600">Tu carrito está vacío</p>
-            <Link to="/catalog" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700">
+            <Link to="/catalog" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700">
               Explorar catálogo <ArrowRight className="h-4 w-4" />
             </Link>
           </Card>
@@ -76,7 +76,7 @@ export default function CartPage() {
             <Card>
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-500">Total</span>
-                <span className="text-xl font-bold text-slate-900">{formatCurrency(total)}</span>
+                <span className="font-display text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">{formatCurrency(total)}</span>
               </div>
               {!isAuthenticated && (
                 <p className="mb-3 text-xs text-amber-700">
@@ -103,7 +103,7 @@ export default function CartPage() {
                 </Button>
               </div>
               <p className="mt-4 text-xs text-slate-500">
-                ¿Dudas? <a className="text-green-600 hover:underline" href={waLink(contactPhone, 'Hola, tengo dudas sobre el pago de cursos.')} target="_blank" rel="noopener noreferrer">Habla con un asesor por WhatsApp</a>
+                ¿Dudas? <a className="text-emerald-600 hover:underline" href={waLink(contactPhone, 'Hola, tengo dudas sobre el pago de cursos.')} target="_blank" rel="noopener noreferrer">Habla con un asesor por WhatsApp</a>
               </p>
             </Card>
           </div>

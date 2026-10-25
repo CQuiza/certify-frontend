@@ -108,7 +108,7 @@ export default function UserCertificatesPanel() {
       if (!course) return <span className="text-sm text-slate-400">Sin curso</span>
       return (
         <div className="flex items-center gap-2">
-          <Link to={`/courses/${course.id}`} className="text-sm text-indigo-600 hover:underline truncate max-w-[180px]">{course.title}</Link>
+          <Link to={`/courses/${course.id}`} className="text-sm text-emerald-600 hover:underline truncate max-w-[180px]">{course.title}</Link>
         </div>
       )
     }},
@@ -122,7 +122,7 @@ export default function UserCertificatesPanel() {
           className={`text-xs font-medium px-2.5 py-1 rounded-lg border transition-colors ${
             isEnrolled
               ? 'border-red-200 text-red-600 hover:bg-red-50'
-              : 'border-indigo-200 text-indigo-600 hover:bg-indigo-50'
+              : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'
           }`}
         >
           {isEnrolled ? 'Remover' : 'Asignar'}
@@ -131,12 +131,12 @@ export default function UserCertificatesPanel() {
     }},
     { key: 'actions', header: 'Acciones', render: (cert: Certificate) => (
       <div className="flex gap-2">
-        <a href={cert.pdf_url ?? '#'} target="_blank" rel="noopener noreferrer" className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Ver PDF">
+        <a href={cert.pdf_url ?? '#'} target="_blank" rel="noopener noreferrer" className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Ver PDF">
           <FileText className="h-4 w-4" />
         </a>
         <button
           onClick={() => window.open(`${config.apiUrl}/certificates/view/${cert.unique_id}/qr`, '_blank')}
-          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
           title="Ver QR"
         >
           <QrCode className="h-4 w-4" />
@@ -144,7 +144,7 @@ export default function UserCertificatesPanel() {
         <button
           onClick={() => setRenewCert(cert)}
           disabled={cert.status === 'revoked'}
-          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
           title="Renovar"
         >
           <RotateCcw className="h-4 w-4" />
@@ -159,19 +159,19 @@ export default function UserCertificatesPanel() {
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-6">
-        <Link to="/users" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors mb-3">
+        <Link to="/users" className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors mb-3">
           <ArrowLeft className="h-4 w-4" />
           Volver a usuarios
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <FileText className="h-6 w-6 shrink-0 text-indigo-600" />
+              <FileText className="h-6 w-6 shrink-0 text-emerald-600" />
               <h1 className="truncate text-2xl font-bold text-slate-900">{user.name} {user.first_last_name}</h1>
             </div>
             <p className="truncate text-sm text-slate-500">{user.email} · {user.identity_number}</p>
           </div>
-          <button onClick={() => setBatchModalOpen(true)} className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
+          <button onClick={() => setBatchModalOpen(true)} className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
             <Plus className="h-4 w-4" />
             Nuevo certificado(s)
           </button>
@@ -224,7 +224,7 @@ export default function UserCertificatesPanel() {
                             toast.success('Certificado emitido manualmente')
                           } catch (err) { toast.error(getErrorMessage(err)) }
                         }}
-                        className="rounded-lg border border-indigo-200 px-2.5 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 transition-colors"
+                        className="rounded-lg border border-emerald-200 px-2.5 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
                       >
                         Emitir ahora
                       </button>

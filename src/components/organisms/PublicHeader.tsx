@@ -64,7 +64,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
           >
             <ShoppingCart className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-indigo-600 px-1 text-[10px] font-bold text-white">
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-600 px-1 text-[10px] font-bold text-white">
                 {count}
               </span>
             )}
@@ -78,7 +78,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
           </Link>
           <Link
             to="/register"
-            className="hidden rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 md:inline-flex"
+            className="hidden rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 md:inline-flex"
           >
             Probar {config.appName}
           </Link>
@@ -121,7 +121,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
               <Link
                 to="/register"
                 onClick={() => setOpen(false)}
-                className="rounded-lg bg-indigo-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
+                className="rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
               >
                 Probar {config.appName}
               </Link>

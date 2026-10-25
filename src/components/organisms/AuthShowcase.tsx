@@ -50,7 +50,7 @@ export default function AuthShowcase() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(60% 60% at 20% 20%, rgba(99,102,241,0.35) 0%, rgba(15,23,42,0) 60%), radial-gradient(50% 50% at 80% 80%, rgba(16,185,129,0.25) 0%, rgba(15,23,42,0) 60%)',
+            'radial-gradient(60% 60% at 20% 20%, rgba(16,185,129,0.32) 0%, rgba(15,23,42,0) 60%), radial-gradient(50% 50% at 80% 80%, rgba(6,182,212,0.22) 0%, rgba(15,23,42,0) 60%)',
         }}
       />
       <div

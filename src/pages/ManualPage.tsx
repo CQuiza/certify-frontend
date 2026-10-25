@@ -44,7 +44,7 @@ const TabsList = ({ tabs }: { tabs: string[] }) => (
 )
 
 const Note = ({ children }: { children: ReactNode }) => (
-  <p className="rounded-lg border border-indigo-100 bg-indigo-50/60 px-3 py-2 text-sm text-indigo-900">
+  <p className="rounded-lg border border-emerald-100 bg-emerald-50/60 px-3 py-2 text-sm text-emerald-900">
     {children}
   </p>
 )
@@ -219,9 +219,9 @@ const sections: Record<RoleKey, RoleSection> = {
   admin: {
     title: 'Administrador',
     icon: Shield,
-    color: 'text-indigo-600',
-    bg: 'bg-indigo-50',
-    border: 'border-indigo-200',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-200',
     items: [
       {
         title: 'Pestañas disponibles',

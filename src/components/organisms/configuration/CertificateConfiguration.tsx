@@ -113,7 +113,7 @@ export default function CertificateConfiguration() {
   return (
     <Card>
       <div className="mb-4 flex items-center gap-2">
-        <FileText className="h-5 w-5 text-indigo-600" />
+        <FileText className="h-5 w-5 text-emerald-600" />
         <h2 className="text-lg font-semibold text-slate-900">Certificado</h2>
       </div>
 
@@ -171,7 +171,7 @@ export default function CertificateConfiguration() {
                 type="file"
                 accept=".pdf"
                 onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
-                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
               />
               <Button onClick={handleUpload} loading={uploadTemplate.isPending} disabled={!selectedFile}>
                 <Upload className="h-4 w-4" />

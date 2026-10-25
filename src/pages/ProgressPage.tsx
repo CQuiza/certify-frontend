@@ -75,7 +75,7 @@ export default function ProgressPage() {
               setShowResults(true)
             }}
             onFocus={() => setShowResults(true)}
-            className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
           {searchQuery.length >= 2 && showResults && (
             <div className="absolute z-10 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
@@ -105,13 +105,13 @@ export default function ProgressPage() {
             </div>
           )}
           {selectedUser && (
-            <div className="mt-2 flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2">
-              <span className="text-sm font-medium text-indigo-700">
+            <div className="mt-2 flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2">
+              <span className="text-sm font-medium text-emerald-700">
                 Mostrando progreso de: {selectedUser.name} {selectedUser.first_last_name}
               </span>
               <button
                 onClick={() => { setSelectedUser(null); setSearchQuery('') }}
-                className="rounded-lg p-0.5 text-indigo-400 hover:text-indigo-600"
+                className="rounded-lg p-0.5 text-emerald-400 hover:text-emerald-600"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -132,16 +132,16 @@ export default function ProgressPage() {
         </Card>
       ) : (
         <>
-          <div className={`rounded-lg border p-4 ${progress.overall_percent === 100 ? 'bg-emerald-50 border-emerald-200' : 'bg-indigo-50 border-indigo-200'}`}>
+          <div className={`rounded-lg border p-4 ${progress.overall_percent === 100 ? 'bg-emerald-50 border-emerald-200' : 'bg-emerald-50 border-emerald-200'}`}>
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium text-slate-800">Progreso global</span>
                   <span className="text-sm font-bold text-slate-800">{progress.overall_percent}%</span>
                 </div>
-                <div className={`h-2.5 w-full rounded-full ${progress.overall_percent === 100 ? 'bg-emerald-200' : 'bg-indigo-200'}`}>
+                <div className={`h-2.5 w-full rounded-full ${progress.overall_percent === 100 ? 'bg-emerald-200' : 'bg-emerald-200'}`}>
                   <div
-                    className={`h-2.5 rounded-full transition-all duration-500 ${progress.overall_percent === 100 ? 'bg-emerald-600' : 'bg-indigo-600'}`}
+                    className={`h-2.5 rounded-full transition-all duration-500 ${progress.overall_percent === 100 ? 'bg-emerald-600' : 'bg-emerald-600'}`}
                     style={{ width: `${progress.overall_percent}%` }}
                   />
                 </div>
@@ -172,7 +172,7 @@ export default function ProgressPage() {
                         <div className="flex-1">
                           <div className="h-2 w-full rounded-full bg-slate-200">
                             <div
-                              className={`h-2 rounded-full transition-all duration-500 ${course.progress_percent === 100 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
+                              className={`h-2 rounded-full transition-all duration-500 ${course.progress_percent === 100 ? 'bg-emerald-500' : 'bg-emerald-500'}`}
                               style={{ width: `${course.progress_percent}%` }}
                             />
                           </div>

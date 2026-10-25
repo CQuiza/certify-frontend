@@ -7,15 +7,12 @@ import {
   Database,
   FileCheck2,
   Globe2,
-  GraduationCap,
   Lock,
   LineChart,
   MessageCircle,
   QrCode,
   Rocket,
   ShieldCheck,
-  Sparkles,
-  Workflow,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
@@ -33,7 +30,7 @@ const benefits = [
   {
     icon: BadgeCheck,
     title: 'Automatización de Certificados',
-    desc: 'Emisión y validación pública inmediata con códigos QR verificables, vigencias y reglas de re-certificación automáticas.',
+    desc: 'Compra, evaluación, emisión y validación pública inmediata con códigos QR verificables, vigencias y método de re-certificación automáticas.',
   },
   {
     icon: CreditCard,
@@ -49,22 +46,18 @@ const benefits = [
 
 const steps = [
   {
-    icon: Sparkles,
     title: 'Crea tu academia',
-    desc: 'Configura tu espacio white-label con tu marca, catálogo y reglas de certificación.',
+    desc: 'Configura tu espacio personalizado con tu marca, catálogo y oferta de certificación.',
   },
   {
-    icon: GraduationCap,
     title: 'Publica o vende cursos',
     desc: 'Estructura módulos, lecciones, tareas y evaluaciones. Habilita la venta con pago en línea.',
   },
   {
-    icon: Workflow,
     title: 'El estudiante completa la evaluación',
     desc: 'Avanza a su ritmo, entrega tareas y supera las evaluaciones por módulo.',
   },
   {
-    icon: QrCode,
     title: 'Certificados verificables automáticamente',
     desc: 'Al completar el curso se emite el certificado con UUID y QR de validación pública.',
   },
@@ -74,12 +67,12 @@ const trust = [
   {
     icon: FileCheck2,
     title: 'Educación informal alineada',
-    desc: 'Constancias de asistencia conformes a la Ley 115 de 1994 y el Decreto 1075 de 2015.',
+    desc: 'Conformidad con la Ley 115 de 1994 y el Decreto 1075 de 2015.',
   },
   {
     icon: ShieldCheck,
-    title: 'Calidad NTC 3100',
-    desc: 'Trazabilidad de contenidos, evaluaciones y certificaciones para formación no formal.',
+    title: 'Resolución 3100 de 2019',
+    desc: 'Trazabilidad y auditoría para el estándar de talento humano en la formación continua.',
   },
   {
     icon: Lock,
@@ -154,16 +147,16 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 opacity-70"
           style={{
             background:
-              'radial-gradient(60% 60% at 15% 10%, rgba(99,102,241,0.28) 0%, rgba(15,23,42,0) 60%), radial-gradient(50% 50% at 90% 20%, rgba(16,185,129,0.20) 0%, rgba(15,23,42,0) 55%)',
+              'radial-gradient(60% 60% at 15% 10%, rgba(16,185,129,0.30) 0%, rgba(15,23,42,0) 60%), radial-gradient(50% 50% at 90% 20%, rgba(6,182,212,0.22) 0%, rgba(15,23,42,0) 55%)',
           }}
         />
         <div className="relative mx-auto grid max-w-6xl gap-14 px-6 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-emerald-300">
-              <Sparkles className="h-3.5 w-3.5" />
-              SaaS multitenant para capacitación corporativa
+
+              VENDE, CAPACITA Y CERTIFICA EN UN SOLO LUGAR.
             </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+            <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
               La infraestructura tecnológica para gestionar, vender y certificar tus
               capacitaciones corporativas
             </h1>
@@ -198,7 +191,7 @@ export default function HomePage() {
               <div className="rounded-xl bg-white p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
                       <QrCode className="h-4.5 w-4.5" />
                     </div>
                     <div>
@@ -226,7 +219,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-5 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5">
                   <span className="font-mono text-xs text-slate-500">UUID 8f3c…a91b</span>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
                     <Globe2 className="h-3.5 w-3.5" />
                     Validación pública
                   </span>
@@ -255,9 +248,9 @@ export default function HomePage() {
               return (
                 <div
                   key={b.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-slate-200/60"
+                  className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-lg hover:shadow-slate-200/60"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="mt-5 font-semibold text-slate-900">{b.title}</h3>
@@ -282,7 +275,7 @@ export default function HomePage() {
             />
             <div className="relative">
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                ¿Ya operas en otro sistema?
+                ¿YA OPERAS EN OTRO SISTEMA?
               </span>
               <h2 className="mt-5 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Trae tu Base de Datos sin perder nada.{' '}
@@ -400,22 +393,24 @@ export default function HomePage() {
               Un flujo claro y automatizado para que tu equipo se enfoque en enseñar.
             </p>
           </div>
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => {
-              const Icon = s.icon
-              return (
-                <div key={s.title} className="relative rounded-2xl border border-slate-200 bg-white p-6">
-                  <span className="absolute -top-3 left-6 inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <div className="mt-2 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-5 font-semibold text-slate-900">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-500">{s.desc}</p>
+          <div className="mt-14 grid gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-4">
+            {steps.map((s, i) => (
+              <div
+                key={s.title}
+                className="group flex flex-col transition-transform duration-300 ease-out hover:-translate-y-1.5 motion-reduce:hover:translate-y-0"
+              >
+                <span
+                  aria-hidden
+                  className="self-end font-display text-6xl font-extrabold leading-none tracking-tight text-emerald-600 tabular-nums transition-all duration-300 [text-shadow:0_0_0_transparent] group-hover:text-emerald-400 group-hover:[text-shadow:0_0_5px_rgba(52,211,153,0.55),0_0_12px_rgba(16,185,129,0.3)] motion-reduce:transition-none"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div className="mt-4 border-t border-slate-200 pt-5 transition-colors group-hover:border-emerald-300">
+                  <h3 className="text-left text-xl font-bold leading-snug text-slate-900">{s.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-500">{s.desc}</p>
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -451,7 +446,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-4xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
-              Trazabilidad & Respaldo Enterprise
+              RESPALDO ENTERPRISE
             </span>
             <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:whitespace-nowrap">
               Experiencia Comprobada, Conocemos el Negocio

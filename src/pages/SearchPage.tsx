@@ -66,8 +66,8 @@ export default function SearchPage() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900">Verificar Certificados</h1>
-              <p className="mt-2 text-slate-500">Ingresa tu número de identificación para consultar tus certificados</p>
+              <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Verificar Certificados</h1>
+              <p className="mt-3 text-slate-500">Ingresa tu número de identificación para consultar tus certificados</p>
             </div>
             <Card className="mt-6">
               <form onSubmit={handleSubmit} className="space-y-4">

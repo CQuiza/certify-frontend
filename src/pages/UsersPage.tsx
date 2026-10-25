@@ -107,7 +107,7 @@ export default function UsersPage() {
   const columns = [
     { key: 'name', header: 'Nombre', render: (u: User) => (
       <div>
-        <Link to={`/users/${u.id}/certificates`} className="font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
+        <Link to={`/users/${u.id}/certificates`} className="font-medium text-emerald-600 hover:text-emerald-700 hover:underline">
           {u.name} {u.first_last_name}
         </Link>
         <p className="text-xs text-slate-500">{u.email}</p>
@@ -126,10 +126,10 @@ export default function UsersPage() {
         <Link to={`/users/${u.id}/certificates`} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-amber-600 transition-colors" title="Certificados">
           <FileText className="h-4 w-4" />
         </Link>
-        <button onClick={(e) => { e.stopPropagation(); openEdit(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
+        <button onClick={(e) => { e.stopPropagation(); openEdit(u) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors">
           <Pencil className="h-4 w-4" />
         </button>
-        <button onClick={(e) => { e.stopPropagation(); setEnrollUserId(u.id); setSelectedCourseId('') }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Asignar cursos">
+        <button onClick={(e) => { e.stopPropagation(); setEnrollUserId(u.id); setSelectedCourseId('') }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Asignar cursos">
           <GraduationCap className="h-4 w-4" />
         </button>
       </div>

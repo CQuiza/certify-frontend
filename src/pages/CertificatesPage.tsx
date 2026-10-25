@@ -360,7 +360,7 @@ export default function CertificatesPage() {
                                 </td>
                                 <td className="px-6 py-3">
                                   <span
-                                    className="font-mono text-xs text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors"
+                                    className="font-mono text-xs text-slate-500 cursor-pointer hover:text-emerald-600 transition-colors"
                                     title={cert.unique_id}
                                     onClick={() => navigator.clipboard.writeText(cert.unique_id)}
                                   >
@@ -371,21 +371,21 @@ export default function CertificatesPage() {
                                   <div className="flex justify-end gap-1">
                                     <button
                                       onClick={() => window.open(`${config.apiUrl}/certificates/view/${cert.unique_id}`, '_blank')}
-                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                                       title="Ver PDF"
                                     >
                                       <FileText className="h-4 w-4" />
                                     </button>
                                     <button
                                       onClick={() => window.open(`${config.apiUrl}/certificates/view/${cert.unique_id}/qr`, '_blank')}
-                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                                       title="Ver QR"
                                     >
                                       <QrCode className="h-4 w-4" />
                                     </button>
                                     <button
                                       onClick={() => openEdit(cert)}
-                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                                       title="Editar"
                                     >
                                       <Pencil className="h-4 w-4" />
@@ -393,7 +393,7 @@ export default function CertificatesPage() {
                                     <button
                                       onClick={() => setRenewCert(cert)}
                                       disabled={cert.status === 'revoked'}
-                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
                                       title="Renovar"
                                     >
                                       <RotateCcw className="h-4 w-4" />
@@ -481,7 +481,7 @@ export default function CertificatesPage() {
                     </td>
                     <td className="px-6 py-3">
                       <span
-                        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors"
+                        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-emerald-600 transition-colors"
                         title={r.cert.unique_id}
                         onClick={() => navigator.clipboard.writeText(r.cert.unique_id)}
                       >
@@ -492,14 +492,14 @@ export default function CertificatesPage() {
                       <div className="flex justify-end gap-1">
                         <button
                           onClick={() => window.open(`${config.apiUrl}/certificates/view/${r.cert.unique_id}`, '_blank')}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                           title="Ver PDF"
                         >
                           <FileText className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => window.open(`${config.apiUrl}/certificates/view/${r.cert.unique_id}/qr`, '_blank')}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                           title="Ver QR"
                         >
                           <QrCode className="h-4 w-4" />
@@ -541,7 +541,7 @@ export default function CertificatesPage() {
                   type="button"
                   onClick={() => setIssueMode('available')}
                   className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                    issueMode === 'available' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                    issueMode === 'available' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   Disponible
@@ -550,7 +550,7 @@ export default function CertificatesPage() {
                   type="button"
                   onClick={() => setIssueMode('in_progress')}
                   className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                    issueMode === 'in_progress' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                    issueMode === 'in_progress' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   En proceso
@@ -623,7 +623,7 @@ export default function CertificatesPage() {
         <form onSubmit={handleEditSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Estado</label>
-            <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+            <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
               <option value="active">Activo</option>
               <option value="revoked">Revocado</option>
             </select>
@@ -664,7 +664,7 @@ export default function CertificatesPage() {
               href={waLink(contactPhone, `Hola, quiero renovar mi certificado${studentRenewCert?.renewal_course_title ? ` del curso "${studentRenewCert.renewal_course_title}"` : ''}.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-500 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
             >
               Contactar a un asesor
             </a>

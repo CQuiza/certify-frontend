@@ -26,7 +26,7 @@ export default function CourseDetailPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <Link to="/courses" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+      <Link to="/courses" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
         <ArrowLeft className="h-4 w-4" />
         Volver a cursos
       </Link>

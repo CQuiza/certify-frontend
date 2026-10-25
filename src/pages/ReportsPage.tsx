@@ -108,7 +108,7 @@ export default function ReportsPage() {
     <div className="p-6 lg:p-8">
       <div className="mb-6">
         <div className="flex items-center gap-3">
-          <BarChart3 className="h-6 w-6 text-indigo-600" />
+          <BarChart3 className="h-6 w-6 text-emerald-600" />
           <h1 className="text-2xl font-bold text-slate-900">Reportes</h1>
         </div>
         <p className="mt-1 text-sm text-slate-500">Analítica del tenant: selecciona uno o varios reportes y un rango de fechas.</p>
@@ -118,11 +118,11 @@ export default function ReportsPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Desde</label>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Hasta</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
           <div className="flex items-end gap-2">
             <Button onClick={() => handleGenerate()} loading={loading}>
@@ -162,10 +162,10 @@ export default function ReportsPage() {
               <button
                 key={report.key}
                 onClick={() => toggle(report.key)}
-                className={`rounded-xl border p-4 text-left transition-all ${active ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50/40' : 'border-slate-200 bg-white hover:border-indigo-300'}`}
+                className={`rounded-xl border p-4 text-left transition-all ${active ? 'border-emerald-500 ring-2 ring-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-white hover:border-emerald-300'}`}
               >
                 <div className="mb-1 flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-indigo-600" />
+                  <FileText className="h-4 w-4 text-emerald-600" />
                   <p className="font-semibold text-slate-900">{report.title}</p>
                 </div>
                 <p className="text-sm text-slate-500">{report.description}</p>

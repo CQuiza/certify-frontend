@@ -73,7 +73,7 @@ export default function EmailTemplateEditor({ kind, template, placeholders, onSa
           onChange={(e) => setBody(e.target.value)}
           rows={14}
           spellCheck={false}
-          className="block w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 font-mono text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="block w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 font-mono text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
 
@@ -83,7 +83,7 @@ export default function EmailTemplateEditor({ kind, template, placeholders, onSa
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {Object.entries(placeholders).map(([key, desc]) => (
-            <span key={key} title={desc} className="cursor-default rounded-md bg-white px-2 py-1 text-xs text-indigo-700 ring-1 ring-slate-200">
+            <span key={key} title={desc} className="cursor-default rounded-md bg-white px-2 py-1 text-xs text-emerald-700 ring-1 ring-slate-200">
               {'{{' + key + '}}'}
             </span>
           ))}

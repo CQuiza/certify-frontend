@@ -30,8 +30,8 @@ export default function CatalogPage() {
 
       <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900">Catálogo de Cursos</h1>
-          <p className="mt-2 text-slate-500">Explora, agrega al carrito y paga de forma independiente</p>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Catálogo de Cursos</h1>
+          <p className="mt-3 text-slate-500">Explora, agrega al carrito y paga de forma independiente</p>
         </div>
 
         {isError ? (
@@ -39,7 +39,7 @@ export default function CatalogPage() {
         ) : isLoading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-xl border border-slate-200 bg-white p-6">
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6">
                 <Skeleton className="h-5 w-3/4 mb-3" />
                 <Skeleton className="h-4 w-full mb-2" />
                 <Skeleton className="h-4 w-2/3" />
@@ -47,7 +47,7 @@ export default function CatalogPage() {
             ))}
           </div>
         ) : published.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
+          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
             <GraduationCap className="mx-auto h-12 w-12 text-slate-300" />
             <p className="mt-4 text-lg font-medium text-slate-600">No hay cursos disponibles por el momento</p>
             <p className="mt-1 text-sm text-slate-400">Vuelve a consultar más tarde.</p>
@@ -57,10 +57,10 @@ export default function CatalogPage() {
             {published.map((course) => {
               const forSale = course.is_for_sale && Number(course.price) > 0
               return (
-                <div key={course.id} className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-md">
+                <div key={course.id} className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-lg hover:shadow-slate-200/60 motion-reduce:hover:translate-y-0">
                   <CourseImage courseId={course.id} title={course.title} hasImage={course.has_image} variant="cover" />
                   <div className="flex flex-1 flex-col p-6">
-                  <h3 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">{course.title}</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 group-hover:text-emerald-600 transition-colors">{course.title}</h3>
                   {course.description && <p className="mt-2 text-sm text-slate-500 line-clamp-3">{course.description}</p>}
                   <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-400">
                     <Clock className="h-3.5 w-3.5" />
@@ -70,23 +70,24 @@ export default function CatalogPage() {
                   <div className="mt-auto pt-4">
                     {forSale ? (
                       <>
-                        <p className="mb-2 text-lg font-bold text-slate-900">{formatCurrency(course.price)}</p>
+                        <p className="mb-3 text-right font-display text-2xl font-extrabold tracking-tight text-emerald-600 tabular-nums sm:text-3xl">{formatCurrency(course.price)}</p>
                         <button
+                          type="button"
                           onClick={() => handleAdd(course.id, course.title, Number(course.price))}
-                          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
                         >
                           <ShoppingCart className="h-4 w-4" />
                           Agregar al carrito
                         </button>
                       </>
                     ) : (
-                      <p className="mb-2 text-sm text-slate-400">No disponible para compra</p>
+                      <p className="mb-2 text-right text-sm text-slate-400">No disponible para compra</p>
                     )}
                     <a
                       href={waLink(contactPhone, `Hola, me interesa el curso "${course.title}". ¿Me das más información?`)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-500 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
                     >
                       <MessageCircle className="h-4 w-4" />
                       Consultar con un asesor

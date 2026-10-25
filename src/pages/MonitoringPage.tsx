@@ -68,7 +68,7 @@ export default function MonitoringPage() {
     { key: 'actions', header: '', render: (l: SystemLog) => (
       <button
         onClick={() => setSelected(l)}
-        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
         title="Ver detalle"
       >
         <Eye className="h-4 w-4" />
@@ -79,7 +79,7 @@ export default function MonitoringPage() {
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-6 flex items-center gap-3">
-        <Activity className="h-6 w-6 text-indigo-600" />
+        <Activity className="h-6 w-6 text-emerald-600" />
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Monitoreo</h1>
           <p className="mt-1 text-sm text-slate-500">Registro de eventos y errores de la plataforma</p>
@@ -94,13 +94,13 @@ export default function MonitoringPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por evento, detalle o ruta..."
-              className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <select
             value={level}
             onChange={(e) => { setLevel(e.target.value); setPage(1) }}
-            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="">Todos los niveles</option>
             {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
@@ -108,7 +108,7 @@ export default function MonitoringPage() {
           <select
             value={source}
             onChange={(e) => { setSource(e.target.value); setPage(1) }}
-            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="">Todas las fuentes</option>
             {SOURCES.map((s) => <option key={s} value={s}>{s}</option>)}

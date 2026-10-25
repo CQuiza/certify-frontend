@@ -151,7 +151,7 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Rol</label>
-            <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+            <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
               {roleOptions.map((r) => (
                 <option key={r.value} value={r.value}>{r.label}</option>
               ))}
@@ -159,7 +159,7 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Tipo ID</label>
-            <select value={form.identity_type} onChange={(e) => setForm({ ...form, identity_type: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+            <select value={form.identity_type} onChange={(e) => setForm({ ...form, identity_type: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
               {Object.values(IdentityType).map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
@@ -169,7 +169,7 @@ export default function UserFormModal({ isOpen, onClose, user, roleOptions, isSa
           <Input label="Teléfono" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value })} required />
         </div>
         <label className="flex items-center gap-2">
-          <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+          <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
           <span className="text-sm text-slate-700">Usuario activo</span>
         </label>
         <div className="flex justify-end gap-3 pt-2">

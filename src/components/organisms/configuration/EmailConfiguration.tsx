@@ -91,7 +91,7 @@ export default function EmailConfiguration() {
                 key={kind}
                 onClick={() => setSelectedKind(kind)}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  active ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  active ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
                 {EMAIL_TEMPLATE_LABELS[kind]}
@@ -185,7 +185,7 @@ function SmtpForm({ initial, updateSettings }: SmtpFormProps) {
   return (
     <Card>
       <div className="mb-4 flex items-center gap-2">
-        <Mail className="h-5 w-5 text-indigo-600" />
+        <Mail className="h-5 w-5 text-emerald-600" />
         <h2 className="text-lg font-semibold text-slate-900">Correo saliente (SMTP)</h2>
       </div>
 
@@ -195,7 +195,7 @@ function SmtpForm({ initial, updateSettings }: SmtpFormProps) {
             type="checkbox"
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
           />
           <span className="text-sm text-slate-700">Usar configuración personalizada de correo</span>
         </label>
@@ -215,7 +215,7 @@ function SmtpForm({ initial, updateSettings }: SmtpFormProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={initial.smtp_password_set ? '•••••••••• (déjalo en blanco para conservar)' : 'Contraseña o app password'}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
               {initial.smtp_password_set && (
                 <Button variant="secondary" size="sm" onClick={handleClearPassword}>
@@ -231,7 +231,7 @@ function SmtpForm({ initial, updateSettings }: SmtpFormProps) {
             type="checkbox"
             checked={tls}
             onChange={(e) => setTls(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
           />
           <span className="text-sm text-slate-700">Usar STARTTLS</span>
         </label>

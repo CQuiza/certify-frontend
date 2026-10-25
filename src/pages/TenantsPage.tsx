@@ -145,7 +145,7 @@ export default function TenantsPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleImpersonate(t)}
-                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
                           title="Entrar al tenant como superuser"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -190,7 +190,7 @@ export default function TenantsPage() {
             <Input label="Nombre de la organización" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="Fundación Educativa ACME" />
             <div className="space-y-1.5">
               <label className="block text-sm font-medium text-slate-700">Subdominio / slug</label>
-              <div className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 focus-within:ring-2 focus-within:ring-indigo-500">
+              <div className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 focus-within:ring-2 focus-within:ring-emerald-500">
                 <input
                   value={form.slug}
                   onChange={(e) => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}

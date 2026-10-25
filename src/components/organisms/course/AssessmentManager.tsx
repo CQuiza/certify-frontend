@@ -192,7 +192,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                 onChange={(e) => setPassingScore(Number(e.target.value))}
                 className="flex-1"
               />
-              <span className="text-sm font-semibold text-indigo-600 w-10 text-right">{passingScore}%</span>
+              <span className="text-sm font-semibold text-emerald-600 w-10 text-right">{passingScore}%</span>
             </div>
             <p className="mt-1.5 text-xs text-amber-600">
               Para cursos relacionados con la salud se recomienda un puntaje superior a 80.
@@ -240,7 +240,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                     <select
                       value={q.question_type}
                       onChange={(e) => handleQuestionChange(qIdx, 'question_type', e.target.value)}
-                      className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     >
                       <option value="multiple_choice">Opción múltiple</option>
                       <option value="true_false">Verdadero/Falso</option>
@@ -255,7 +255,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                     min={1}
                     value={q.points}
                     onChange={(e) => handleQuestionChange(qIdx, 'points', Number(e.target.value))}
-                    className="block w-24 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-24 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
@@ -268,14 +268,14 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                         name={`correct-${qIdx}`}
                         checked={o.is_correct}
                         onChange={() => handleOptionChange(qIdx, oIdx, 'is_correct', true)}
-                        className="h-4 w-4 text-indigo-600"
+                        className="h-4 w-4 text-emerald-600"
                       />
                       <input
                         type="text"
                         value={o.option_text}
                         onChange={(e) => handleOptionChange(qIdx, oIdx, 'option_text', e.target.value)}
                         placeholder="Texto de la opción"
-                        className="block flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="block flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                       {q.question_type === 'multiple_choice' && q.options.length > 2 && (
                         <button
@@ -290,7 +290,7 @@ export default function AssessmentManager({ moduleId, onClose }: AssessmentManag
                   {q.question_type === 'multiple_choice' && q.options.length < 4 && (
                     <button
                       onClick={() => handleAddOption(qIdx)}
-                      className="text-xs text-indigo-600 hover:text-indigo-800"
+                      className="text-xs text-emerald-600 hover:text-emerald-800"
                     >
                       + Agregar opción
                     </button>

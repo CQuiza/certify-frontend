@@ -36,7 +36,7 @@ export default function AssessmentResult({
             <circle
               cx="18" cy="18" r="15.5"
               fill="none"
-              stroke={passed ? '#22c55e' : '#ef4444'}
+              stroke={passed ? '#10b981' : '#ef4444'}
               strokeWidth="3"
               strokeDasharray={`${pct} ${100 - pct}`}
               strokeLinecap="round"
@@ -44,12 +44,12 @@ export default function AssessmentResult({
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-3xl font-bold ${passed ? 'text-green-600' : 'text-red-600'}`}>
+            <span className={`text-3xl font-bold ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
               {pct}%
             </span>
           </div>
         </div>
-        <p className={`text-lg font-semibold ${passed ? 'text-green-600' : 'text-red-600'}`}>
+        <p className={`text-lg font-semibold ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
           {passed ? 'Aprobado' : 'Reprobado'}
         </p>
         <p className="text-sm text-slate-500">
@@ -59,8 +59,8 @@ export default function AssessmentResult({
       </div>
 
       {passed && (
-        <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-center">
-          <p className="text-sm font-medium text-green-800">
+        <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-center">
+          <p className="text-sm font-medium text-emerald-800">
             Felicidades Has aprobado este módulo.
           </p>
         </div>
@@ -73,13 +73,13 @@ export default function AssessmentResult({
             key={a.question_id}
             className={`flex items-start gap-3 rounded-lg border p-3 ${
               a.is_correct
-                ? 'border-green-200 bg-green-50'
+                ? 'border-emerald-200 bg-emerald-50'
                 : 'border-red-200 bg-red-50'
             }`}
           >
             <div
               className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${
-                a.is_correct ? 'bg-green-500' : 'bg-red-500'
+                a.is_correct ? 'bg-emerald-500' : 'bg-red-500'
               }`}
             >
               {a.is_correct ? '✓' : '✗'}

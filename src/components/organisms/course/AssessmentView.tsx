@@ -110,7 +110,7 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
                   key={opt.id}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
                     answers[q.id] === opt.id
-                      ? 'border-indigo-500 bg-indigo-50'
+                      ? 'border-emerald-500 bg-emerald-50'
                       : 'border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -119,7 +119,7 @@ export default function AssessmentView({ moduleId, moduleTitle, onBack }: Assess
                     name={`q-${q.id}`}
                     checked={answers[q.id] === opt.id}
                     onChange={() => handleSelect(q.id, opt.id)}
-                    className="h-4 w-4 text-indigo-600"
+                    className="h-4 w-4 text-emerald-600"
                   />
                   <span className="text-sm text-slate-700">{opt.option_text}</span>
                 </label>

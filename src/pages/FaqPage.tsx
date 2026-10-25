@@ -85,8 +85,8 @@ export default function FaqPage() {
           &larr; Volver al inicio
         </Link>
         <div className="max-w-2xl">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Preguntas Frecuentes</h1>
-          <p className="mt-2 text-slate-600">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Preguntas Frecuentes</h1>
+          <p className="mt-3 text-slate-600">
             Respuestas a las dudas más comunes sobre {config.appName}.
           </p>
         </div>
@@ -98,10 +98,10 @@ export default function FaqPage() {
               <button
                 key={i}
                 onClick={() => ask(faq)}
-                className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-left transition-all duration-200 hover:-translate-x-0.5 hover:border-indigo-200 hover:shadow-md hover:shadow-slate-200/60"
+                className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-left transition-all duration-200 hover:-translate-x-0.5 hover:border-emerald-200 hover:shadow-md hover:shadow-slate-200/60"
               >
                 <span className="font-medium text-slate-900">{faq.q}</span>
-                <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-indigo-600" />
+                <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-emerald-600" />
               </button>
             ))}
           </div>
@@ -135,7 +135,7 @@ export default function FaqPage() {
                 {messages.map((m, i) => (
                   <div key={i} className="animate-slide-in-left space-y-3">
                     <div className="flex justify-end">
-                      <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5 text-sm text-white">
+                      <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-emerald-600 px-4 py-2.5 text-sm text-white">
                         {m.q}
                       </div>
                     </div>

@@ -73,14 +73,14 @@ export default function TaskSubmissions({ taskId }: Props) {
               )}
               <button
                 onClick={() => taskSubmissionService.downloadFile(s.id, s.original_filename).catch(() => toast.error('No se pudo descargar'))}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                 title="Descargar entrega"
               >
                 <Download className="h-4 w-4" />
               </button>
               <button
                 onClick={() => openGrade(s)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                 title="Calificar"
               >
                 <Star className="h-4 w-4" />
@@ -96,7 +96,7 @@ export default function TaskSubmissions({ taskId }: Props) {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">Feedback</label>
-                <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={2} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={2} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="secondary" size="sm" type="button" onClick={() => setGradingId(null)}>Cancelar</Button>

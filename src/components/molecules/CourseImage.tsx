@@ -34,7 +34,7 @@ export default function CourseImage({
 
   if (!hasImage || failed) {
     return (
-      <div className={`flex items-center justify-center bg-indigo-50 text-indigo-500 ${box}`}>
+      <div className={`flex items-center justify-center bg-emerald-50 text-emerald-500 ${box}`}>
         <BookOpen className={icon} />
       </div>
     )

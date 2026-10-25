@@ -17,7 +17,7 @@ import {
 import Badge from '../../atoms/Badge'
 import type { ReportChartConfig, ReportResult } from '../../../types/report'
 
-const PALETTE = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6', '#f97316']
+const PALETTE = ['#059669', '#0ea5e9', '#8b5cf6', '#f59e0b', '#ef4444', '#14b8a6', '#f97316', '#64748b']
 
 interface Props {
   result: ReportResult
@@ -72,7 +72,7 @@ export default function ReportChart({ result }: Props) {
               key={k}
               onClick={() => setKind(k)}
               className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-                kind === k ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                kind === k ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {k === 'bar' ? 'Barras' : k === 'line' ? 'Línea' : 'Pastel'}
@@ -83,7 +83,7 @@ export default function ReportChart({ result }: Props) {
           <select
             value={numericKey}
             onChange={(e) => setNumericKey(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="">Contar por {xKey}</option>
             {numericCandidates.map((k) => (
@@ -102,7 +102,7 @@ export default function ReportChart({ result }: Props) {
               <YAxis fontSize={11} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name={numericKey || 'n'} fill="#4f46e5" />
+              <Bar dataKey="value" name={numericKey || 'n'} fill="#059669" />
             </BarChart>
           ) : kind === 'line' ? (
             <LineChart data={data}>
@@ -111,7 +111,7 @@ export default function ReportChart({ result }: Props) {
               <YAxis fontSize={11} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="value" name={numericKey || 'n'} stroke="#4f46e5" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="value" name={numericKey || 'n'} stroke="#059669" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           ) : (
             <PieChart>

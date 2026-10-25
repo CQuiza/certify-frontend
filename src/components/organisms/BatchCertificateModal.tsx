@@ -146,7 +146,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
               type="button"
               onClick={() => setMode('available')}
               className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                mode === 'available' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                mode === 'available' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
               }`}
             >
               Disponible
@@ -155,7 +155,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
               type="button"
               onClick={() => setMode('in_progress')}
               className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                mode === 'in_progress' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                mode === 'in_progress' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
               }`}
             >
               En proceso
@@ -230,7 +230,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
                 <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">
                   <button onClick={selectAllCourses} className="shrink-0">
                     {selectedCourseIds.size === coursesWithCert.length && coursesWithCert.length > 0
-                      ? <CheckSquare className="h-4 w-4 text-indigo-600" />
+                      ? <CheckSquare className="h-4 w-4 text-emerald-600" />
                       : <Square className="h-4 w-4 text-slate-400" />}
                   </button>
                   Seleccionar todos ({coursesWithCert.length})
@@ -241,7 +241,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
                     <label key={c.id} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-slate-50 cursor-pointer">
                       <button onClick={() => toggleCourse(c.id)} className="shrink-0">
                         {selectedCourseIds.has(c.id)
-                          ? <CheckSquare className="h-4 w-4 text-indigo-600" />
+                          ? <CheckSquare className="h-4 w-4 text-emerald-600" />
                           : <Square className="h-4 w-4 text-slate-400" />}
                       </button>
                       <div className="min-w-0 flex-1">
@@ -254,7 +254,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
               </div>
             )}
             {selectedCourseIds.size > 0 && (
-              <p className="mt-1 text-xs text-indigo-600 font-medium">{selectedCourseIds.size} curso(s) seleccionado(s)</p>
+              <p className="mt-1 text-xs text-emerald-600 font-medium">{selectedCourseIds.size} curso(s) seleccionado(s)</p>
             )}
           </div>
         ) : (
@@ -266,7 +266,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar por nombre, tipo, horas o referencia..."
-                className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
@@ -274,7 +274,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
               <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">
                 <button onClick={selectAll} className="shrink-0">
                   {selectedIds.size === filteredTypes.length && filteredTypes.length > 0
-                    ? <CheckSquare className="h-4 w-4 text-indigo-600" />
+                    ? <CheckSquare className="h-4 w-4 text-emerald-600" />
                     : <Square className="h-4 w-4 text-slate-400" />}
                 </button>
                 Seleccionar todos ({filteredTypes.length})
@@ -285,7 +285,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
                   <label key={t.id} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-slate-50 cursor-pointer">
                     <button onClick={() => toggle(t.id)} className="shrink-0">
                       {selectedIds.has(t.id)
-                        ? <CheckSquare className="h-4 w-4 text-indigo-600" />
+                        ? <CheckSquare className="h-4 w-4 text-emerald-600" />
                         : <Square className="h-4 w-4 text-slate-400" />}
                     </button>
                     <div className="min-w-0 flex-1">
@@ -300,7 +300,7 @@ export default function BatchCertificateModal({ open, onClose, userId, certTypes
               )}
             </div>
             {selectedIds.size > 0 && (
-              <p className="mt-1 text-xs text-indigo-600 font-medium">{selectedIds.size} seleccionado(s)</p>
+              <p className="mt-1 text-xs text-emerald-600 font-medium">{selectedIds.size} seleccionado(s)</p>
             )}
           </div>
         )}

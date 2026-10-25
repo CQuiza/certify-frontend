@@ -16,7 +16,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
     <footer className="border-t border-white/10 bg-slate-900 py-12 text-slate-400">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-1">
-          <p className="text-lg font-bold tracking-tight text-white">{config.appName}</p>
+          <p className="font-display text-lg font-bold tracking-tight text-white">{config.appName}</p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed">
             La infraestructura tecnológica para gestionar, vender y certificar tus
             capacitaciones corporativas.

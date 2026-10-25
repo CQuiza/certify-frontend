@@ -160,7 +160,7 @@ function TaskSubmissionUpload({ taskId }: { taskId: number }) {
               setFile(f)
             }
           }}
-          className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+          className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
         />
         <Button
           size="sm"
@@ -263,7 +263,7 @@ export default function LessonViewPage() {
   return (
     <div className="p-6 lg:p-8 max-w-4xl">
       <div className="mb-6 flex items-center gap-2 text-sm">
-        <Link to={`/courses/${courseIdNum}`} className="inline-flex min-w-0 items-center gap-1.5 font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+        <Link to={`/courses/${courseIdNum}`} className="inline-flex min-w-0 items-center gap-1.5 font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
           <ArrowLeft className="h-4 w-4 shrink-0" />
           <span className="truncate">{course?.title || 'Curso'}</span>
         </Link>
@@ -274,7 +274,7 @@ export default function LessonViewPage() {
       <Card>
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <FileText className="h-5 w-5 text-indigo-500" />
+            <FileText className="h-5 w-5 text-emerald-500" />
             <h1 className="text-xl font-bold text-slate-900">{lesson.title}</h1>
           </div>
           {lesson.text_content && (
@@ -287,7 +287,7 @@ export default function LessonViewPage() {
         {lessonFiles && lessonFiles.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600">
-              <FileText className="h-4 w-4 text-indigo-500" />
+              <FileText className="h-4 w-4 text-emerald-500" />
               Archivos
             </div>
             <div className="space-y-2">
@@ -426,7 +426,7 @@ export default function LessonViewPage() {
         {tasks && tasks.length > 0 && (
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center gap-2 mb-4">
-              <ClipboardList className="h-5 w-5 text-indigo-500" />
+              <ClipboardList className="h-5 w-5 text-emerald-500" />
               <h2 className="text-lg font-semibold text-slate-900">Tareas</h2>
             </div>
             <div className="space-y-3">
@@ -473,7 +473,7 @@ export default function LessonViewPage() {
       </Card>
 
       <div className="mt-6">
-        <Link to={`/courses/${courseIdNum}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+        <Link to={`/courses/${courseIdNum}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
           <ArrowLeft className="h-4 w-4" />
           Volver al curso
         </Link>

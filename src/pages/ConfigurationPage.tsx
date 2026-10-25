@@ -32,7 +32,7 @@ export default function ConfigurationPage() {
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-white text-indigo-700 shadow-sm'
+                  ? 'bg-white text-emerald-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >

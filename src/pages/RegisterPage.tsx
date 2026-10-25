@@ -67,7 +67,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Tipo de documento</label>
-                <select value={form.identity_type} onChange={(e) => set('identity_type', e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select value={form.identity_type} onChange={(e) => set('identity_type', e.target.value)} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   {['CC', 'TI', 'CE', 'PPT', 'PASSPORT', 'OTHER'].map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
@@ -84,7 +84,7 @@ export default function RegisterPage() {
               Crear cuenta
             </Button>
             <p className="text-center text-sm text-slate-500">
-              ¿Ya tienes cuenta? <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-700">Inicia sesión</Link>
+              ¿Ya tienes cuenta? <Link to="/login" className="font-medium text-emerald-600 hover:text-emerald-700">Inicia sesión</Link>
             </p>
           </form>
 

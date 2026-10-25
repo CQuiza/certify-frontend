@@ -81,7 +81,7 @@ export default function ProfilePage() {
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-start gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
             <User className="h-8 w-8" />
           </div>
           <div className="min-w-0 flex-1 space-y-2">

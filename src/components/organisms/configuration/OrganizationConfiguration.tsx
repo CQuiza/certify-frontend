@@ -148,12 +148,12 @@ function OrganizationForm({
   const logoUrl = initialHasCustomLogo ? configurationService.getLogoUrl() : null
   const darkLogoUrl = initialHasDarkLogo ? configurationService.getDarkLogoUrl() : null
   const fileInputClass =
-    'block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100'
+    'block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100'
 
   return (
     <Card>
       <div className="mb-4 flex items-center gap-2">
-        <Building2 className="h-5 w-5 text-indigo-600" />
+        <Building2 className="h-5 w-5 text-emerald-600" />
         <h2 className="text-lg font-semibold text-slate-900">Organización</h2>
       </div>
 
@@ -193,7 +193,7 @@ function OrganizationForm({
             onChange={(e) => setDashboardMessage(e.target.value)}
             rows={3}
             placeholder="Panel principal de la plataforma {{app_name}} para la organización {{organization}}"
-            className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
           <p className="text-xs text-slate-500">
             Usa <code className="rounded bg-slate-100 px-1">{"{{app_name}}"}</code> y{' '}
@@ -279,7 +279,7 @@ function OrganizationForm({
             <select
               value={logoSurface}
               onChange={(e) => setLogoSurface(e.target.value as LogoSurface)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:max-w-xs"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 sm:max-w-xs"
             >
               <option value="auto">Automático (según el color del logo)</option>
               <option value="none">Sin fondo (transparente)</option>

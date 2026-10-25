@@ -114,7 +114,7 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
             files.map((f) => (
               <div key={f.id} className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <FileText className="h-5 w-5 shrink-0 text-indigo-500" />
+                  <FileText className="h-5 w-5 shrink-0 text-emerald-500" />
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-slate-900 truncate">{f.original_filename}</p>
                     <p className="text-xs text-slate-400">Orden {f.order_index}</p>
@@ -152,8 +152,8 @@ export default function LessonFileManager({ lessonId, onClose }: LessonFileManag
               onDrop={handleDrop}
               className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-4 text-sm transition-colors ${
                 isDragging
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                  : 'border-slate-300 bg-slate-50 text-slate-600 hover:border-indigo-400 hover:bg-indigo-50'
+                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                  : 'border-slate-300 bg-slate-50 text-slate-600 hover:border-emerald-400 hover:bg-emerald-50'
               } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
             >
               <Upload className="h-5 w-5" />

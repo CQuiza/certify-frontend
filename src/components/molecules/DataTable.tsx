@@ -88,8 +88,8 @@ export default function DataTable<T>({ columns, data, loading, onRowClick }: Dat
                     {col.header}
                     {canSort && (
                       <span className="inline-flex flex-col leading-none">
-                        <ChevronUp className={`h-3 w-3 -mb-0.5 ${active && sortDir === 'asc' ? 'text-indigo-600' : 'text-slate-300'}`} />
-                        <ChevronDown className={`h-3 w-3 -mt-0.5 ${active && sortDir === 'desc' ? 'text-indigo-600' : 'text-slate-300'}`} />
+                        <ChevronUp className={`h-3 w-3 -mb-0.5 ${active && sortDir === 'asc' ? 'text-emerald-600' : 'text-slate-300'}`} />
+                        <ChevronDown className={`h-3 w-3 -mt-0.5 ${active && sortDir === 'desc' ? 'text-emerald-600' : 'text-slate-300'}`} />
                       </span>
                     )}
                   </span>

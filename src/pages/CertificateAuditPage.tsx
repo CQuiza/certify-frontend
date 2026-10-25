@@ -51,7 +51,7 @@ export default function CertificateAuditPage() {
     { key: 'certificate_id', header: 'Certificado ID', render: (a: CertificateAudit) => a.certificate_id ?? '—' },
     { key: 'certificate_unique_id', header: 'UUID', sortValue: (a: CertificateAudit) => a.certificate_unique_id ?? '', render: (a: CertificateAudit) => (
       <span
-        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors"
+        className="font-mono text-xs text-slate-500 cursor-pointer hover:text-emerald-600 transition-colors"
         title={a.certificate_unique_id ?? ''}
         onClick={() => { if (a.certificate_unique_id) navigator.clipboard.writeText(a.certificate_unique_id) }}
       >
@@ -192,7 +192,7 @@ export default function CertificateAuditPage() {
               onClick={() => { setTab(t.id); setSearch(''); setPage(1) }}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-white text-indigo-700 shadow-sm'
+                  ? 'bg-white text-emerald-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >

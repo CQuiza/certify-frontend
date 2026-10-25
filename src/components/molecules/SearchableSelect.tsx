@@ -64,7 +64,7 @@ export default function SearchableSelect({
           onClick={() => { if (!disabled) { setOpen(!open); setSearch(''); setTimeout(() => inputRef.current?.focus(), 50) }}}
           className={`flex items-center justify-between w-full rounded-lg border px-3 py-2.5 text-sm shadow-sm cursor-pointer ${
             disabled ? 'bg-slate-50 text-slate-400' : 'bg-white text-slate-900'
-          } ${open ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-300'}`}
+          } ${open ? 'border-emerald-500 ring-2 ring-emerald-200' : 'border-slate-300'}`}
         >
           <span className={selected ? '' : 'text-slate-400'}>
             {selected ? selected.label : placeholder}
@@ -83,7 +83,7 @@ export default function SearchableSelect({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar..."
-                className="w-full rounded-md border border-slate-200 px-3 py-1.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
+                className="w-full rounded-md border border-slate-200 px-3 py-1.5 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
               />
             </div>
             <div className="max-h-48 overflow-y-auto">
@@ -97,7 +97,7 @@ export default function SearchableSelect({
                       key={String(opt.value)}
                       onClick={() => { onChange(opt.value); setOpen(false); setSearch('') }}
                       className={`flex cursor-pointer items-center justify-between px-3 py-2 text-sm transition-colors ${
-                        active ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                        active ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:bg-slate-50'
                       }`}
                     >
                       <div>
@@ -107,7 +107,7 @@ export default function SearchableSelect({
                         )}
                       </div>
                       {active && (
-                        <svg className="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       )}

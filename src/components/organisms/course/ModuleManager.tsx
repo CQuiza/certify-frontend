@@ -195,7 +195,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                     className="flex flex-1 items-center justify-between px-5 py-4 text-left transition-colors hover:bg-slate-50"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <BookOpen className="h-5 w-5 shrink-0 text-indigo-500" />
+                      <BookOpen className="h-5 w-5 shrink-0 text-emerald-500" />
                       <div className="min-w-0">
                         <p className="font-medium text-slate-900 truncate">{mod.title}</p>
                         <p className="text-xs text-slate-500">Módulo {mod.order_index}</p>
@@ -205,13 +205,13 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                   </button>
                   {canManage && (
                     <div className="flex gap-1 pr-3">
-                      <button onClick={(e) => { e.stopPropagation(); setAssessmentModalModuleId(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Evaluación">
+                      <button onClick={(e) => { e.stopPropagation(); setAssessmentModalModuleId(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Evaluación">
                         <FileQuestion className="h-4 w-4" />
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Añadir lección">
+                      <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Añadir lección">
                         <Plus className="h-4 w-4" />
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); openModModal(mod) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar módulo">
+                      <button onClick={(e) => { e.stopPropagation(); openModModal(mod) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Editar módulo">
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); setConfirmDelete({ type: 'module', id: mod.id }) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar módulo">
@@ -242,13 +242,13 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                           </Link>
                           {canManage && (
                             <div className="flex gap-1 pr-3 shrink-0">
-                              <button onClick={(e) => { e.stopPropagation(); setFileModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Archivos">
+                              <button onClick={(e) => { e.stopPropagation(); setFileModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Archivos">
                                 <Paperclip className="h-4 w-4" />
                               </button>
-                              <button onClick={(e) => { e.stopPropagation(); setTaskModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Tareas">
+                              <button onClick={(e) => { e.stopPropagation(); setTaskModalLessonId(lesson.id) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Tareas">
                                 <ClipboardList className="h-4 w-4" />
                               </button>
-                              <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id, lesson) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar lección">
+                              <button onClick={(e) => { e.stopPropagation(); openLessonModal(mod.id, lesson) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Editar lección">
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button onClick={(e) => { e.stopPropagation(); setConfirmDelete({ type: 'lesson', id: lesson.id }) }} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Eliminar lección">
@@ -265,7 +265,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
                       <div className="border-t border-slate-100 px-5 py-3">
                         <button
                           onClick={(e) => { e.stopPropagation(); setAssessmentViewModuleId(mod.id) }}
-                          className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                          className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
                         >
                           <FileQuestion className="h-4 w-4" />
                           Tomar evaluación
@@ -296,7 +296,7 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
           <Input label="Título" value={lessonForm.title} onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })} required />
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Contenido de texto</label>
-            <textarea value={lessonForm.text_content} onChange={(e) => setLessonForm({ ...lessonForm, text_content: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <textarea value={lessonForm.text_content} onChange={(e) => setLessonForm({ ...lessonForm, text_content: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
           <Input label="URL de imagen (opcional)" value={lessonForm.image_content_url} onChange={(e) => setLessonForm({ ...lessonForm, image_content_url: e.target.value })} />
           <Input label="URL de video (opcional)" value={lessonForm.video_content_url} onChange={(e) => setLessonForm({ ...lessonForm, video_content_url: e.target.value })} />

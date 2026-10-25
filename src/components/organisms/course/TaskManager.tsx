@@ -108,10 +108,10 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
                     {t.description && <p className="text-xs text-slate-500 mt-0.5">{t.description}</p>}
                     <div className="mt-1 flex gap-2 text-xs text-slate-400">
                       {t.file_type === 'google_drive' && t.google_drive_link && (
-                        <a href={t.google_drive_link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Google Drive</a>
+                        <a href={t.google_drive_link} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">Google Drive</a>
                       )}
                       {t.file_type === 'upload' && t.file_url && (
-                        <button onClick={() => downloadTaskFile(t.id)} className="text-indigo-600 hover:underline text-xs">Descargar archivo</button>
+                        <button onClick={() => downloadTaskFile(t.id)} className="text-emerald-600 hover:underline text-xs">Descargar archivo</button>
                       )}
                     </div>
                   </div>
@@ -119,12 +119,12 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => setOpenSubmissionsTaskId(openSubmissionsTaskId === t.id ? null : t.id)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
                         title="Ver entregas y calificar"
                       >
                         <Inbox className="h-4 w-4" />
                       </button>
-                      <button onClick={() => handleEdit(t)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors" title="Editar tarea">
+                      <button onClick={() => handleEdit(t)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors" title="Editar tarea">
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
@@ -154,12 +154,12 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
               <Input label="Título" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Nombre de la tarea" />
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Descripción</label>
-                <textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} rows={2} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Instrucciones de la tarea" />
+                <textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} rows={2} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Instrucciones de la tarea" />
               </div>
               <Input label="Enlace de Google Drive (opcional)" value={newTaskGoogleDrive} onChange={(e) => setNewTaskGoogleDrive(e.target.value)} placeholder="https://drive.google.com/file/d/..." />
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Subir archivo (opcional, máx 50 MB)</label>
-                <input type="file" onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)} className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100" />
+                <input type="file" onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)} className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100" />
               </div>
               <div className="flex justify-end gap-2">
                 {editingTask && (

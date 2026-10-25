@@ -73,7 +73,7 @@ export default function EnrollStudentsCard({ courseId }: Props) {
   return (
     <Card>
       <div className="mb-4 flex items-center gap-2">
-        <UserPlus className="h-5 w-5 text-indigo-600" />
+        <UserPlus className="h-5 w-5 text-emerald-600" />
         <h2 className="text-lg font-semibold text-slate-900">Estudiantes inscritos</h2>
       </div>
 

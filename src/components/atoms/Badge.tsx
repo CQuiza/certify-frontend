@@ -10,7 +10,7 @@ const variants = {
   success: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200',
   warning: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200',
   danger: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-200',
-  info: 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-200',
+  info: 'bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-200',
 }
 
 export default function Badge({ variant = 'default', children }: BadgeProps) {

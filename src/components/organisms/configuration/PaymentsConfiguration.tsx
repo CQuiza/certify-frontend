@@ -53,7 +53,7 @@ function PaymentsForm({ initial }: { initial: PaymentsSettings }) {
   return (
     <Card>
       <div className="mb-4 flex items-center gap-2">
-        <CreditCard className="h-5 w-5 text-indigo-600" />
+        <CreditCard className="h-5 w-5 text-emerald-600" />
         <h2 className="text-lg font-semibold text-slate-900">Ventas — Mercado Pago</h2>
       </div>
 
@@ -63,7 +63,7 @@ function PaymentsForm({ initial }: { initial: PaymentsSettings }) {
             type="checkbox"
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
           />
           <span className="text-sm text-slate-700">Vender cursos con Mercado Pago</span>
         </label>
@@ -77,7 +77,7 @@ function PaymentsForm({ initial }: { initial: PaymentsSettings }) {
 
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
           <p className="flex items-start gap-2">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500" />
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
             <span>
               Comisión de la plataforma: <strong>{initial.commission_percent}%</strong> +{' '}
               <strong>{initial.commission_fixed}</strong> {initial.currency} por venta

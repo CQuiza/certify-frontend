@@ -225,7 +225,7 @@ export default function CoursesPage() {
               <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   to="/catalog"
-                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
                 >
                   <BookOpen className="h-4 w-4" />
                   Ver catálogo
@@ -234,7 +234,7 @@ export default function CoursesPage() {
                   href={waLink(contactPhone, 'Hola, quiero información para adquirir o que me asignen un curso.')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-green-500 px-4 py-2 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg border border-emerald-500 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Contactar a un asesor
@@ -284,7 +284,7 @@ export default function CoursesPage() {
                     <div className="flex gap-2 pt-1">
                       <Link
                         to={`/courses/${c.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
                       >
                         <Eye className="h-3.5 w-3.5" />
                         Ver contenido
@@ -313,7 +313,7 @@ export default function CoursesPage() {
           <Input label="Título" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Descripción</label>
-            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Imagen del curso (opcional)</label>
@@ -329,7 +329,7 @@ export default function CoursesPage() {
                 type="file"
                 accept="image/*"
                 onChange={handleImageSelect}
-                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+                className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
               />
               {editing && (editing.has_image || imageFile) && (
                 <Button variant="secondary" size="sm" type="button" className="shrink-0" onClick={handleRemoveImage}>
@@ -347,7 +347,7 @@ export default function CoursesPage() {
           )}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Docente</label>
-            <select value={form.teacher_id} onChange={(e) => setForm({ ...form, teacher_id: Number(e.target.value) })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={form.teacher_id} onChange={(e) => setForm({ ...form, teacher_id: Number(e.target.value) })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               <option value={0}>Sin docente</option>
               {teachers?.items?.filter((t) => t.role === 'teacher').map((t) => (
                 <option key={t.id} value={t.id}>{t.name || t.email}</option>
@@ -356,7 +356,7 @@ export default function CoursesPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Tipo de certificado</label>
-            <select value={form.certificate_type_id} onChange={(e) => setForm({ ...form, certificate_type_id: Number(e.target.value) })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={form.certificate_type_id} onChange={(e) => setForm({ ...form, certificate_type_id: Number(e.target.value) })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               <option value={0}>Sin tipo</option>
               {certTypes?.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
@@ -365,7 +365,7 @@ export default function CoursesPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Estado</label>
-            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               {Object.values(CourseStatus).map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
@@ -374,7 +374,7 @@ export default function CoursesPage() {
             <Input label="Precio renovación (COP, 0 = gratis)" type="number" min={0} value={form.renewal_price} onChange={(e) => setForm({ ...form, renewal_price: e.target.value })} placeholder="Igual al precio si se deja vacío" />
           </div>
           <label className="flex items-center gap-2">
-            <input type="checkbox" checked={form.is_for_sale} onChange={(e) => setForm({ ...form, is_for_sale: e.target.checked })} className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            <input type="checkbox" checked={form.is_for_sale} onChange={(e) => setForm({ ...form, is_for_sale: e.target.checked })} className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
             <span className="text-sm text-slate-700">Disponible para compra</span>
           </label>
           <div className="flex justify-end gap-3 pt-2">
