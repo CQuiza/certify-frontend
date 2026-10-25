@@ -1,9 +1,20 @@
+import type { ReactNode } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useOrder } from '../hooks/usePayments'
 import Card from '../components/molecules/Card'
 import Button from '../components/atoms/Button'
 import Skeleton from '../components/atoms/Skeleton'
+import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import { ShoppingCart, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react'
+
+function PageWithCredit({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 p-6">
+      {children}
+      <DeveloperCredit className="mt-8" />
+    </div>
+  )
+}
 
 export default function PaymentResultPage() {
   const orderId = Number(window.location.pathname.split('/').pop())
@@ -12,30 +23,30 @@ export default function PaymentResultPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+      <PageWithCredit>
         <Card className="max-w-md text-center">
           <p className="text-slate-600">Inicia sesión para consultar tu pedido.</p>
           <Button className="mt-4" onClick={() => window.location.assign('/login')}>Ir al login</Button>
         </Card>
-      </div>
+      </PageWithCredit>
     )
   }
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+      <PageWithCredit>
         <Skeleton count={3} className="h-10 w-80" />
-      </div>
+      </PageWithCredit>
     )
   }
 
   if (!order) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+      <PageWithCredit>
         <Card className="max-w-md text-center">
           <p className="text-slate-600">Pedido no encontrado.</p>
         </Card>
-      </div>
+      </PageWithCredit>
     )
   }
 
@@ -43,7 +54,7 @@ export default function PaymentResultPage() {
   const pending = order.status === 'pending'
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+    <PageWithCredit>
       <Card className="w-full max-w-lg">
         <div className="mb-4 flex items-center gap-3">
           {approved ? (
@@ -96,6 +107,6 @@ export default function PaymentResultPage() {
           </Button>
         )}
       </Card>
-    </div>
+    </PageWithCredit>
   )
 }

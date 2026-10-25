@@ -6,6 +6,7 @@ import { config } from '../config'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import AuthShowcase from '../components/organisms/AuthShowcase'
+import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import { Link } from 'react-router-dom'
 import { getErrorMessage } from '../lib/error'
 
@@ -70,13 +71,14 @@ export default function LoginPage() {
             </Button>
             <p className="text-center text-sm text-slate-500">
               ¿Eres estudiante y no tienes cuenta?{' '}
-              <Link to="/register" className="font-medium text-emerald-600 hover:text-emerald-700">Crea una aquí</Link>
+              <Link to="/catalog" className="font-medium text-emerald-600 hover:text-emerald-700">Créala al comprar un curso</Link>
             </p>
           </form>
 
           <p className="mt-6 text-center text-xs text-slate-400">
             Servicio prestado por {config.appName}
           </p>
+          <DeveloperCredit className="mt-4" />
         </div>
       </div>
       <AuthShowcase />

@@ -5,6 +5,7 @@ import { useCheckout } from '../hooks/usePayments'
 import { usePublicBranding } from '../hooks/useConfiguration'
 import Card from '../components/molecules/Card'
 import Button from '../components/atoms/Button'
+import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import { ShoppingCart, Trash2, CreditCard, LogIn, ArrowRight } from 'lucide-react'
 import { formatCurrency, waLink } from '../types/course'
 import { config } from '../config'
@@ -109,6 +110,10 @@ export default function CartPage() {
           </div>
         )}
       </main>
+
+      <footer className="mx-auto flex max-w-4xl justify-center px-6 pb-10">
+        <DeveloperCredit />
+      </footer>
     </div>
   )
 }

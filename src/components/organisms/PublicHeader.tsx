@@ -7,6 +7,8 @@ import { configurationService } from '../../services/configurationService'
 import { useCart } from '../../context/cart'
 import { useAuth } from '../../context/AuthContext'
 import { ROLE_LABELS, panelPathFor } from '../../lib/roles'
+import { isRootDomain } from '../../lib/domain'
+import PricingLink from '../atoms/PricingLink'
 
 const NAV = [
   { to: '/', label: 'Inicio' },
@@ -32,6 +34,9 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
   const initial = displayName.charAt(0).toUpperCase()
   const roleLabel = user?.role ? ROLE_LABELS[user.role] : ''
   const panelPath = panelPathFor(user?.role)
+  const navItems = isRootDomain()
+    ? [...NAV, { to: '/pricing', label: 'Planes' }]
+    : NAV
 
   const logoSrc =
     useTenantLogo && pub?.has_custom_logo
@@ -46,7 +51,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex">
-          {NAV.map((n) => {
+          {navItems.map((n) => {
             const active = pathname === n.to
             return (
               <Link
@@ -111,12 +116,9 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
               >
                 Iniciar sesión
               </Link>
-              <Link
-                to="/register"
-                className="hidden rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 md:inline-flex"
-              >
+              <PricingLink className="hidden rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 md:inline-flex">
                 Probar {config.appName}
-              </Link>
+              </PricingLink>
             </>
           )}
 
@@ -135,7 +137,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
       {open && (
         <div className="border-t border-slate-200 bg-white md:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 sm:px-6">
-            {NAV.map((n) => (
+            {navItems.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
@@ -184,13 +186,12 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
                   >
                     Iniciar sesión
                   </Link>
-                  <Link
-                    to="/register"
+                  <PricingLink
                     onClick={() => setOpen(false)}
                     className="rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
                   >
                     Probar {config.appName}
-                  </Link>
+                  </PricingLink>
                 </div>
               )}
             </div>

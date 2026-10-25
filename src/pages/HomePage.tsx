@@ -14,12 +14,12 @@ import {
   Rocket,
   ShieldCheck,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { config } from '../config'
 import { usePublicBranding } from '../hooks/useConfiguration'
 import { waLink } from '../types/course'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
+import PricingLink from '../components/atoms/PricingLink'
 
 const benefits = [
   {
@@ -166,13 +166,10 @@ export default function HomePage() {
               principio a fin.
             </p>
             <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
-              <Link
-                to="/register"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-colors hover:bg-emerald-400 sm:w-auto"
-              >
+              <PricingLink className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-colors hover:bg-emerald-400 sm:w-auto">
                 Probar {config.appName}
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </PricingLink>
               <a
                 href={demoLink}
                 target="_blank"
@@ -519,13 +516,10 @@ export default function HomePage() {
             forma automática.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-400"
-            >
+            <PricingLink className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-400">
               Probar {config.appName}
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </PricingLink>
             <a
               href={demoLink}
               target="_blank"

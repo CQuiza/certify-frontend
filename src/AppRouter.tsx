@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage'
 import CatalogPage from './pages/CatalogPage'
 import SearchPage from './pages/SearchPage'
 import FaqPage from './pages/FaqPage'
+import PricingPage from './pages/PricingPage'
+import { isRootDomain } from './lib/domain'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import CartPage from './pages/CartPage'
@@ -35,6 +37,11 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
+function RootDomainOnly({ children }: { children: ReactNode }) {
+  if (!isRootDomain()) return <Navigate to="/" replace />
+  return <>{children}</>
+}
+
 function RoleGuard({ children, roles }: { children: ReactNode; roles: UserRole[] }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
@@ -55,6 +62,14 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route
+        path="/pricing"
+        element={
+          <RootDomainOnly>
+            <PricingPage />
+          </RootDomainOnly>
+        }
+      />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/cart" element={<CartPage />} />

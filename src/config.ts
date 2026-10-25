@@ -6,8 +6,15 @@ export const config = {
   showTeacherRole: import.meta.env.VITE_SHOW_TEACHER_ROLE?.toLowerCase() === 'true',
   appName: import.meta.env.VITE_APP_NAME || 'Formativa',
   appDescription: import.meta.env.VITE_APP_DESCRIPTION || 'Plataforma de Certificación',
-contactPhone: import.meta.env.VITE_CONTACT_PHONE || '+57 312 537 0218',
+  contactPhone: import.meta.env.VITE_CONTACT_PHONE || '+57 312 537 0218',
   contactEmail: import.meta.env.VITE_CONTACT_EMAIL || 'contacto@formativa.com',
   cityCountry: import.meta.env.VITE_CONTACT_CITY_COUNTRY || 'Bogotá, Colombia',
   rootDomain: import.meta.env.VITE_ROOT_DOMAIN || '',
+  pricing: {
+    currency: import.meta.env.VITE_PRICING_CURRENCY || 'COP',
+    locale: import.meta.env.VITE_PRICING_LOCALE || 'es-CO',
+    monthlyTotal: Number(import.meta.env.VITE_PRICING_MONTHLY_TOTAL) || 149000,
+    semestralTotal: Number(import.meta.env.VITE_PRICING_SEMESTRAL_TOTAL) || 759900,
+    annualTotal: Number(import.meta.env.VITE_PRICING_ANNUAL_TOTAL) || 1341000,
+  },
 } as const

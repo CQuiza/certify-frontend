@@ -4,17 +4,21 @@ import { config } from '../../config'
 import { usePublicBranding } from '../../hooks/useConfiguration'
 import { useAuth } from '../../context/AuthContext'
 import { panelPathFor } from '../../lib/roles'
+import { isRootDomain } from '../../lib/domain'
+import PricingLink from '../atoms/PricingLink'
+import DeveloperCredit from '../molecules/DeveloperCredit'
 
 interface PublicFooterProps {
   showDeveloper?: boolean
 }
 
-export default function PublicFooter({ showDeveloper = false }: PublicFooterProps) {
+export default function PublicFooter({ showDeveloper = true }: PublicFooterProps) {
   const { data: pub } = usePublicBranding()
   const { user, isAuthenticated } = useAuth()
   const contactPhone = pub?.contact_phone || config.contactPhone
   const contactEmail = pub?.contact_email || config.contactEmail
   const panelPath = panelPathFor(user?.role)
+  const showPricing = isRootDomain()
 
   return (
     <footer className="border-t border-white/10 bg-slate-900 py-12 text-slate-400">
@@ -33,6 +37,11 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
             <li>
               <Link to="/catalog" className="transition-colors hover:text-white">Catálogo de cursos</Link>
             </li>
+            {showPricing && (
+              <li>
+                <Link to="/pricing" className="transition-colors hover:text-white">Planes y precios</Link>
+              </li>
+            )}
             <li>
               <Link to="/search" className="transition-colors hover:text-white">Verificar certificado</Link>
             </li>
@@ -40,7 +49,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
               {isAuthenticated ? (
                 <Link to={panelPath} className="transition-colors hover:text-white">Mi panel</Link>
               ) : (
-                <Link to="/register" className="transition-colors hover:text-white">Probar {config.appName}</Link>
+                <PricingLink className="transition-colors hover:text-white">Probar {config.appName}</PricingLink>
               )}
             </li>
           </ul>
@@ -84,18 +93,7 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
           <p className="text-xs">
             &copy; {new Date().getFullYear()} {config.appName}. Todos los derechos reservados.
           </p>
-          {showDeveloper && (
-            <a
-              href="https://cristhianquiza.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center gap-1 transition-opacity hover:opacity-80"
-            >
-              <span className="text-[11px] text-slate-500">Desarrollado por:</span>
-              <img src="/cristhianquiza-logo.svg" alt="Cristhian Quiza" className="h-8 w-auto" />
-              <span className="text-[11px] font-medium text-slate-300">cristhianquiza.com</span>
-            </a>
-          )}
+          {showDeveloper && <DeveloperCredit tone="dark" />}
         </div>
       </div>
     </footer>

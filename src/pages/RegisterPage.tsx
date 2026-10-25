@@ -5,6 +5,7 @@ import { configurationService } from '../services/configurationService'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import AuthShowcase from '../components/organisms/AuthShowcase'
+import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
@@ -91,6 +92,7 @@ export default function RegisterPage() {
           <p className="mt-6 text-center text-xs text-slate-400">
             Servicio prestado por {config.appName}
           </p>
+          <DeveloperCredit className="mt-4" />
         </div>
       </div>
     </div>
