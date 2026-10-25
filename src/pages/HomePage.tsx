@@ -24,7 +24,7 @@ import PublicFooter from '../components/organisms/PublicFooter'
 const benefits = [
   {
     icon: Building2,
-    title: 'Gestión Multitenant White-Label',
+    title: 'Gestión de Marca Personalizada',
     desc: 'Espacios de trabajo personalizados para cada organización o cliente, con su propia marca, subdominio y datos totalmente aislados.',
   },
   {

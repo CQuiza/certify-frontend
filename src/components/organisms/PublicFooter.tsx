@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { config } from '../../config'
 import { usePublicBranding } from '../../hooks/useConfiguration'
+import { useAuth } from '../../context/AuthContext'
+import { panelPathFor } from '../../lib/roles'
 
 interface PublicFooterProps {
   showDeveloper?: boolean
@@ -9,8 +11,10 @@ interface PublicFooterProps {
 
 export default function PublicFooter({ showDeveloper = false }: PublicFooterProps) {
   const { data: pub } = usePublicBranding()
+  const { user, isAuthenticated } = useAuth()
   const contactPhone = pub?.contact_phone || config.contactPhone
   const contactEmail = pub?.contact_email || config.contactEmail
+  const panelPath = panelPathFor(user?.role)
 
   return (
     <footer className="border-t border-white/10 bg-slate-900 py-12 text-slate-400">
@@ -33,7 +37,11 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
               <Link to="/search" className="transition-colors hover:text-white">Verificar certificado</Link>
             </li>
             <li>
-              <Link to="/register" className="transition-colors hover:text-white">Probar {config.appName}</Link>
+              {isAuthenticated ? (
+                <Link to={panelPath} className="transition-colors hover:text-white">Mi panel</Link>
+              ) : (
+                <Link to="/register" className="transition-colors hover:text-white">Probar {config.appName}</Link>
+              )}
             </li>
           </ul>
         </div>
@@ -44,9 +52,11 @@ export default function PublicFooter({ showDeveloper = false }: PublicFooterProp
             <li>
               <Link to="/faq" className="transition-colors hover:text-white">Preguntas frecuentes</Link>
             </li>
-            <li>
-              <Link to="/login" className="transition-colors hover:text-white">Iniciar sesión</Link>
-            </li>
+            {!isAuthenticated && (
+              <li>
+                <Link to="/login" className="transition-colors hover:text-white">Iniciar sesión</Link>
+              </li>
+            )}
           </ul>
         </div>
 
