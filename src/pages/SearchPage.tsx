@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { FileText, QrCode, Search, User, IdCard, Calendar, Clock, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+import { Search, User, IdCard, Calendar, Clock, AlertCircle, FileText } from 'lucide-react'
 import Card from '../components/molecules/Card'
 import Badge from '../components/atoms/Badge'
 import Input from '../components/atoms/Input'
@@ -7,18 +7,28 @@ import Button from '../components/atoms/Button'
 import Skeleton from '../components/atoms/Skeleton'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
-import { useCertificateTypes } from '../hooks/useCertificateTypes'
 import { certificateStatusVariant } from '../lib/statusVariant'
 import { formatDate } from '../lib/dates'
-import { config } from '../config'
 import api from '../services/api'
-import type { Certificate } from '../types'
+
+interface PublicCertificateItem {
+  course_title: string | null
+  status: string
+  issued_at: string
+  expires_at: string | null
+  pdf_url: string | null
+}
 
 interface SearchResult {
   user_name: string | null
-  user_email: string | null
   identity_number: string | null
-  certificates: Certificate[]
+  certificates: PublicCertificateItem[]
+}
+
+const statusLabels: Record<string, string> = {
+  active: 'Activo',
+  expired: 'Vencido',
+  revoked: 'Revocado',
 }
 
 export default function SearchPage() {
@@ -27,12 +37,6 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const { data: certTypes } = useCertificateTypes({ limit: 2000 })
-  const typeMap = useMemo(() => {
-    if (!certTypes) return {} as Record<number, string>
-    return Object.fromEntries(certTypes.map((t) => [t.id, t.name]))
-  }, [certTypes])
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!identityNumber.trim()) return
@@ -40,7 +44,9 @@ export default function SearchPage() {
     setError('')
     setResult(null)
     try {
-      const { data } = await api.get<SearchResult[]>(`/certificates/search-by-identity/${encodeURIComponent(identityNumber.trim())}`)
+      const { data } = await api.get<SearchResult[]>(
+        `/certificates/search-by-identity/${encodeURIComponent(identityNumber.trim())}`,
+      )
       if (data.length > 0) setResult(data[0])
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -66,8 +72,12 @@ export default function SearchPage() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <div className="text-center">
-              <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Verificar Certificados</h1>
-              <p className="mt-3 text-slate-500">Ingresa tu número de identificación para consultar tus certificados</p>
+              <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                Verificar Certificados
+              </h1>
+              <p className="mt-3 text-slate-500">
+                Ingresa tu número de identificación para consultar tus certificados
+              </p>
             </div>
             <Card className="mt-6">
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -114,12 +124,12 @@ export default function SearchPage() {
                 <User className="h-5 w-5 text-slate-400" />
                 <div>
                   <p className="font-medium text-slate-900">{result.user_name || 'Usuario'}</p>
-                    <div className="flex items-center gap-3 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <IdCard className="h-3.5 w-3.5" />
-                        {result.identity_number}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-3 text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <IdCard className="h-3.5 w-3.5" />
+                      {result.identity_number}
+                    </span>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -128,53 +138,46 @@ export default function SearchPage() {
               Certificados encontrados ({result.certificates.length})
             </h2>
 
-            {result.certificates.map((cert) => (
-              <Card key={cert.id}>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 flex-1 space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant={certificateStatusVariant(cert.status)}>{cert.status}</Badge>
-                      {cert.certificate_type_id != null && typeMap[cert.certificate_type_id] && (
-                        <span className="min-w-0 break-words text-base font-bold text-slate-900">
-                          {typeMap[cert.certificate_type_id]}
-                        </span>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
-                      <div className="flex items-center gap-1.5 text-slate-600">
-                        <Calendar className="h-3.5 w-3.5 shrink-0" />
-                        <span>Emitido: {formatDate(cert.issued_at)}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-slate-600">
-                        <Clock className="h-3.5 w-3.5 shrink-0" />
-                        <span>Expira: {cert.expires_at ? formatDate(cert.expires_at) : '—'}</span>
-                      </div>
-                    </div>
-                    <p className="font-mono text-xs text-slate-400">ID: {cert.unique_id.slice(0, 8)}...</p>
+            {result.certificates.map((cert, index) => (
+              <Card key={`${cert.course_title ?? 'certificado'}-${cert.issued_at}-${index}`}>
+                <div className="min-w-0 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant={certificateStatusVariant(cert.status)}>
+                      {statusLabels[cert.status] || cert.status}
+                    </Badge>
+                    <span className="min-w-0 break-words text-base font-bold text-slate-900">
+                      {cert.course_title || 'Certificado'}
+                    </span>
                   </div>
-                  <div className="flex shrink-0 gap-2">
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+                    <div className="flex items-center gap-1.5 text-slate-600">
+                      <Calendar className="h-3.5 w-3.5 shrink-0" />
+                      <span>Emitido: {formatDate(cert.issued_at)}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-600">
+                      <Clock className="h-3.5 w-3.5 shrink-0" />
+                      <span>Expira: {cert.expires_at ? formatDate(cert.expires_at) : '—'}</span>
+                    </div>
+                  </div>
+                  {cert.pdf_url && (
                     <a
-                      href={`${config.apiUrl}/certificates/view/${cert.unique_id}`}
+                      href={cert.pdf_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50"
                     >
                       <FileText className="h-3.5 w-3.5" />
-                      PDF
+                      Abrir certificado
                     </a>
-                    <a
-                      href={`${config.apiUrl}/certificates/view/${cert.unique_id}/qr`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
-                    >
-                      <QrCode className="h-3.5 w-3.5" />
-                      QR
-                    </a>
-                  </div>
+                  )}
                 </div>
               </Card>
             ))}
+
+            <p className="rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500">
+              Para descargar el PDF, escanea el código QR del certificado o usa el enlace de
+              verificación entregado por la entidad.
+            </p>
           </div>
         )}
       </section>

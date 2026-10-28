@@ -8,6 +8,20 @@ const api = axios.create({
   withCredentials: true,
 })
 
+function getCsrfToken(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : null
+}
+
+api.interceptors.request.use((request) => {
+  const method = (request.method ?? 'get').toUpperCase()
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+    const token = getCsrfToken()
+    if (token) request.headers.set('X-CSRF-Token', token)
+  }
+  return request
+})
+
 let isRefreshing = false
 let pendingQueue: Array<{
   resolve: (token: string | null) => void
