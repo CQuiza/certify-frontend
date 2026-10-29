@@ -1,6 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import axios from 'axios'
-import { config } from '../config'
+import { Sentry } from '../lib/sentry'
 
 interface Props {
   children: ReactNode
@@ -19,20 +18,9 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    void axios
-      .post(
-        `${config.apiUrl}/monitoring/logs`,
-        {
-          level: 'critical',
-          source: 'frontend',
-          event: `RenderError: ${error.message}`.slice(0, 255),
-          detail: error.message,
-          stacktrace: `${error.stack ?? ''}\n\n${info.componentStack ?? ''}`,
-          path: typeof window !== 'undefined' ? window.location.pathname : null,
-        },
-        { withCredentials: true },
-      )
-      .catch(() => {})
+    Sentry.captureException(error, {
+      extra: { componentStack: info.componentStack },
+    })
   }
 
   render(): ReactNode {

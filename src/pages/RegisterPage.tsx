@@ -6,6 +6,7 @@ import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import AuthShowcase from '../components/organisms/AuthShowcase'
 import DeveloperCredit from '../components/molecules/DeveloperCredit'
+import TurnstileWidget from '../components/molecules/TurnstileWidget'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
@@ -25,6 +26,8 @@ export default function RegisterPage() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -33,6 +36,10 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (config.turnstileSiteKey && !turnstileToken) {
+      setError('Completa la verificación de seguridad.')
+      return
+    }
     setLoading(true)
     try {
       await register({
@@ -43,9 +50,12 @@ export default function RegisterPage() {
         identity_type: form.identity_type,
         identity_number: form.identity_number,
         phone_number: form.phone_number,
+        turnstile_token: turnstileToken || undefined,
       })
     } catch (err: unknown) {
       setError(getErrorMessage(err))
+      setTurnstileToken('')
+      setTurnstileReset((value) => value + 1)
     } finally {
       setLoading(false)
     }
@@ -78,6 +88,16 @@ export default function RegisterPage() {
             </div>
             <Input label="Teléfono" value={form.phone_number} onChange={(e) => set('phone_number', e.target.value)} required placeholder="+57 300 000 0000" />
             <Input label="Contraseña" type="password" value={form.password} onChange={(e) => set('password', e.target.value)} required placeholder="Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo" />
+
+            <TurnstileWidget
+              siteKey={config.turnstileSiteKey}
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken('')}
+              onError={() =>
+                setError('No se pudo cargar la verificación de seguridad. Recarga la página.')
+              }
+              resetSignal={turnstileReset}
+            />
 
             {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 

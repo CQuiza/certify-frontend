@@ -1,7 +1,9 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authService, setRefreshToken } from '../services/authService'
+import { authService } from '../services/authService'
 import { enrollmentService } from '../services/enrollmentService'
+import { broadcastLogout, onAuthMessage } from '../lib/authChannel'
+import { setSentryUser } from '../lib/sentry'
 import type { User } from '../types'
 
 interface AuthState {
@@ -20,6 +22,7 @@ interface AuthContextType extends AuthState {
     identity_type?: string
     identity_number: string
     phone_number: string
+    turnstile_token?: string
   }) => Promise<void>
   logout: () => void
 }
@@ -51,21 +54,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const uid = localStorage.getItem('_uid')
     if (uid) {
       authService.getMe<User>()
-        .then((u) => { setUser(u); storeMinimalUser(u) })
-        .catch(() => { setUser(null); clearStoredUser(); setRefreshToken(null) })
+        .then((u) => { setUser(u); storeMinimalUser(u); setSentryUser(u) })
+        .catch(() => { setUser(null); clearStoredUser(); setSentryUser(null) })
     }
   }, [])
 
+  useEffect(
+    () =>
+      onAuthMessage((message) => {
+        if (message.type === 'logout') {
+          setUser(null)
+          clearStoredUser()
+          setSentryUser(null)
+          navigate('/login')
+        }
+      }),
+    [navigate],
+  )
+
   const login = useCallback(
     async (email: string, password: string) => {
-      const token = await authService.login({ username: email, password })
-      setRefreshToken(token.refresh_token ?? null)
+      await authService.login({ username: email, password })
 
       let u: User | null
       try {
         u = await authService.getMe<User>()
       } catch {
-        setRefreshToken(null)
         throw new Error('No se pudo obtener la información del usuario')
       }
 
@@ -73,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         storeMinimalUser(u)
       }
       setUser(u)
+      setSentryUser(u)
 
       if (!u) {
         navigate('/login')
@@ -108,13 +123,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       identity_type?: string
       identity_number: string
       phone_number: string
+      turnstile_token?: string
     }) => {
-      const token = await authService.register(data)
-      setRefreshToken(token.refresh_token ?? null)
+      await authService.register(data)
 
       const u = await authService.getMe<User>()
       if (u) storeMinimalUser(u)
       setUser(u)
+      setSentryUser(u)
       navigate('/catalog')
     },
     [navigate],
@@ -126,9 +142,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignora errores de logout, igual limpiamos sesión local
     }
-    setRefreshToken(null)
     clearStoredUser()
     setUser(null)
+    setSentryUser(null)
+    broadcastLogout()
     navigate('/login')
   }, [navigate])
 

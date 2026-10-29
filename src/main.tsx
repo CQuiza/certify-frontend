@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App'
 import { config } from './config'
+import { initSentry } from './lib/sentry'
 
+initSentry()
 document.title = `${config.appName} — Plataforma de certificación`
 const metaDescription = document.querySelector('meta[name="description"]')
 if (metaDescription) {

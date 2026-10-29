@@ -1,7 +1,9 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { toast } from 'sonner'
 import { config } from '../config'
-import { authService, getRefreshToken, setRefreshToken } from './authService'
+import { broadcastLogout, withRefreshLock } from '../lib/authChannel'
+import { Sentry, setSentryUser } from '../lib/sentry'
+import { authService } from './authService'
 
 const api = axios.create({
   baseURL: config.apiUrl,
@@ -36,47 +38,51 @@ function processQueue(token: string | null, err: unknown = null) {
   pendingQueue = []
 }
 
+function clearStoredSession(): void {
+  localStorage.removeItem('user')
+  localStorage.removeItem('_uid')
+  localStorage.removeItem('_role')
+}
+
 function redirectToLogin(message: string): void {
+  clearStoredSession()
+  setSentryUser(null)
+  broadcastLogout()
   toast.error(message, { id: 'session-expired' })
   window.location.href = '/login'
 }
 
 function isAuthEndpoint(url: string | undefined): boolean {
   if (!url) return false
-  return url.includes('/auth/token') || url.includes('/auth/login')
+  return (
+    url.includes('/auth/token') ||
+    url.includes('/auth/login') ||
+    url.includes('/auth/refresh') ||
+    url.includes('/auth/register') ||
+    url.includes('/auth/logout')
+  )
 }
 
-/** Reporta al backend errores de servidor (5xx) o de red del cliente. Fire-and-forget. */
-function reportClientError(error: AxiosError): void {
-  try {
-    const status = error.response?.status
-    if (status && status < 500) return
-    const cfg = error.config as InternalAxiosRequestConfig | undefined
-    const url = cfg?.url ?? ''
-    if (url.includes('/monitoring/logs')) return
-    const method = (cfg?.method ?? 'GET').toUpperCase()
-    void axios
-      .post(
-        `${config.apiUrl}/monitoring/logs`,
-        {
-          level: 'error',
-          source: 'frontend',
-          event: `${method} ${url} → ${status ?? 'network error'}`.slice(0, 255),
-          detail: (error.response?.data as { detail?: string } | undefined)?.detail ?? error.message,
-          path: typeof window !== 'undefined' ? window.location.pathname : null,
-        },
-        { withCredentials: true },
-      )
-      .catch(() => {})
-  } catch {
-    // noop: nunca debe romper la petición
-  }
+/** Envía a Sentry errores de servidor (5xx) o de red, sin datos sensibles. */
+function captureClientError(error: AxiosError): void {
+  const status = error.response?.status
+  if (status && status < 500) return
+  const cfg = error.config as InternalAxiosRequestConfig | undefined
+  const method = (cfg?.method ?? 'GET').toUpperCase()
+  const url = cfg?.url ?? ''
+  Sentry.captureException(error, {
+    tags: {
+      method,
+      url,
+      status: String(status ?? 'network'),
+    },
+  })
 }
 
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    reportClientError(error)
+    captureClientError(error)
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
 
     if (error.response?.status !== 401 || originalRequest._retry) {
@@ -84,12 +90,6 @@ api.interceptors.response.use(
     }
 
     if (isAuthEndpoint(originalRequest.url)) {
-      return Promise.reject(error)
-    }
-
-    if (!getRefreshToken()) {
-      localStorage.removeItem('user')
-      redirectToLogin('Tu sesión ha expirado. Inicia sesión de nuevo.')
       return Promise.reject(error)
     }
 
@@ -105,14 +105,11 @@ api.interceptors.response.use(
     isRefreshing = true
 
     try {
-      const token = await authService.refresh()
-      setRefreshToken(token.refresh_token ?? null)
+      const token = await withRefreshLock(() => authService.refresh())
       processQueue(token.access_token)
       return api(originalRequest)
     } catch (refreshError) {
       processQueue(null, refreshError)
-      setRefreshToken(null)
-      localStorage.removeItem('user')
       redirectToLogin('Tu sesión ha expirado. Inicia sesión de nuevo.')
       return Promise.reject(refreshError)
     } finally {

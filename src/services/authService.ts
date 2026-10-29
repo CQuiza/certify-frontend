@@ -1,16 +1,6 @@
 import api from './api'
 import type { Token, LoginRequest } from '../types'
 
-let _refreshToken: string | null = null
-
-export function setRefreshToken(t: string | null) {
-  _refreshToken = t
-}
-
-export function getRefreshToken(): string | null {
-  return _refreshToken
-}
-
 export const authService = {
   register: async (data: {
     email: string
@@ -21,6 +11,7 @@ export const authService = {
     identity_type?: string
     identity_number: string
     phone_number: string
+    turnstile_token?: string
   }): Promise<Token> => {
     const { data: response } = await api.post<Token>('/auth/register', data)
     return response
@@ -42,9 +33,7 @@ export const authService = {
   },
 
   refresh: async (): Promise<Token> => {
-    const token = getRefreshToken()
-    if (!token) throw new Error('No refresh token disponible')
-    const { data } = await api.post<Token>('/auth/refresh', { refresh_token: token })
+    const { data } = await api.post<Token>('/auth/refresh')
     return data
   },
 

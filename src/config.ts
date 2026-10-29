@@ -10,6 +10,7 @@ export const config = {
   contactEmail: import.meta.env.VITE_CONTACT_EMAIL || 'contacto@formativa.com',
   cityCountry: import.meta.env.VITE_CONTACT_CITY_COUNTRY || 'Bogotá, Colombia',
   rootDomain: import.meta.env.VITE_ROOT_DOMAIN || '',
+  turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || '',
   pricing: {
     currency: import.meta.env.VITE_PRICING_CURRENCY || 'COP',
     locale: import.meta.env.VITE_PRICING_LOCALE || 'es-CO',
