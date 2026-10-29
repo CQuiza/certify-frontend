@@ -11,6 +11,7 @@ export const authService = {
     identity_type?: string
     identity_number: string
     phone_number: string
+    birth_date: string
     turnstile_token?: string
   }): Promise<Token> => {
     const { data: response } = await api.post<Token>('/auth/register', data)

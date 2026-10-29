@@ -10,6 +10,7 @@ import TurnstileWidget from '../components/molecules/TurnstileWidget'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
+import { calculateAge, maxBirthDateForAdults } from '../lib/dates'
 
 export default function RegisterPage() {
   const { register } = useAuth()
@@ -23,6 +24,7 @@ export default function RegisterPage() {
     identity_type: 'CC',
     identity_number: '',
     phone_number: '',
+    birth_date: '',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -36,6 +38,14 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (!form.birth_date) {
+      setError('Debes indicar tu fecha de nacimiento.')
+      return
+    }
+    if ((calculateAge(form.birth_date) ?? 0) < 18) {
+      setError('Debes ser mayor de 18 años para registrarte.')
+      return
+    }
     if (config.turnstileSiteKey && !turnstileToken) {
       setError('Completa la verificación de seguridad.')
       return
@@ -50,6 +60,7 @@ export default function RegisterPage() {
         identity_type: form.identity_type,
         identity_number: form.identity_number,
         phone_number: form.phone_number,
+        birth_date: form.birth_date,
         turnstile_token: turnstileToken || undefined,
       })
     } catch (err: unknown) {
@@ -76,6 +87,15 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
             <Input label="Nombre" value={form.name} onChange={(e) => set('name', e.target.value)} required />
             <Input label="Apellido" value={form.first_last_name} onChange={(e) => set('first_last_name', e.target.value)} />
+            <Input
+              label="Fecha de nacimiento"
+              type="date"
+              value={form.birth_date}
+              onChange={(e) => set('birth_date', e.target.value)}
+              max={maxBirthDateForAdults()}
+              required
+            />
+            <p className="-mt-2 text-xs text-slate-500">Debes ser mayor de 18 años para registrarte.</p>
             <Input label="Correo electrónico" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} required />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>

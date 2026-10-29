@@ -22,6 +22,7 @@ interface AuthContextType extends AuthState {
     identity_type?: string
     identity_number: string
     phone_number: string
+    birth_date: string
     turnstile_token?: string
   }) => Promise<void>
   logout: () => void
@@ -123,6 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       identity_type?: string
       identity_number: string
       phone_number: string
+      birth_date: string
       turnstile_token?: string
     }) => {
       await authService.register(data)

@@ -6,11 +6,9 @@ import {
   CreditCard,
   Database,
   FileCheck2,
-  Globe2,
   Lock,
   LineChart,
   MessageCircle,
-  QrCode,
   Rocket,
   ShieldCheck,
 } from 'lucide-react'
@@ -19,6 +17,7 @@ import { usePublicBranding } from '../hooks/useConfiguration'
 import { waLink } from '../types/course'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
+import ProductCarousel from '../components/organisms/ProductCarousel'
 import PricingLink from '../components/atoms/PricingLink'
 
 const benefits = [
@@ -182,48 +181,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Product preview mock */}
-          <div className="mx-auto w-full max-w-md">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 shadow-2xl backdrop-blur">
-              <div className="rounded-xl bg-white p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                      <QrCode className="h-4.5 w-4.5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">Verificación de certificado</p>
-                      <p className="text-xs text-slate-500">{config.appName.toLowerCase()}.com/verificar</p>
-                    </div>
-                  </div>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    Válido
-                  </span>
-                </div>
-                <div className="mt-5 space-y-3">
-                  {[
-                    ['Titular', 'María Fernanda Ríos'],
-                    ['Programa', 'Diplomado en Seguridad y Salud'],
-                    ['Intensidad', '150 horas'],
-                    ['Vigencia', '3 años'],
-                  ].map(([k, v]) => (
-                    <div key={k} className="flex items-center justify-between border-b border-slate-100 pb-2 text-sm">
-                      <span className="text-slate-500">{k}</span>
-                      <span className="font-medium text-slate-900">{v}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5">
-                  <span className="font-mono text-xs text-slate-500">UUID 8f3c…a91b</span>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
-                    <Globe2 className="h-3.5 w-3.5" />
-                    Validación pública
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Product preview carousel */}
+          <ProductCarousel />
         </div>
       </section>
 

@@ -9,6 +9,7 @@ export interface UserBase {
   identity_type: IdentityType
   identity_number: string
   phone_number: string
+  birth_date?: string | null
   is_active: boolean
 }
 
@@ -26,6 +27,7 @@ export interface UserUpdate {
   identity_type?: IdentityType
   identity_number?: string
   phone_number?: string
+  birth_date?: string | null
   is_active?: boolean
 }
 
@@ -39,6 +41,7 @@ export interface User {
   identity_type: IdentityType
   identity_number: string
   phone_number: string
+  birth_date?: string | null
   created_at: string
   updated_at: string
   is_active: boolean
