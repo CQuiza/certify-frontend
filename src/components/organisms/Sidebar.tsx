@@ -40,7 +40,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const { logoUrl, logoDarkUrl, logoSurface, logoIsDark } = usePlatform()
   const navigate = useNavigate()
 
-  const logoSrc = logoDarkUrl ?? logoUrl ?? '/app_logo.png'
+  const logoSrc = logoDarkUrl ?? logoUrl ?? '/app_logo_negativo.png'
   const needsLightPill = !logoDarkUrl && (logoSurface === 'light' || (logoSurface === 'auto' && logoIsDark))
 
   const filtered = navItems.filter((item) => {
