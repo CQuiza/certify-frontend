@@ -44,7 +44,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
       : '/app_logo.png'
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr]">
         <Link to="/" className="shrink-0 md:justify-self-start" aria-label={brand} onClick={() => setOpen(false)}>
           <img src={logoSrc} alt={brand} className="h-10 w-auto max-w-full object-contain sm:h-12" />
