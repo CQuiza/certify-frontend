@@ -90,9 +90,16 @@ export default function PublicFooter({ showDeveloper = true }: PublicFooterProps
 
       <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 px-6 pt-6">
         <div className="flex flex-col items-center justify-between gap-5 sm:flex-row">
-          <p className="text-xs">
-            &copy; {new Date().getFullYear()} {config.appName}. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-col items-start gap-3">
+            <img
+              src="/app_logo.png"
+              alt={`${config.appName} logo`}
+              className="h-8 w-auto opacity-80 grayscale invert mix-blend-screen"
+            />
+            <p className="text-xs">
+              &copy; {new Date().getFullYear()} {config.appName}. Todos los derechos reservados.
+            </p>
+          </div>
           {showDeveloper && <DeveloperCredit tone="dark" />}
         </div>
       </div>

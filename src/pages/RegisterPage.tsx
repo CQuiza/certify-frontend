@@ -62,16 +62,18 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-white">
       <AuthShowcase />
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-md">
           <div className="mb-6 text-center">
-            <img src={logoSrc} alt={config.appName} className="mx-auto mb-3 h-20 w-auto max-w-full object-contain" />
+            <Link to="/home" aria-label={config.appName} className="inline-block transition-opacity hover:opacity-80">
+              <img src={logoSrc} alt={config.appName} className="mx-auto mb-3 h-20 w-auto max-w-full object-contain" />
+            </Link>
             <p className="text-sm text-slate-500">Crea tu cuenta de estudiante</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
             <Input label="Nombre" value={form.name} onChange={(e) => set('name', e.target.value)} required />
             <Input label="Apellido" value={form.first_last_name} onChange={(e) => set('first_last_name', e.target.value)} />
             <Input label="Correo electrónico" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} required />

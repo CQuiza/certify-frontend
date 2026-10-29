@@ -34,15 +34,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-white">
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <img src={logoSrc} alt={config.appName} className="mx-auto mb-4 h-20 w-auto max-w-full object-contain" />
+            <Link to="/home" aria-label={config.appName} className="inline-block transition-opacity hover:opacity-80">
+              <img src={logoSrc} alt={config.appName} className="mx-auto mb-4 h-20 w-auto max-w-full object-contain" />
+            </Link>
             <p className="text-sm text-slate-500">Inicia sesión en tu cuenta</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
             <Input
               label="Correo electrónico"
               type="email"

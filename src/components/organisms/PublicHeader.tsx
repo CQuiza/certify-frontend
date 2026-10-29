@@ -13,8 +13,8 @@ import PricingLink from '../atoms/PricingLink'
 const NAV = [
   { to: '/', label: 'Inicio' },
   { to: '/catalog', label: 'Catálogo' },
-  { to: '/search', label: 'Verificar certificado' },
-  { to: '/faq', label: 'Preguntas frecuentes' },
+  { to: '/search', label: 'Verificar' },
+  { to: '/faq', label: 'FAQ' },
 ]
 
 interface PublicHeaderProps {
@@ -35,7 +35,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
   const roleLabel = user?.role ? ROLE_LABELS[user.role] : ''
   const panelPath = panelPathFor(user?.role)
   const navItems = isRootDomain()
-    ? [...NAV, { to: '/pricing', label: 'Planes' }]
+    ? [...NAV, { to: '/pricing', label: 'Precios' }]
     : NAV
 
   const logoSrc =
@@ -44,20 +44,20 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
       : '/app_logo.png'
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link to="/" className="shrink-0" aria-label={brand} onClick={() => setOpen(false)}>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr]">
+        <Link to="/" className="shrink-0 md:justify-self-start" aria-label={brand} onClick={() => setOpen(false)}>
           <img src={logoSrc} alt={brand} className="h-10 w-auto max-w-full object-contain sm:h-12" />
         </Link>
 
-        <nav className="hidden items-center gap-2 md:flex">
+        <nav className="hidden items-center justify-center gap-2 md:flex md:justify-self-center">
           {navItems.map((n) => {
-            const active = pathname === n.to
+            const active = pathname === n.to || (n.to === '/' && pathname === '/home')
             return (
               <Link
                 key={n.to}
                 to={n.to}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-center text-sm font-medium transition-colors ${
                   active
                     ? 'bg-slate-100 text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -69,7 +69,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
           })}
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:justify-self-end">
           <Link
             to="/cart"
             className="relative rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100"
@@ -112,11 +112,11 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
             <>
               <Link
                 to="/login"
-                className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 md:inline-flex"
+                className="hidden items-center justify-center rounded-lg px-3 py-2 text-center text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 md:inline-flex"
               >
                 Iniciar sesión
               </Link>
-              <PricingLink className="hidden rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 md:inline-flex">
+              <PricingLink className="hidden items-center justify-center rounded-lg bg-emerald-600 px-3.5 py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 md:inline-flex">
                 Probar {config.appName}
               </PricingLink>
             </>
@@ -142,8 +142,10 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  pathname === n.to ? 'bg-slate-100 text-slate-900' : 'text-slate-700 hover:bg-slate-100'
+                className={`rounded-lg px-3 py-2.5 text-center text-sm font-medium transition-colors ${
+                  pathname === n.to || (n.to === '/' && pathname === '/home')
+                    ? 'bg-slate-100 text-slate-900'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 {n.label}
@@ -171,7 +173,7 @@ export default function PublicHeader({ useTenantLogo = false }: PublicHeaderProp
                       setOpen(false)
                       logout()
                     }}
-                    className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100"
+                    className="mt-1 flex w-full items-center justify-center gap-3 rounded-lg px-3 py-2.5 text-center text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100"
                   >
                     <LogOut className="h-5 w-5" />
                     Cerrar sesión
