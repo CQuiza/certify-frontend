@@ -45,6 +45,9 @@ export interface User {
   created_at: string
   updated_at: string
   is_active: boolean
+  eula_pending?: boolean
+  eula_version?: string | null
+  eula_accepted_at?: string | null
 }
 
 export interface UserUpdateResponse extends User {

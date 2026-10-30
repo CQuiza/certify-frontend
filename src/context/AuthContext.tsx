@@ -23,8 +23,10 @@ interface AuthContextType extends AuthState {
     identity_number: string
     phone_number: string
     birth_date: string
+    accepted_terms: boolean
     turnstile_token?: string
   }) => Promise<void>
+  acceptEula: () => Promise<void>
   logout: () => void
 }
 
@@ -72,6 +74,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }),
     [navigate],
   )
+
+  useEffect(() => {
+    const handler = () => {
+      setUser((current) => (current ? { ...current, eula_pending: true } : current))
+    }
+    window.addEventListener('consent-required', handler)
+    return () => window.removeEventListener('consent-required', handler)
+  }, [])
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -125,6 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       identity_number: string
       phone_number: string
       birth_date: string
+      accepted_terms: boolean
       turnstile_token?: string
     }) => {
       await authService.register(data)
@@ -137,6 +148,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     [navigate],
   )
+
+  const acceptEula = useCallback(async () => {
+    const result = await authService.acceptEula()
+    setUser((current) =>
+      current
+        ? {
+            ...current,
+            eula_pending: false,
+            eula_version: result.version,
+            eula_accepted_at: result.accepted_at,
+          }
+        : current,
+    )
+  }, [])
 
   const logout = useCallback(async () => {
     try {
@@ -152,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [navigate])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, acceptEula, logout }}>
       {children}
     </AuthContext.Provider>
   )

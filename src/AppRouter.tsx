@@ -6,6 +6,7 @@ import CatalogPage from './pages/CatalogPage'
 import SearchPage from './pages/SearchPage'
 import FaqPage from './pages/FaqPage'
 import PricingPage from './pages/PricingPage'
+import PoliticsPage from './pages/PoliticsPage'
 import { isRootDomain } from './lib/domain'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -28,6 +29,7 @@ import MonitoringPage from './pages/MonitoringPage'
 import TenantsPage from './pages/TenantsPage'
 import ReportsPage from './pages/ReportsPage'
 import DashboardLayout from './components/organisms/DashboardLayout'
+import ConsentGate from './components/organisms/ConsentGate'
 import type { ReactNode } from 'react'
 import type { UserRole } from './types'
 
@@ -60,7 +62,8 @@ export default function AppRouter() {
   const authenticatedHome = user?.role === 'student' ? '/courses' : '/dashboard'
 
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/home" element={<HomePage />} />
       <Route
@@ -73,6 +76,7 @@ export default function AppRouter() {
       />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/politics" element={<PoliticsPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/payments/order/:orderId" element={<PaymentResultPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -107,5 +111,7 @@ export default function AppRouter() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+      <ConsentGate />
+    </>
   )
 }

@@ -59,6 +59,7 @@ function isAuthEndpoint(url: string | undefined): boolean {
     url.includes('/auth/login') ||
     url.includes('/auth/refresh') ||
     url.includes('/auth/register') ||
+    url.includes('/auth/accept-eula') ||
     url.includes('/auth/logout')
   )
 }
@@ -84,6 +85,16 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     captureClientError(error)
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+
+    const detail = error.response?.data as
+      | { detail?: { code?: string } }
+      | undefined
+    if (
+      error.response?.status === 403 &&
+      detail?.detail?.code === 'consent_required'
+    ) {
+      window.dispatchEvent(new Event('consent-required'))
+    }
 
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error)

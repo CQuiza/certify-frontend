@@ -7,6 +7,9 @@ import Input from '../components/atoms/Input'
 import AuthShowcase from '../components/organisms/AuthShowcase'
 import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import TurnstileWidget from '../components/molecules/TurnstileWidget'
+import Modal from '../components/molecules/Modal'
+import LegalMarkdown from '../components/organisms/LegalMarkdown'
+import { LEGAL_DOCS } from '../content/legal'
 import { Link } from 'react-router-dom'
 import { config } from '../config'
 import { getErrorMessage } from '../lib/error'
@@ -30,6 +33,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState('')
   const [turnstileReset, setTurnstileReset] = useState(0)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [eulaOpen, setEulaOpen] = useState(false)
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -44,6 +49,10 @@ export default function RegisterPage() {
     }
     if ((calculateAge(form.birth_date) ?? 0) < 18) {
       setError('Debes ser mayor de 18 años para registrarte.')
+      return
+    }
+    if (!acceptedTerms) {
+      setError('Debes aceptar el Acuerdo de Usuario Final y Política de Privacidad.')
       return
     }
     if (config.turnstileSiteKey && !turnstileToken) {
@@ -61,6 +70,7 @@ export default function RegisterPage() {
         identity_number: form.identity_number,
         phone_number: form.phone_number,
         birth_date: form.birth_date,
+        accepted_terms: acceptedTerms,
         turnstile_token: turnstileToken || undefined,
       })
     } catch (err: unknown) {
@@ -111,6 +121,33 @@ export default function RegisterPage() {
             <Input label="Teléfono" value={form.phone_number} onChange={(e) => set('phone_number', e.target.value)} required placeholder="+57 300 000 0000" />
             <Input label="Contraseña" type="password" value={form.password} onChange={(e) => set('password', e.target.value)} required placeholder="Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo" />
 
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-start gap-3">
+                <input
+                  id="accept-terms"
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(event) => setAcceptedTerms(event.target.checked)}
+                  required
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                />
+                <div className="text-sm leading-5 text-slate-600">
+                  <label htmlFor="accept-terms" className="font-medium text-slate-700">
+                    He leído y acepto el Acuerdo de Usuario Final y Política de Privacidad.
+                  </label>
+                  <div className="mt-1">
+                    <button
+                      type="button"
+                      onClick={() => setEulaOpen(true)}
+                      className="font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800"
+                    >
+                      Leer acuerdo
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <TurnstileWidget
               siteKey={config.turnstileSiteKey}
               onVerify={(token) => setTurnstileToken(token)}
@@ -137,6 +174,25 @@ export default function RegisterPage() {
           <DeveloperCredit className="mt-4" />
         </div>
       </div>
+
+      <Modal
+        open={eulaOpen}
+        onClose={() => setEulaOpen(false)}
+        title={LEGAL_DOCS.eula.title}
+        size="xl"
+      >
+        <LegalMarkdown markdown={LEGAL_DOCS.eula.markdown} hideTitle compact />
+        <div className="mt-6 border-t border-slate-200 pt-4">
+          <a
+            href="/politics?doc=eula"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800"
+          >
+            Abrir en página completa
+          </a>
+        </div>
+      </Modal>
     </div>
   )
 }

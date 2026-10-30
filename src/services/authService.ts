@@ -12,6 +12,7 @@ export const authService = {
     identity_number: string
     phone_number: string
     birth_date: string
+    accepted_terms: boolean
     turnstile_token?: string
   }): Promise<Token> => {
     const { data: response } = await api.post<Token>('/auth/register', data)
@@ -30,6 +31,16 @@ export const authService = {
 
   getMe: async <T = unknown>(): Promise<T> => {
     const { data } = await api.get<T>('/auth/me')
+    return data
+  },
+
+  acceptEula: async (): Promise<{
+    accepted: boolean
+    document: string
+    version: string
+    accepted_at: string
+  }> => {
+    const { data } = await api.post('/auth/accept-eula')
     return data
   },
 
