@@ -10,6 +10,7 @@ import Card from '../../molecules/Card'
 import Button from '../../atoms/Button'
 import Skeleton from '../../atoms/Skeleton'
 import ErrorState from '../../atoms/ErrorState'
+import LazyPdfPreview from '../LazyPdfPreview'
 import { FileText, Download, Upload, RotateCcw, AlertTriangle } from 'lucide-react'
 import { getErrorMessage } from '../../../lib/error'
 
@@ -151,10 +152,12 @@ export default function CertificateConfiguration() {
                 <Skeleton className="h-10 w-48" />
               </div>
             ) : previewUrl ? (
-              <iframe
-                src={previewUrl}
+              <LazyPdfPreview
+                key={previewUrl}
+                source={previewUrl}
                 title="Vista previa del certificado"
-                className="h-[560px] w-full bg-slate-100"
+                className="h-[560px] w-full"
+                downloadUrl={previewUrl}
               />
             ) : (
               <div className="flex h-[560px] w-full items-center justify-center bg-slate-50">

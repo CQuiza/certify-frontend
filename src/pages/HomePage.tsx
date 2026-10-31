@@ -13,6 +13,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { config } from '../config'
+import { Link } from 'react-router-dom'
 import { usePublicBranding } from '../hooks/useConfiguration'
 import { waLink } from '../types/course'
 import PublicHeader from '../components/organisms/PublicHeader'
@@ -178,6 +179,12 @@ export default function HomePage() {
                 <MessageCircle className="h-4 w-4" />
                 Solicitar Demo
               </a>
+              <Link
+                to="/pitch"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-6 py-3.5 text-sm font-semibold text-slate-300 transition-colors hover:border-white/20 hover:text-white sm:w-auto"
+              >
+                Ver presentación
+              </Link>
             </div>
           </div>
 

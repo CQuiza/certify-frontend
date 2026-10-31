@@ -62,10 +62,13 @@ export default function PublicFooter({ showDeveloper = true }: PublicFooterProps
               <Link to="/faq" className="transition-colors hover:text-white">Preguntas frecuentes</Link>
             </li>
             <li>
-              <Link to="/politics?doc=terminos" className="transition-colors hover:text-white">Términos y condiciones</Link>
+              <Link to="/politics?doc=terminos" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">Términos y condiciones</Link>
             </li>
             <li>
-              <Link to="/politics?doc=eula" className="transition-colors hover:text-white">Acuerdo de estudiantes</Link>
+              <Link to="/politics?doc=eula" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">Acuerdo de estudiantes</Link>
+            </li>
+            <li>
+              <Link to="/pitch" className="transition-colors hover:text-white">Presentación corporativa</Link>
             </li>
             {!isAuthenticated && (
               <li>

@@ -7,6 +7,7 @@ import SearchPage from './pages/SearchPage'
 import FaqPage from './pages/FaqPage'
 import PricingPage from './pages/PricingPage'
 import PoliticsPage from './pages/PoliticsPage'
+import PitchPage from './pages/PitchPage'
 import { isRootDomain } from './lib/domain'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -77,6 +78,7 @@ export default function AppRouter() {
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/politics" element={<PoliticsPage />} />
+      <Route path="/pitch" element={<PitchPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/payments/order/:orderId" element={<PaymentResultPage />} />
       <Route path="/register" element={<RegisterPage />} />

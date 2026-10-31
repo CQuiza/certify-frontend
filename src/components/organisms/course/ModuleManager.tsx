@@ -298,9 +298,9 @@ export default function ModuleManager({ courseId, canManage }: ModuleManagerProp
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Contenido de texto</label>
             <textarea value={lessonForm.text_content} onChange={(e) => setLessonForm({ ...lessonForm, text_content: e.target.value })} rows={3} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
-          <Input label="URL de imagen (opcional)" value={lessonForm.image_content_url} onChange={(e) => setLessonForm({ ...lessonForm, image_content_url: e.target.value })} />
-          <Input label="URL de video (opcional)" value={lessonForm.video_content_url} onChange={(e) => setLessonForm({ ...lessonForm, video_content_url: e.target.value })} />
-          <Input label="URL de archivo (opcional)" value={lessonForm.file_content_url} onChange={(e) => setLessonForm({ ...lessonForm, file_content_url: e.target.value })} />
+          <Input label="URL de imagen (opcional)" type="url" value={lessonForm.image_content_url} onChange={(e) => setLessonForm({ ...lessonForm, image_content_url: e.target.value })} />
+          <Input label="URL de video (opcional)" type="url" value={lessonForm.video_content_url} onChange={(e) => setLessonForm({ ...lessonForm, video_content_url: e.target.value })} />
+          <Input label="URL de archivo (opcional)" type="url" value={lessonForm.file_content_url} onChange={(e) => setLessonForm({ ...lessonForm, file_content_url: e.target.value })} />
           <Input label="Orden" type="number" min={0} value={lessonForm.order_index} onChange={(e) => setLessonForm({ ...lessonForm, order_index: Number(e.target.value) })} required />
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" type="button" onClick={() => setLessonModal(false)}>Cancelar</Button>

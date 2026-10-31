@@ -7,6 +7,7 @@ import Button from '../../atoms/Button'
 import Input from '../../atoms/Input'
 import TaskSubmissions from './TaskSubmissions'
 import { downloadTaskFile } from '../../../lib/download'
+import { isGoogleDriveUrl, sanitizeUrl } from '../../../lib/sanitize'
 import { Pencil, Trash2, Inbox } from 'lucide-react'
 import type { Task, TaskCreate, TaskUpdate } from '../../../types'
 
@@ -107,8 +108,8 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
                     <p className="text-sm font-medium text-slate-900">{t.title}</p>
                     {t.description && <p className="text-xs text-slate-500 mt-0.5">{t.description}</p>}
                     <div className="mt-1 flex gap-2 text-xs text-slate-400">
-                      {t.file_type === 'google_drive' && t.google_drive_link && (
-                        <a href={t.google_drive_link} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">Google Drive</a>
+                      {t.file_type === 'google_drive' && isGoogleDriveUrl(t.google_drive_link) && (
+                        <a href={sanitizeUrl(t.google_drive_link)} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">Google Drive</a>
                       )}
                       {t.file_type === 'upload' && t.file_url && (
                         <button onClick={() => downloadTaskFile(t.id)} className="text-emerald-600 hover:underline text-xs">Descargar archivo</button>
@@ -156,7 +157,7 @@ export default function TaskManager({ lessonId, onClose }: TaskManagerProps) {
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Descripción</label>
                 <textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} rows={2} className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Instrucciones de la tarea" />
               </div>
-              <Input label="Enlace de Google Drive (opcional)" value={newTaskGoogleDrive} onChange={(e) => setNewTaskGoogleDrive(e.target.value)} placeholder="https://drive.google.com/file/d/..." />
+              <Input label="Enlace de Google Drive (opcional)" type="url" value={newTaskGoogleDrive} onChange={(e) => setNewTaskGoogleDrive(e.target.value)} placeholder="https://drive.google.com/file/d/..." />
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Subir archivo (opcional, máx 50 MB)</label>
                 <input type="file" onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)} className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100" />

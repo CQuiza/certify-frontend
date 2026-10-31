@@ -48,6 +48,7 @@ function buildCsp(
     "img-src 'self' https: http: data: blob:",
     "media-src 'self' https: http: blob: data:",
     "frame-src https://www.youtube.com https://drive.google.com https://challenges.cloudflare.com blob:",
+    "worker-src 'self' blob:",
     `connect-src ${connectParts.join(' ')}`,
     "form-action 'self'",
     "object-src 'none'",

@@ -13,6 +13,8 @@ import { downloadTaskFile, downloadLessonFile } from '../lib/download'
 import { sanitizeUrl } from '../lib/sanitize'
 import { formatFileSize } from '../lib/lessonFiles'
 import Card from '../components/molecules/Card'
+import Modal from '../components/molecules/Modal'
+import LazyPdfPreview from '../components/organisms/LazyPdfPreview'
 import Skeleton from '../components/atoms/Skeleton'
 import Button from '../components/atoms/Button'
 import ErrorState from '../components/atoms/ErrorState'
@@ -31,7 +33,9 @@ function getYoutubeEmbedUrl(url: string): string | null {
     } else {
       id = u.searchParams.get('v')
     }
-    return id ? `https://www.youtube.com/embed/${id}` : null
+    return id && /^[A-Za-z0-9_-]{11}$/.test(id)
+      ? `https://www.youtube.com/embed/${id}`
+      : null
   } catch {
     return null
   }
@@ -40,8 +44,8 @@ function getYoutubeEmbedUrl(url: string): string | null {
 function getGoogleDriveId(url: string): string | null {
   try {
     const u = new URL(url)
-    if (!u.hostname.includes('drive.google.com')) return null
-    const m = u.pathname.match(/\/file\/d\/([^/]+)/)
+    if (!['drive.google.com', 'docs.google.com'].includes(u.hostname)) return null
+    const m = u.pathname.match(/\/(?:file|document)\/d\/([A-Za-z0-9_-]+)/)
     return m ? m[1] : null
   } catch {
     return null
@@ -232,6 +236,7 @@ export default function LessonViewPage() {
   const { data: lessonFiles } = useLessonFilesByLesson(lessonIdNum)
 
   const [selectedBlob, setSelectedBlob] = useState<{ url: string; id: number; name: string; mime: string | null } | null>(null)
+  const [drivePreview, setDrivePreview] = useState<string | null>(null)
 
   useEffect(() => {
     return () => {
@@ -241,10 +246,6 @@ export default function LessonViewPage() {
 
   async function handleView(fileId: number, name: string, mime: string | null) {
     const fileUrl = lessonFileService.getFileUrl(lessonIdNum, fileId)
-    if (window.innerWidth < 1024) {
-      window.open(fileUrl, '_blank')
-      return
-    }
     try {
       const res = await fetch(fileUrl, { credentials: 'include' })
       if (!res.ok) throw new Error()
@@ -333,7 +334,13 @@ export default function LessonViewPage() {
                   {selectedBlob.mime?.startsWith('image/') ? (
                     <img src={selectedBlob.url} alt={selectedBlob.name} className="max-w-full rounded-lg" />
                   ) : selectedBlob.mime === 'application/pdf' ? (
-                    <iframe src={selectedBlob.url} className="w-full h-[600px] rounded-lg border border-slate-200" title={selectedBlob.name} />
+                    <LazyPdfPreview
+                      key={selectedBlob.url}
+                      source={selectedBlob.url}
+                      title={selectedBlob.name}
+                      className="h-[70vh] min-h-[360px] w-full"
+                      downloadUrl={selectedBlob.url}
+                    />
                   ) : selectedBlob.mime?.startsWith('text/') ? (
                     <FileTextViewer url={selectedBlob.url} />
                   ) : (
@@ -413,10 +420,14 @@ export default function LessonViewPage() {
                   Descargar archivo
                 </a>
                 {previewUrl && (
-                  <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setDrivePreview(previewUrl)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  >
                     <FileText className="h-4 w-4" />
                     Vista previa
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
@@ -471,6 +482,22 @@ export default function LessonViewPage() {
           </div>
         )}
       </Card>
+
+      <Modal
+        open={!!drivePreview}
+        onClose={() => setDrivePreview(null)}
+        title="Vista previa del archivo"
+        size="xl"
+      >
+        {drivePreview && (
+          <iframe
+            src={drivePreview}
+            title="Vista previa del archivo en Google Drive"
+            className="h-[70vh] min-h-[360px] w-full rounded-lg border border-slate-200"
+            allow="autoplay"
+          />
+        )}
+      </Modal>
 
       <div className="mt-6">
         <Link to={`/courses/${courseIdNum}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
