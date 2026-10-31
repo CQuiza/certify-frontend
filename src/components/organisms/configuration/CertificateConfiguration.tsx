@@ -22,6 +22,7 @@ export default function CertificateConfiguration() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null)
   const [previewLoading, setPreviewLoading] = useState(true)
 
   async function loadPreview() {
@@ -29,11 +30,13 @@ export default function CertificateConfiguration() {
       const res = await fetch(configurationService.getPreviewUrl(), { credentials: 'include' })
       if (!res.ok) throw new Error('HTTP ' + res.status)
       const blob = await res.blob()
+      setPreviewBlob(blob)
       setPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev)
         return URL.createObjectURL(blob)
       })
     } catch {
+      setPreviewBlob(null)
       setPreviewUrl(null)
       toast.error('No se pudo cargar la vista previa de la plantilla.')
     } finally {
@@ -49,12 +52,14 @@ export default function CertificateConfiguration() {
         return res.blob()
       })
       .then((blob) => {
+        setPreviewBlob(blob)
         setPreviewUrl((prev) => {
           if (prev) URL.revokeObjectURL(prev)
           return URL.createObjectURL(blob)
         })
       })
       .catch(() => {
+        setPreviewBlob(null)
         setPreviewUrl(null)
       })
       .finally(() => setPreviewLoading(false))
@@ -154,10 +159,10 @@ export default function CertificateConfiguration() {
             ) : previewUrl ? (
               <LazyPdfPreview
                 key={previewUrl}
-                source={previewUrl}
+                source={previewBlob}
                 title="Vista previa del certificado"
                 className="h-[560px] w-full"
-                downloadUrl={previewUrl}
+                downloadUrl={previewUrl ?? undefined}
               />
             ) : (
               <div className="flex h-[560px] w-full items-center justify-center bg-slate-50">

@@ -23,8 +23,13 @@ export async function downloadTaskFile(taskId: number): Promise<void> {
     if (!res.ok) throw new Error('HTTP ' + res.status)
     const blob = await res.blob()
     const disposition = res.headers.get('content-disposition')
-    const match = disposition?.match(/filename="(.+)"/)
-    const filename = match ? match[1] : `task-${taskId}`
+    const encoded = disposition?.match(/filename\*=UTF-8''([^;]+)/i)?.[1]
+    const match = disposition?.match(/filename="([^"]+)"/)
+    const filename = encoded
+      ? decodeURIComponent(encoded)
+      : match
+        ? match[1]
+        : `task-${taskId}`
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

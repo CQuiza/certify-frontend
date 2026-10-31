@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Download, Minus, Plus } from 'lucide-react'
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.${pdfjs.version}.min.js`
 
 interface PdfPreviewProps {
-  source: string | null
+  source: string | Blob | null
   title?: string
   className?: string
   downloadUrl?: string
@@ -35,7 +35,7 @@ export default function PdfPreview({
   }, [])
 
   const pageWidth = Math.round(baseWidth * zoom)
-  const target = downloadUrl ?? source ?? undefined
+  const target = downloadUrl ?? (typeof source === 'string' ? source : undefined)
 
   if (!source) {
     return (

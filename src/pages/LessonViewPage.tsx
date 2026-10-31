@@ -235,7 +235,7 @@ export default function LessonViewPage() {
   const { data: tasks } = useTasksByLesson(lessonIdNum)
   const { data: lessonFiles } = useLessonFilesByLesson(lessonIdNum)
 
-  const [selectedBlob, setSelectedBlob] = useState<{ url: string; id: number; name: string; mime: string | null } | null>(null)
+  const [selectedBlob, setSelectedBlob] = useState<{ blob: Blob; url: string; id: number; name: string; mime: string | null } | null>(null)
   const [drivePreview, setDrivePreview] = useState<string | null>(null)
 
   useEffect(() => {
@@ -251,7 +251,7 @@ export default function LessonViewPage() {
       if (!res.ok) throw new Error()
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
-      setSelectedBlob({ url, id: fileId, name, mime })
+      setSelectedBlob({ blob, url, id: fileId, name, mime })
     } catch {
       toast.error('No se pudo cargar el archivo. Inténtalo de nuevo.')
     }
@@ -336,7 +336,7 @@ export default function LessonViewPage() {
                   ) : selectedBlob.mime === 'application/pdf' ? (
                     <LazyPdfPreview
                       key={selectedBlob.url}
-                      source={selectedBlob.url}
+                      source={selectedBlob.blob}
                       title={selectedBlob.name}
                       className="h-[70vh] min-h-[360px] w-full"
                       downloadUrl={selectedBlob.url}

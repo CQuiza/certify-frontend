@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import PdfErrorBoundary from './PdfErrorBoundary'
 
 interface LazyPdfPreviewProps {
-  source: string | null
+  source: string | Blob | null
   title?: string
   className?: string
   downloadUrl?: string
@@ -12,11 +12,13 @@ const PdfPreview = lazy(() => import('./PdfPreview'))
 
 export default function LazyPdfPreview(props: LazyPdfPreviewProps) {
   const fallbackClass = props.className ?? 'h-[70vh] min-h-[360px]'
+  const sourceKey =
+    typeof props.source === 'string' ? props.source : (props.downloadUrl ?? 'blob')
 
   return (
     <PdfErrorBoundary
-      key={props.source ?? 'empty'}
-      downloadUrl={props.downloadUrl ?? props.source}
+      key={sourceKey}
+      downloadUrl={props.downloadUrl ?? (typeof props.source === 'string' ? props.source : undefined)}
       className={props.className}
     >
       <Suspense

@@ -1,5 +1,5 @@
 export const LESSON_FILE_ALLOWED_EXTENSIONS = new Set([
-  '.jpg', '.png', '.pdf', '.docx', '.pptx', '.xlsx',
+  '.jpg', '.jpeg', '.png', '.pdf', '.docx', '.pptx', '.xlsx',
 ])
 
 export const LESSON_FILE_ACCEPT = Array.from(LESSON_FILE_ALLOWED_EXTENSIONS).join(',')

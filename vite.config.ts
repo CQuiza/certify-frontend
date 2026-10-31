@@ -57,7 +57,7 @@ function buildCsp(
   if (externalApi) connectParts.push(externalApi)
   const externalSentry = sentryOrigin(sentryDsn)
   if (externalSentry) connectParts.push(externalSentry)
-  connectParts.push('https://challenges.cloudflare.com')
+  connectParts.push('https://challenges.cloudflare.com', 'blob:')
 
   return [
     "default-src 'self'",
