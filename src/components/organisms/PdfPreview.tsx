@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
-import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { ChevronLeft, ChevronRight, Download, Minus, Plus } from 'lucide-react'
 
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.${pdfjs.version}.min.js`
 
 interface PdfPreviewProps {
   source: string | null

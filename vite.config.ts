@@ -2,7 +2,26 @@ import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import { copyFileSync, mkdirSync, readFileSync } from 'node:fs'
 import path from 'path'
+
+function pdfWorkerPlugin(): PluginOption {
+  return {
+    name: 'copy-pdf-worker',
+    configResolved() {
+      const root = process.cwd()
+      const packageJson = JSON.parse(
+        readFileSync(path.resolve(root, 'node_modules/pdfjs-dist/package.json'), 'utf8'),
+      ) as { version: string }
+      const targetDir = path.resolve(root, 'public')
+      mkdirSync(targetDir, { recursive: true })
+      copyFileSync(
+        path.resolve(root, 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs'),
+        path.join(targetDir, `pdf.worker.${packageJson.version}.min.js`),
+      )
+    },
+  }
+}
 
 function apiOrigin(apiUrl: string | undefined): string | null {
   if (!apiUrl || !/^https?:\/\//i.test(apiUrl)) return null
@@ -63,6 +82,7 @@ export default defineConfig(({ command, mode }) => {
   )
 
   const plugins: PluginOption[] = [
+    pdfWorkerPlugin(),
     react(),
     tailwindcss(),
     {

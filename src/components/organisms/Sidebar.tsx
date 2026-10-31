@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, HelpCircle, BarChart3, User, Settings, Activity, Building2 } from 'lucide-react'
+import { Users, GraduationCap, Award, LayoutDashboard, FileCheck, ClipboardList, BookOpen, LogOut, X, BarChart3, User, Settings, Activity, Building2, type LucideIcon } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { usePlatform } from '../../hooks/usePlatform'
@@ -8,12 +8,11 @@ import type { UserRole } from '../../types'
 interface NavItem {
   label: string
   path: string
-  icon: typeof Home
+  icon: LucideIcon
   roles: UserRole[]
 }
 
 const navItems: NavItem[] = [
-  { label: 'Inicio', path: '/', icon: Home, roles: ['superuser', 'admin', 'teacher', 'student'] },
   { label: 'Perfil', path: '/profile', icon: User, roles: ['student'] },
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['superuser', 'admin', 'teacher'] },
   { label: 'Usuarios', path: '/users', icon: Users, roles: ['superuser', 'admin'] },
@@ -26,7 +25,6 @@ const navItems: NavItem[] = [
   { label: 'Organizaciones', path: '/admin/tenants', icon: Building2, roles: ['superuser'] },
   { label: 'Manual', path: '/manual', icon: BookOpen, roles: ['superuser', 'admin'] },
   { label: 'Configuración', path: '/configuration', icon: Settings, roles: ['superuser'] },
-  { label: 'FAQ', path: '/faq', icon: HelpCircle, roles: ['superuser', 'admin', 'teacher', 'student'] },
 ]
 
 interface SidebarProps {
@@ -53,9 +51,14 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4">
-        <div className={`flex h-14 items-center rounded-xl px-3 ${needsLightPill ? 'bg-white shadow-sm' : ''}`}>
+        <Link
+          to="/home"
+          onClick={onClose}
+          aria-label="Ir al inicio"
+          className={`flex h-14 items-center rounded-xl px-3 ${needsLightPill ? 'bg-white shadow-sm' : ''}`}
+        >
           <img src={logoSrc} alt="Logo" className="h-10 w-auto max-w-full object-contain" />
-        </div>
+        </Link>
         <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden">
           <X className="h-5 w-5" />
         </button>

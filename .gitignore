@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Worker de PDF.js generado desde node_modules
+public/pdf.worker.*.min.js
