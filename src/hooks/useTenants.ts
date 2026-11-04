@@ -47,3 +47,35 @@ export function useActingTenant(options?: { enabled?: boolean }) {
     ...options,
   })
 }
+
+export function useTenantPayments(tenantId: number | null) {
+  return useQuery({
+    queryKey: ['admin', 'tenant-payments', tenantId],
+    queryFn: () => tenantService.payments(tenantId as number),
+    enabled: tenantId !== null,
+  })
+}
+
+export function useCreateTenantPayment(tenantId: number | null) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof tenantService.createPayment>[1]) =>
+      tenantService.createPayment(tenantId as number, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'tenant-payments', tenantId] })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
+  })
+}
+
+export function useDeleteTenantPayment(tenantId: number | null) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (paymentId: number) =>
+      tenantService.deletePayment(tenantId as number, paymentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'tenant-payments', tenantId] })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
+  })
+}

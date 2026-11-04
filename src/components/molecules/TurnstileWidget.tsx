@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 
 interface TurnstileWidgetProps {
   siteKey: string
+  action?: string
+  appearance?: 'always' | 'interaction-only' | 'execution-only'
   onVerify: (token: string) => void
   onExpire: () => void
   onError?: () => void
@@ -47,9 +49,11 @@ function loadTurnstile(): Promise<void> {
   return promise
 }
 
-/** Widget de Cloudflare Turnstile para el registro público. */
+/** Widget de Cloudflare Turnstile para formularios públicos. */
 export default function TurnstileWidget({
   siteKey,
+  action = 'register',
+  appearance = 'always',
   onVerify,
   onExpire,
   onError,
@@ -82,7 +86,8 @@ export default function TurnstileWidget({
         if (cancelled || !containerRef.current || !window.turnstile) return
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
           sitekey: siteKey,
-          action: 'register',
+          action,
+          appearance,
           theme: 'light',
           language: 'es',
           callback: (token) => onVerifyRef.current(token),
@@ -105,7 +110,7 @@ export default function TurnstileWidget({
         widgetIdRef.current = null
       }
     }
-  }, [siteKey])
+  }, [siteKey, action, appearance])
 
   useEffect(() => {
     if (!resetSignal || !widgetIdRef.current || !window.turnstile) return

@@ -6,6 +6,7 @@ import { config } from '../config'
 import Button from '../components/atoms/Button'
 import Input from '../components/atoms/Input'
 import AuthShowcase from '../components/organisms/AuthShowcase'
+import TurnstileWidget from '../components/molecules/TurnstileWidget'
 import DeveloperCredit from '../components/molecules/DeveloperCredit'
 import { Link } from 'react-router-dom'
 import { getErrorMessage } from '../lib/error'
@@ -15,6 +16,8 @@ export default function LoginPage() {
   const { data: pub } = usePublicBranding()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -22,12 +25,18 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (config.turnstileSiteKey && !turnstileToken) {
+      setError('Completa la verificación de seguridad para continuar.')
+      return
+    }
     setError('')
     setLoading(true)
     try {
-      await login(email, password)
+      await login(email, password, turnstileToken || undefined)
     } catch (err: unknown) {
       setError(getErrorMessage(err))
+      setTurnstileToken('')
+      setTurnstileReset((value) => value + 1)
     } finally {
       setLoading(false)
     }
@@ -60,6 +69,18 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+            />
+
+            <TurnstileWidget
+              siteKey={config.turnstileSiteKey}
+              action="login"
+              appearance="interaction-only"
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken('')}
+              onError={() =>
+                setError('No se pudo cargar la verificación de seguridad. Recarga la página.')
+              }
+              resetSignal={turnstileReset}
             />
 
             {error && (

@@ -19,12 +19,16 @@ export const authService = {
     return response
   },
 
-  login: async (data: LoginRequest): Promise<Token> => {
+  login: async (data: LoginRequest, turnstileToken?: string): Promise<Token> => {
     const formData = new URLSearchParams()
     formData.append('username', data.username)
     formData.append('password', data.password)
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    if (turnstileToken) headers['X-Turnstile-Token'] = turnstileToken
     const { data: response } = await api.post<Token>('/auth/token', formData, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers,
     })
     return response
   },

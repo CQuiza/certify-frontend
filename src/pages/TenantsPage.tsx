@@ -10,10 +10,12 @@ import Badge from '../components/atoms/Badge'
 import Skeleton from '../components/atoms/Skeleton'
 import ErrorState from '../components/atoms/ErrorState'
 import { config } from '../config'
-import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff, Eye } from 'lucide-react'
+import { Building2, Plus, Users, GraduationCap, Award, Power, PowerOff, Eye, CreditCard, AlertTriangle, CalendarClock } from 'lucide-react'
 import { formatDate } from '../lib/dates'
 import { getErrorMessage } from '../lib/error'
 import type { TenantCreate } from '../types/tenant'
+import TenantBillingBadge from '../components/molecules/TenantBillingBadge'
+import TenantPaymentsModal from '../components/organisms/TenantPaymentsModal'
 
 const subdomainSuffix = config.rootDomain ? `.${config.rootDomain}` : ''
 
@@ -34,6 +36,19 @@ export default function TenantsPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<TenantCreate>(emptyForm)
   const [createdPassword, setCreatedPassword] = useState<string | null>(null)
+  const [paymentsTenantId, setPaymentsTenantId] = useState<number | null>(null)
+  const [billingFilter, setBillingFilter] = useState<'all' | 'pending' | 'soon'>('all')
+
+  const paymentsTenant = tenants?.find((t) => t.id === paymentsTenantId) ?? null
+
+  const billableTenants = (tenants ?? []).filter((t) => t.slug !== 'default')
+  const pendingCount = billableTenants.filter((t) => t.billing?.status === 'pendiente').length
+  const soonCount = billableTenants.filter((t) => t.billing?.status === 'por_vencer').length
+  const visibleTenants = (tenants ?? []).filter((t) => {
+    if (billingFilter === 'pending') return t.billing?.status === 'pendiente'
+    if (billingFilter === 'soon') return t.billing?.status === 'por_vencer'
+    return true
+  })
 
   function openCreate() {
     setForm(emptyForm)
@@ -97,33 +112,72 @@ export default function TenantsPage() {
 
       {isError && <ErrorState className="mb-6" />}
 
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setBillingFilter((current) => (current === 'pending' ? 'all' : 'pending'))}
+          className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+            pendingCount > 0
+              ? 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
+              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <AlertTriangle className="h-4 w-4" />
+          {pendingCount} {pendingCount === 1 ? 'pendiente' : 'pendientes'} de pago
+        </button>
+        <button
+          type="button"
+          onClick={() => setBillingFilter((current) => (current === 'soon' ? 'all' : 'soon'))}
+          className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+            soonCount > 0
+              ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <CalendarClock className="h-4 w-4" />
+          {soonCount} por vencer
+        </button>
+        {billingFilter !== 'all' && (
+          <button
+            type="button"
+            onClick={() => setBillingFilter('all')}
+            className="text-sm text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-slate-700"
+          >
+            Ver todos
+          </button>
+        )}
+      </div>
+
       <Card padding={false}>
         {isLoading ? (
           <div className="space-y-4 p-6"><Skeleton count={5} className="h-12 w-full" /></div>
-        ) : !tenants || tenants.length === 0 ? (
-          <p className="px-6 py-8 text-center text-sm text-slate-500">No hay organizaciones.</p>
+        ) : visibleTenants.length === 0 ? (
+          <p className="px-6 py-8 text-center text-sm text-slate-500">
+            {billingFilter === 'all' ? 'No hay organizaciones.' : 'Ninguna organización coincide con el filtro.'}
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/50">
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Organización</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Subdominio</th>
+                  <th className="hidden px-6 py-3 text-left text-xs font-medium uppercase text-slate-500 md:table-cell">Subdominio</th>
                   <th className="px-6 py-3 text-center text-xs font-medium uppercase text-slate-500">Usuarios</th>
                   <th className="px-6 py-3 text-center text-xs font-medium uppercase text-slate-500">Cursos</th>
                   <th className="px-6 py-3 text-center text-xs font-medium uppercase text-slate-500">Certificados</th>
                   <th className="px-6 py-3 text-center text-xs font-medium uppercase text-slate-500">Estado</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium uppercase text-slate-500">Cobranza</th>
                   <th className="px-6 py-3 text-right text-xs font-medium uppercase text-slate-500">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {tenants.map((t) => (
+                {visibleTenants.map((t) => (
                   <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-3">
                       <p className="font-semibold text-slate-900">{t.name}</p>
                       <p className="text-xs text-slate-500">creado {t.created_at ? formatDate(t.created_at) : '—'}</p>
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="hidden px-6 py-3 md:table-cell">
 <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                         <Building2 className="h-3 w-3 text-slate-400" />
                         {subdomainSuffix ? `${t.slug}${subdomainSuffix}` : t.slug}
@@ -141,24 +195,43 @@ export default function TenantsPage() {
                     <td className="px-6 py-3 text-center">
                       <Badge variant={t.is_active ? 'success' : 'danger'}>{t.is_active ? 'Activa' : 'Inactiva'}</Badge>
                     </td>
+                    <td className="px-6 py-3 text-center">
+                      <div className="flex flex-col items-center gap-1">
+                        <TenantBillingBadge billing={t.billing} />
+                        {t.billing?.paid_until && (
+                          <span className="text-xs text-slate-500">vence {formatDate(t.billing.paid_until)}</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-3">
                       <div className="flex justify-end gap-2">
                         <button
+                          onClick={() => setPaymentsTenantId(t.id)}
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-100 px-2 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors sm:px-3"
+                          title="Registrar y revisar pagos del tenant"
+                          aria-label="Pagos"
+                        >
+                          <CreditCard className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Pagos</span>
+                        </button>
+                        <button
                           onClick={() => handleImpersonate(t)}
-                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-50 px-2 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors sm:px-3"
                           title="Entrar al tenant como superuser"
+                          aria-label="Ver como"
                         >
                           <Eye className="h-3.5 w-3.5" />
-                          Ver como
+                          <span className="hidden sm:inline">Ver como</span>
                         </button>
                         <button
                           onClick={() => handleToggle(t)}
                           disabled={t.slug === 'default'}
-                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-100 px-2 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors sm:px-3"
                           title={t.slug === 'default' ? 'El tenant por defecto no se puede desactivar' : (t.is_active ? 'Desactivar' : 'Activar')}
+                          aria-label={t.is_active ? 'Desactivar' : 'Activar'}
                         >
                           {t.is_active ? <PowerOff className="h-3.5 w-3.5" /> : <Power className="h-3.5 w-3.5" />}
-                          {t.is_active ? 'Desactivar' : 'Activar'}
+                          <span className="hidden sm:inline">{t.is_active ? 'Desactivar' : 'Activar'}</span>
                         </button>
                       </div>
                     </td>
@@ -212,6 +285,12 @@ export default function TenantsPage() {
           </form>
         )}
       </Modal>
+
+      <TenantPaymentsModal
+        tenant={paymentsTenant}
+        open={!!paymentsTenant}
+        onClose={() => setPaymentsTenantId(null)}
+      />
     </div>
   )
 }

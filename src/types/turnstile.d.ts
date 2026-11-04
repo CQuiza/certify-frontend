@@ -4,6 +4,7 @@ declare global {
   interface TurnstileRenderOptions {
     sitekey: string
     action?: string
+    appearance?: 'always' | 'interaction-only' | 'execution-only'
     theme?: 'light' | 'dark' | 'auto'
     language?: string
     callback?: (token: string) => void

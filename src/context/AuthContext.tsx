@@ -12,7 +12,7 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, turnstileToken?: string) => Promise<void>
   register: (data: {
     email: string
     password: string
@@ -84,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = useCallback(
-    async (email: string, password: string) => {
-      await authService.login({ username: email, password })
+    async (email: string, password: string, turnstileToken?: string) => {
+      await authService.login({ username: email, password }, turnstileToken)
 
       let u: User | null
       try {

@@ -7,6 +7,8 @@ import Button from '../components/atoms/Button'
 import Skeleton from '../components/atoms/Skeleton'
 import PublicHeader from '../components/organisms/PublicHeader'
 import PublicFooter from '../components/organisms/PublicFooter'
+import TurnstileWidget from '../components/molecules/TurnstileWidget'
+import { config } from '../config'
 import { certificateStatusVariant } from '../lib/statusVariant'
 import { formatDate } from '../lib/dates'
 import api from '../services/api'
@@ -33,6 +35,8 @@ const statusLabels: Record<string, string> = {
 
 export default function SearchPage() {
   const [identityNumber, setIdentityNumber] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -40,12 +44,17 @@ export default function SearchPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!identityNumber.trim()) return
+    if (config.turnstileSiteKey && !turnstileToken) {
+      setError('Completa la verificación de seguridad para consultar.')
+      return
+    }
     setLoading(true)
     setError('')
     setResult(null)
     try {
       const { data } = await api.get<SearchResult[]>(
         `/certificates/search-by-identity/${encodeURIComponent(identityNumber.trim())}`,
+        turnstileToken ? { headers: { 'X-Turnstile-Token': turnstileToken } } : undefined,
       )
       if (data.length > 0) setResult(data[0])
     } catch (err: unknown) {
@@ -60,6 +69,9 @@ export default function SearchPage() {
         setError('Error de conexión. Intente nuevamente.')
       }
     } finally {
+      // El token de Turnstile es de un solo uso: se renueva tras cada consulta.
+      setTurnstileToken('')
+      setTurnstileReset((value) => value + 1)
       setLoading(false)
     }
   }
@@ -87,6 +99,15 @@ export default function SearchPage() {
                   value={identityNumber}
                   onChange={(e) => setIdentityNumber(e.target.value)}
                   required
+                />
+                <TurnstileWidget
+                  siteKey={config.turnstileSiteKey}
+                  action="search"
+                  appearance="interaction-only"
+                  onVerify={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken('')}
+                  onError={() => setError('No se pudo cargar la verificación de seguridad.')}
+                  resetSignal={turnstileReset}
                 />
                 <Button type="submit" loading={loading} className="w-full">
                   <Search className="h-4 w-4" />

@@ -3,6 +3,8 @@ import type {
   ActingTenant,
   ImpersonateResult,
   TenantCreate,
+  TenantPayment,
+  TenantPaymentCreate,
   TenantRead,
   TenantStatusUpdate,
 } from '../types/tenant'
@@ -36,5 +38,37 @@ export const tenantService = {
   acting: async (): Promise<ActingTenant> => {
     const { data } = await api.get<ActingTenant>('/admin/tenants/acting')
     return data
+  },
+
+  payments: async (tenantId: number): Promise<TenantPayment[]> => {
+    const { data } = await api.get<TenantPayment[]>(`/admin/tenants/${tenantId}/payments`)
+    return data
+  },
+
+  createPayment: async (
+    tenantId: number,
+    payload: TenantPaymentCreate,
+  ): Promise<TenantPayment> => {
+    const { data } = await api.post<TenantPayment>(
+      `/admin/tenants/${tenantId}/payments`,
+      payload,
+    )
+    return data
+  },
+
+  updatePayment: async (
+    tenantId: number,
+    paymentId: number,
+    payload: Partial<TenantPaymentCreate>,
+  ): Promise<TenantPayment> => {
+    const { data } = await api.patch<TenantPayment>(
+      `/admin/tenants/${tenantId}/payments/${paymentId}`,
+      payload,
+    )
+    return data
+  },
+
+  deletePayment: async (tenantId: number, paymentId: number): Promise<void> => {
+    await api.delete(`/admin/tenants/${tenantId}/payments/${paymentId}`)
   },
 }
